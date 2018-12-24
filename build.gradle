@@ -32,13 +32,15 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-jdbc')
     implementation('org.springframework.boot:spring-boot-starter-web')
-    runtimeOnly('org.springframework.boot:spring-boot-devtools')
-    runtimeOnly('mysql:mysql-connector-java')
-    compileOnly('org.projectlombok:lombok')
-    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     compile('org.springframework.cloud:spring-cloud-starter-aws')
     compile('com.googlecode.json-simple:json-simple')
+    compile('org.springframework.security:spring-security-core:5.0.6.RELEASE')
+    compile('com.auth0:java-jwt:3.4.1')
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
 
+    runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    runtimeOnly('mysql:mysql-connector-java')
+    compileOnly('org.projectlombok:lombok')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
