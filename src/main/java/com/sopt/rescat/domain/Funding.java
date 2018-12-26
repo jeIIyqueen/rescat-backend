@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.enums.Bank;
 import lombok.NonNull;
 
 import javax.persistence.*;
@@ -25,12 +26,31 @@ public class Funding extends BaseEntity {
     private String contents;
 
     @Column
+    private String introduction;
+
+    @Column
     @NonNull
     private Long goalAmount;
 
     @Column
     @NonNull
     private Long currentAmount;
+
+    @Column
+    @NonNull
+    private Bank bankName;
+
+    @Column
+    @NonNull
+    private String account;
+
+    @Column
+    @NonNull
+    private String mainRigion;
+
+    @OneToMany
+    @NonNull
+    private List<Photo> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
