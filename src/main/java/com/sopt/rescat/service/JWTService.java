@@ -8,9 +8,15 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.sopt.rescat.vo.JwtTokenVO;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -38,12 +44,22 @@ public class JWTService {
             b.withIssuer(ISSUER);
             //토큰 payload 작성, key - value 형식, 객체도 가능
             b.withClaim("user_idx", user_idx);
+            //만료
+            b.withExpiresAt(expiresAt());
             //토큰 해싱해서 반환
             return b.sign(Algorithm.HMAC256(SECRET));
         } catch (JWTCreationException JwtCreationException) {
             log.info(JwtCreationException.getMessage());
         }
         return null;
+    }
+
+    private Date expiresAt(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+
+        cal.add(Calendar.HOUR, 744);
+        return cal.getTime();
     }
 
     /**
@@ -59,10 +75,13 @@ public class JWTService {
             //토큰 검증
             DecodedJWT decodedJWT = jwtVerifier.verify(token);
             //토큰 payload 반환, 정상적인 토큰이라면 토큰 주인(사용자) 고유 ID, 아니라면 -1
-            return new JwtTokenVO(decodedJWT.getClaim("user_idx").asLong().intValue());
+            return new JwtTokenVO(decodedJWT.getClaim("user_idx").asLong().longValue());
+        }  catch (JWTVerificationException jve) {
+            log.error(jve.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         return new JwtTokenVO();
     }
+
 }
