@@ -1,10 +1,12 @@
 package com.sopt.rescat.domain;
 
+import lombok.NonNull;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Cat extends BaseTime {
+public class Cat extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -12,16 +14,20 @@ public class Cat extends BaseTime {
     @Column(length = 10, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
+    @NonNull
     private Float lat;
 
-    @Column(nullable = false)
+    @Column
+    @NonNull
     private Float lng;
 
-    @Column(nullable = false)
+    @Column
+    @NonNull
     private Integer radius;
 
-    @Column(nullable = false)
+    @Column
+    @NonNull
     // 0: 남, 1: 여
     private Integer sex;
 

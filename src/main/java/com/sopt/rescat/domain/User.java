@@ -8,9 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -40,7 +37,14 @@ public class User extends BaseTime {
     private String password;
 
     @Column
-    private String regions;
+    @NonNull
+    private String mainRegion;
+
+    @Column
+    private String subRegion1;
+
+    @Column
+    private String subRegion2;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_role_idx"))

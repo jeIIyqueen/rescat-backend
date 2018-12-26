@@ -6,7 +6,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 
 @Entity
-public class Place extends BaseTime {
+public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
