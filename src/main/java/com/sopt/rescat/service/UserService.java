@@ -4,7 +4,7 @@ import com.sopt.rescat.domain.User;
 
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.exception.AlreadyExistingException;
+import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.FailureException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.UserRepository;
@@ -30,7 +30,7 @@ public class UserService {
 
     public Boolean isExistingId(String id) {
         if(userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistingException("이미 사용중인 아이디입니다.");
+            throw new AlreadyExistsException("이미 사용중인 ID입니다.");
         }
         return Boolean.FALSE;
     }
