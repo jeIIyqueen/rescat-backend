@@ -29,20 +29,6 @@ public class ApiUserController {
         this.jwtService = jwtService;
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<User> login(@RequestBody UserLoginDto userLoginDto, HttpSession httpSession) {
-//        // 1. 세션에 토큰 저장
-//        HttpSessionUtils.setTokenInSession(
-//                httpSession,
-//                JwtTokenDto.builder()
-//                        .token(jwtService.create(userService.login(userLoginDto).getIdx()))
-//                        .build()
-//                        .getToken()
-//        );
-//        // 2. OK 인 상태메세지를 클라이언트에게 보냄
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
-
     @PostMapping("")
     public ResponseEntity<User> join(@RequestBody @Valid UserJoinDto userJoinDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(userJoinDto));

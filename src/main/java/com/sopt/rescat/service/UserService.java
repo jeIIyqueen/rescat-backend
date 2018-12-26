@@ -34,18 +34,4 @@ public class UserService {
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
-    public User login(UserLoginDto userLoginDto) {
-        User savedUser = userRepository.findById(userLoginDto.getId())
-                .orElseThrow(() -> new UnAuthenticationException("해당 ID를 가진 사용자가 존재하지 않습니다."));
-        savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
-        return savedUser;
-    }
-
-    public String encodePassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
-    public boolean decodePassword(String password) {
-        return passwordEncoder.matches("rescat", password);
-    }
 }

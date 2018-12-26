@@ -22,7 +22,7 @@ public class SecurityControllerAdvice {
     @ExceptionHandler(UnAuthenticationException.class)
     public ResponseEntity<ErrorResponse> unAuthentication(Exception exception) {
         log.debug("UnAuthenticationException is happened!");
-        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(AlreadyExistingException.class)
