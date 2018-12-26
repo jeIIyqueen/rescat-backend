@@ -1,6 +1,7 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.UserRepository;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTService jwtService;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder) {
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,final JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public User login(UserLoginDto userLoginDto) {

@@ -6,15 +6,17 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.HttpSessionUtils;
+import com.sopt.rescat.vo.JwtTokenVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+
+import java.net.URI;
+
+import static com.sopt.rescat.utils.HttpSessionUtils.getUserFromSession;
 
 @Slf4j
 @RestController
@@ -29,16 +31,9 @@ public class ApiUserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody UserLoginDto userLoginDto, HttpSession httpSession) {
-        // 1. 세션에 토큰 저장
-        HttpSessionUtils.setTokenInSession(
-                httpSession,
-                JwtTokenDto.builder()
-                        .token(jwtService.create(userService.login(userLoginDto).getIdx()))
-                        .build()
-                        .getToken()
-        );
+    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
+       JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
         // 2. OK 인 상태메세지를 클라이언트에게 보냄
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+        return ResponseEntity.status(HttpStatus.OK).body(jwtTokenDto);
+     }
 }
