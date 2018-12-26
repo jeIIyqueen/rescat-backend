@@ -32,6 +32,10 @@ public class User extends BaseTime {
     private String id;
 
     @Column
+    @Length(max = 11)
+    private String phone;
+
+    @Column
     @NonNull
     @Length(max = 300)
     private String password;
