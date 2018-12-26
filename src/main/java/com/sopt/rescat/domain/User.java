@@ -40,7 +40,14 @@ public class User extends BaseTime {
     private String password;
 
     @Column
-    private String regions;
+    @NonNull
+    private String mainRegion;
+
+    @Column
+    private String subRegion1;
+
+    @Column
+    private String subRegion2;
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_role_idx"))
