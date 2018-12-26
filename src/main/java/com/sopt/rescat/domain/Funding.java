@@ -3,16 +3,18 @@ package com.sopt.rescat.domain;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-public class Funding extends BaseTime {
+public class Funding extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
+
+    @OneToMany
+    private List<Comment> comments;
 
     @Column(length = 100)
     @NonNull

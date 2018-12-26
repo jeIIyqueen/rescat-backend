@@ -5,7 +5,7 @@ import lombok.NonNull;
 import javax.persistence.*;
 
 @Entity
-public class Permission extends BaseTime {
+public class MapRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;

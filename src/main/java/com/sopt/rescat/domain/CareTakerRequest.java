@@ -6,12 +6,11 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 
 @Entity
-public class CareTakerRequest extends BaseTime {
+public class CareTakerRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column
     @OneToOne
     @NonNull
     private User user;
@@ -31,8 +30,7 @@ public class CareTakerRequest extends BaseTime {
     @Column
     private String subRegion2;
 
-    @Column
+    @OneToOne
     @NonNull
     private Photo authenticationPhoto;
 }
-
