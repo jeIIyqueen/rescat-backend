@@ -36,7 +36,7 @@ public class JWTService {
      * @param user_idx 토큰에 담길 로그인한 사용자의 회원 고유 IDX
      * @return 토큰
      */
-    public String create(final int user_idx) {
+    public String create(final Long user_idx) {
         try {
             //토큰 생성 빌더 객체 생성
             JWTCreator.Builder b = JWT.create();

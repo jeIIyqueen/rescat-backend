@@ -1,8 +1,11 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.NotMatchException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,10 +14,11 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     @Column
     @NonNull
@@ -50,12 +54,20 @@ public class User extends BaseTime {
     @Column
     private String subRegion2;
 
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_role_idx"))
+    @Column
+    @NonNull
     private Role role;
 
     @OneToOne
     private Photo photo;
+
+    @Builder
+    public User(String id, String password, String nickname){
+        this.id = id;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = Role.MEMBER;
+    }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {

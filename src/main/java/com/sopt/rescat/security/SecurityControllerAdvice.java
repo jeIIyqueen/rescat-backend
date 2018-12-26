@@ -1,6 +1,7 @@
 package com.sopt.rescat.security;
 
 import com.sopt.rescat.error.ErrorResponse;
+import com.sopt.rescat.exception.AlreadyExistingException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,12 @@ public class SecurityControllerAdvice {
     @ExceptionHandler(UnAuthenticationException.class)
     public ResponseEntity<ErrorResponse> unAuthentication(Exception exception) {
         log.debug("UnAuthenticationException is happened!");
-        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AlreadyExistingException.class)
+    public ResponseEntity<ErrorResponse> alreadyExisting(Exception exception) {
+        log.debug("AlreadyExistingException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.CONFLICT);
     }
 }
