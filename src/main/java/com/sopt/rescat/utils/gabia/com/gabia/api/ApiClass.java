@@ -3,6 +3,7 @@ package com.sopt.rescat.utils.gabia.com.gabia.api;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.springframework.beans.factory.annotation.Value;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,9 +25,10 @@ import java.util.Random;
 
 
 public class ApiClass {
-
-    private String smsId = "rescat_2018";
-    private String apiKey = "3e113d42dd48a1117bccf61e98069e57";
+    @Value("${GABIA.SMSID}")
+    private String smsId;
+    @Value("${GABIA.APIKEY}")
+    private String apiKey;
     private String method = "basic";
     private final static String apiUrl = "http://sms.gabia.com/api";
     private final static String methodName = "gabiasms";
