@@ -6,13 +6,12 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.HttpSessionUtils;
+import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xmlrpc.client.util.ClientFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -40,5 +39,11 @@ public class ApiUserController {
         );
         // 2. OK 인 상태메세지를 클라이언트에게 보냄
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/authentications/{phone}")
+    public ResponseEntity<AuthenticationCodeVO> authenticatePhone(@PathVariable String phone) {
+        log.debug("authenticatePhone 시작", phone);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.sendMms(phone));
     }
 }

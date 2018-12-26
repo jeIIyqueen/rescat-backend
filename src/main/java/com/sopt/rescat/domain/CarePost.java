@@ -57,6 +57,9 @@ public class CarePost extends BaseEntity {
     private String etc;
 
     @Column
+    private int viewCount = 0;
+
+    @Column
     private LocalDateTime startProtectionPeriod;
 
     @Column
