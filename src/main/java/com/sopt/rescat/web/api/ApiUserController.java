@@ -5,9 +5,9 @@ import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
-import com.sopt.rescat.utils.HttpSessionUtils;
-import com.sopt.rescat.vo.JwtTokenVO;
+import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xmlrpc.client.util.ClientFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +35,12 @@ public class ApiUserController {
        JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
         // 2. OK 인 상태메세지를 클라이언트에게 보냄
         return ResponseEntity.status(HttpStatus.OK).body(jwtTokenDto);
-     }
+
+    }
+
+    @PostMapping("/authentications/{phone}")
+    public ResponseEntity<AuthenticationCodeVO> authenticatePhone(@PathVariable String phone) {
+        log.debug("authenticatePhone 시작", phone);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.sendMms(phone));
+    }
 }
