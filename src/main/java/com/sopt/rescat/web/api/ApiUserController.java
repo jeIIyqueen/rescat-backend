@@ -36,8 +36,9 @@ public class ApiUserController {
 
 
     @PostMapping("")
-    public ResponseEntity<User> join(@RequestBody @Valid UserJoinDto userJoinDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(userJoinDto));
+    public ResponseEntity<JwtTokenDto> join(@RequestBody @Valid UserJoinDto userJoinDto) {
+        User newUser = userService.create(userJoinDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(JwtTokenDto.builder().token(jwtService.create(newUser.getIdx())).build());
     }
 
     @PostMapping("/id/duplicate")
