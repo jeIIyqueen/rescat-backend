@@ -31,7 +31,7 @@ public class UserJoinDto {
     private String nickname;
 
     public User toUser(String encodedPassword) throws NotMatchException {
-        if (!matchPassword()) throw new NotMatchException("비밀번호가 일치하지 않습니다.");
+        if (!matchPassword()) throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         return new User(id, encodedPassword, nickname);
     }
 

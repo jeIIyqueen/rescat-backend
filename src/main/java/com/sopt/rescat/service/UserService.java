@@ -30,7 +30,7 @@ public class UserService {
 
     public Boolean isExistingId(String id) {
         if(userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistsException("이미 사용중인 ID입니다.");
+            throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
         }
         return Boolean.FALSE;
     }
@@ -42,7 +42,7 @@ public class UserService {
 
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
-                .orElseThrow(() -> new UnAuthenticationException("해당 ID를 가진 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         return savedUser;
     }
