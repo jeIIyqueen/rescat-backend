@@ -66,6 +66,12 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(!userService.isExistingId(id));
     }
 
+    @ApiOperation(value = "유저 로그인", notes = "유저가 로그인합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "로그인 성공"),
+            @ApiResponse(code = 401, message = "로그인 실패"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
     @PostMapping("/login")
     public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
        JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
