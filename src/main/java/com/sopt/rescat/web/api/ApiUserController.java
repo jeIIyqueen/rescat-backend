@@ -51,7 +51,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("")
-    public ResponseEntity<JwtTokenDto> join(@RequestBody @Valid UserJoinDto userJoinDto) {
+    public ResponseEntity<Void> join(@RequestBody @Valid UserJoinDto userJoinDto) {
         User newUser = userService.create(userJoinDto);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", jwtService.create(newUser.getIdx()));
@@ -76,7 +76,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<Void> login(@RequestBody UserLoginDto userLoginDto) {
        JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
        HttpHeaders httpHeaders = new HttpHeaders();
        httpHeaders.add("Authorization",jwtTokenDto.getToken());
