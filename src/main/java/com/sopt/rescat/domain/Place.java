@@ -47,7 +47,7 @@ public class Place extends BaseEntity {
     @OneToOne
     private Photo photo;
 
-    @Column
+    @OneToOne
     @NonNull
-    private String region;
+    private Region region;
 }
