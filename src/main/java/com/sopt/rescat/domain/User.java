@@ -71,7 +71,7 @@ public class User extends BaseTime {
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {
-            throw new NotMatchException("패스워드가 일치하지 않습니다.");
+            throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
     }

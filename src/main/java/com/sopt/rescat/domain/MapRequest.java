@@ -51,5 +51,17 @@ public class MapRequest extends BaseEntity {
     // 0: 미완료, 1: 완료
     private Integer tnr;
 
-
+    public MapRequest(@NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
+        this.requestType = 0; //등록
+        this.registerType = 0;  //고양이
+        this.name = name;
+        this.etc = etc;
+        this.lat = lat;
+        this.lng = lng;
+        this.photo = photo;
+        this.radius = radius;
+        this.sex = sex;
+        this.age = age;
+        this.tnr = tnr;
+    }
 }
