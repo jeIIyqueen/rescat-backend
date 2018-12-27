@@ -3,6 +3,7 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.Cat;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.Place;
+import com.sopt.rescat.dto.MapRequestDto;
 import com.sopt.rescat.dto.MarkerListDto;
 import com.sopt.rescat.repository.CatRepository;
 import com.sopt.rescat.repository.PlaceRepository;
@@ -45,5 +46,7 @@ public class MapService {
         return MarkerListDto.builder().cats(cats).hospitals(hospitals).soupKitchens(soupKitchens).build();
     }
 
+    public void saveMarkerRegister(final MapRequestDto mapRequestDto){
 
+    }
 }
