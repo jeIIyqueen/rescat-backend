@@ -43,4 +43,8 @@ public class Cat extends BaseEntity {
 
     @OneToOne
     private Photo photo;
+
+    @Column
+    @NonNull
+    private String region;
 }
