@@ -1,11 +1,15 @@
 package com.sopt.rescat.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
+@NoArgsConstructor
 public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +46,8 @@ public class Place extends BaseEntity {
 
     @OneToOne
     private Photo photo;
+
+    @Column
+    @NonNull
+    private String region;
 }
