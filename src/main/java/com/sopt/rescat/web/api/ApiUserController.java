@@ -56,7 +56,6 @@ public class ApiUserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", jwtService.create(newUser.getIdx()));
         return ResponseEntity.status(HttpStatus.CREATED).headers(httpHeaders).build();
-    //JwtTokenDto.builder().token(jwtService.create(newUser.getIdx())).build()
     }
 
     @ApiOperation(value = "아이디 중복 검사", notes = "유저가 입력한 아이디에 대해 중복을 검사합니다. 중복이 없을 시 true를 반환합니다.")
