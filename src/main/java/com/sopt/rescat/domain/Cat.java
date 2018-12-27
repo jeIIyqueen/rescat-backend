@@ -32,7 +32,7 @@ public class Cat extends BaseEntity {
     private Integer sex;
 
     @Column
-    private LocalDateTime birth;
+    private String age;
 
     @Column
     // 0: 미완료, 1: 완료

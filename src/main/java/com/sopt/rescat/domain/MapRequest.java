@@ -33,6 +33,23 @@ public class MapRequest extends BaseEntity {
     @Column
     private Float lng;
 
+    @OneToOne
+    private Photo photo;
+
+    // 아래는 고양이 고유
     @Column
+    private Integer radius;
+
+    @Column
+    // 0: 남, 1: 여
+    private Integer sex;
+
+    @Column
+    private String age;
+
+    @Column
+    // 0: 미완료, 1: 완료
     private Integer tnr;
+
+
 }
