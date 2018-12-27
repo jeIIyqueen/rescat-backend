@@ -3,6 +3,7 @@ package com.sopt.rescat.security;
 import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.error.ErrorResponse;
 import com.sopt.rescat.exception.AlreadyExistsException;
+import com.sopt.rescat.exception.FailureException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,12 @@ public class SecurityControllerAdvice {
     public ResponseEntity<ErrorResponse> unAuthentication(Exception exception) {
         log.debug("UnAuthenticationException is happened!");
         return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FailureException.class)
+    public ResponseEntity<ErrorResponse> failure(Exception exception) {
+        log.debug("FailureException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ExceptionHandler(AlreadyExistsException.class)

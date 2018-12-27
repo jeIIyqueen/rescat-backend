@@ -47,7 +47,7 @@ public class UserService {
         return savedUser;
     }
 
-    public AuthenticationCodeVO sendMms(String phone) {
+    public AuthenticationCodeVO sendSms(String phone) {
         int randomCode = getRandomCode();
         String arr[] = {
                 "sms",
