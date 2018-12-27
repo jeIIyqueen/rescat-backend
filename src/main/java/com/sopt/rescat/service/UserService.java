@@ -44,11 +44,11 @@ public class UserService {
         String arr[] = {
                 "sms",
                 "rescat",
-                "rescat 입니다.",                             // 제목
-                "고객님의 인증번호는 " + randomCode + " 입니다.",
-                "01040908370",                              // 발신번호
-                phone,                                      // 수신번호
-                "0"                                         // 즉시발송
+                "rescat 입니다.",                                   // 제목
+                "rescat에서 보낸 인증번호 [" + randomCode + "] 입니다.", // 본문
+                "01040908370",                                    // 발신번호
+                phone,                                            // 수신번호
+                "0"                                               // 즉시발송
         };
 
         ApiClass api = new ApiClass();
