@@ -22,7 +22,7 @@ public class ApiUserController {
     private final UserService userService;
     private final JWTService jwtService;
 
-    public ApiUserController(UserService userService, JWTService jwtService) {
+    public ApiUserController(final UserService userService, final JWTService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }

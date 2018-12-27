@@ -35,6 +35,11 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
+    // 0: 입양, 1: 임시보호
+    private Integer type;
+
+    @Column
+    @NonNull
     private LocalDateTime birth;
 
     @Column
