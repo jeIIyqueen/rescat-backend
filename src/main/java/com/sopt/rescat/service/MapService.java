@@ -10,6 +10,7 @@ import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class MapService {
                 .cats(cats).hospitals(hospitals).feeders(feeders).build();
     }
 
+    @Transactional
     public void saveMarkerRequest(final User user, final MapRequestDto mapRequestDto) throws IOException {
         Photo markerPhoto = photoRepository.findByIdx(Photo.DEFAULT_PHOTO_ID).orElseThrow(NotFoundException::new);
 
