@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import lombok.Builder;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -33,4 +34,13 @@ public class CareTakerRequest extends BaseEntity {
     @OneToOne
     @NonNull
     private Photo authenticationPhoto;
+
+    @Builder
+    public CareTakerRequest(User name, Boolean isConfirmed, String phone, Region mainRegion, Photo authenticationPhoto){
+        super(name, isConfirmed);
+        this.phone = phone;
+        this.mainRegion = mainRegion;
+        this.authenticationPhoto = authenticationPhoto;
+    }
+
 }
