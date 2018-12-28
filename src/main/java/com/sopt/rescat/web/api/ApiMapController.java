@@ -38,13 +38,17 @@ public class ApiMapController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "emdCode", value = "읍면동 지역코드", required = false, dataType = "string", paramType = "body", defaultValue = "")
+    })
     @Auth
     @GetMapping
     public ResponseEntity<MarkerListDto> getMarkerList(@RequestHeader(value = "Authorization") final String header,
-                                                       @RequestParam final Optional<Integer> emdcode){
+                                                       @RequestParam final Optional<Integer> emdCode){
         final Long userIdx = jwtService.decode(header).getIdx();
 
-        return ResponseEntity.status(HttpStatus.OK).body(mapService.getMarkerListByRegion(mapService.getUser(userIdx), emdcode));
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.getMarkerListByRegion(mapService.getUser(userIdx), emdCode));
     }
 
     @ApiOperation(value = "맵 마커 수정/등록 요청", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정을 관리자에게 요청합니다.")
@@ -52,6 +56,9 @@ public class ApiMapController {
             @ApiResponse(code = 201, message = "요청 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @Auth
     @PostMapping
@@ -70,6 +77,9 @@ public class ApiMapController {
             @ApiResponse(code = 200, message = "조회 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @Auth
     @GetMapping("/regions")

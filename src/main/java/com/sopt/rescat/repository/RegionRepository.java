@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RegionRepository extends CrudRepository<Region, Long> {
-    Optional<Region> findByEmdcode(Integer emdcode);
+    Optional<Region> findByemdCode(Integer emdCode);
 
 //    @Query("select new RegionDto(sdcode, sdname) from region")
 //    List<RegionDto> findAll();

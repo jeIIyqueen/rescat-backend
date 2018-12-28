@@ -1,5 +1,6 @@
 package com.sopt.rescat.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.User;
@@ -21,7 +22,7 @@ import java.util.List;
 @Setter
 @ToString
 public class MapRequestDto {
-    @ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @ApiModelProperty(hidden = true)
     private Long idx;
 
     @ApiModelProperty(example = "0", notes = "0: 등록, 1: 수정", position = 1, dataType = "java.lang.integer")
@@ -50,7 +51,7 @@ public class MapRequestDto {
     @ApiModelProperty(position = 7)
     private MultipartFile photo;
 
-    @ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    @ApiModelProperty(hidden = true)
     private String photoUrl;
 
     @ApiModelProperty(example = "500", position = 8, dataType = "java.lang.integer")

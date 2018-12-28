@@ -54,15 +54,16 @@ public class MapService {
         return user;
     }
 
-    public MarkerListDto getMarkerListByRegion(final User user, final Optional<Integer> emdcode) {
+    public MarkerListDto getMarkerListByRegion(final User user, final Optional<Integer> emdCode) {
 
         Region selectedRegion = user.getMainRegion();
-        if(emdcode.isPresent()) {
-            selectedRegion = regionRepository.findByEmdcode(emdcode.get()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
+        if(emdCode.isPresent()) {
+            if(!getRegionList(user).stream().anyMatch(regionDto -> regionDto.getCode()==emdCode.get())){
+                throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+            }
+            selectedRegion = regionRepository.findByemdCode(emdCode.get()).orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
         }
-        if(!getRegionList(user).stream().anyMatch(regionDto -> regionDto.getCode()==emdcode.get())){
-            throw new UnAuthenticationException("emdcode", "인가되지 않은 지역입니다.");
-        }
+
         List<CatDto> cats = catRepository.findByRegion(selectedRegion).stream().map(cat -> cat.toCatDto()).collect(Collectors.toList());
         List<Place> places = placeRepository.findByRegion(selectedRegion);
 
