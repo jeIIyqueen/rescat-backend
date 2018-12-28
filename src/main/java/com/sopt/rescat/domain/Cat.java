@@ -1,10 +1,15 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.dto.CatDto;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@ToString
 @Entity
 public class Cat extends BaseEntity {
     @Id
@@ -43,4 +48,14 @@ public class Cat extends BaseEntity {
 
     @OneToOne
     private Photo photo;
+
+    @OneToOne
+    @NonNull
+    private Region region;
+
+    public CatDto toCatDto(){
+        return CatDto.builder().birth(this.birth).etc(this.etc).idx(this.idx)
+                .lat(this.lat).lng(this.lng).name(this.name).photoUrl(this.photo.getUrl())
+                .radius(this.radius).region(this.region.toRegionDto()).sex(this.sex).tnr(this.tnr).build();
+    }
 }

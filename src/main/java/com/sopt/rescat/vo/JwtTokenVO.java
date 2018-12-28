@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtTokenVO {
-    private Long idx = (long)-1;
+    private Long idx = (long) -1;
 }

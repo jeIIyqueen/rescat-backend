@@ -1,5 +1,6 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.FundingBanner;
 import com.sopt.rescat.dto.response.BannerDto;
 import com.sopt.rescat.repository.FundingBannerRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class FundingBannerService {
     public List<BannerDto> get4banners() {
         return fundingBannerRepository.findTop4ByOrderByCreatedAtDesc()
                 .stream()
-                .map((fundingBanner) -> fundingBanner.toBannerDto())
+                .map(FundingBanner::toBannerDto)
                 .collect(Collectors.toList());
     }
 }

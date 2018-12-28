@@ -1,7 +1,6 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.User;
-
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
@@ -12,6 +11,7 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +22,22 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,final JWTService jwtService) {
+    @Value("${GABIA.SMSPHONENUMBER}")
+    private String ADMIN_PHONE_NUMBER;
+    @Value("${GABIA.SMSID}")
+    private String smsId;
+    @Value("${GABIA.APIKEY}")
+    private String apiKey;
+
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
     public Boolean isExistingId(String id) {
-        if(userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistsException("이미 사용중인 ID입니다.");
+        if (userRepository.findById(id).isPresent()) {
+            throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
         }
         return Boolean.FALSE;
     }
@@ -42,7 +49,7 @@ public class UserService {
 
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
-                .orElseThrow(() -> new UnAuthenticationException("해당 ID를 가진 사용자가 존재하지 않습니다."));
+                .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         return savedUser;
     }
@@ -54,16 +61,17 @@ public class UserService {
                 "rescat",
                 "rescat 입니다.",                                   // 제목
                 "rescat에서 보낸 인증번호 [" + randomCode + "] 입니다.", // 본문
-                "01040908370",                                    // 발신번호
+                ADMIN_PHONE_NUMBER,                               // 발신번호
                 phone,                                            // 수신번호
                 "0"                                               // 즉시발송
         };
 
-        ApiClass api = new ApiClass();
+        ApiClass api = new ApiClass(this.smsId, this.apiKey);
         ApiResult res = api.getResult(api.send(arr));
-        if(res.getCode().equals("0000")) {
+        if (res.getCode().equals("0000")) {
             return new AuthenticationCodeVO(randomCode);
         }
+        log.debug("sendSms: ", res.getCode() + "", res.getMesg());
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 

@@ -44,15 +44,14 @@ public class User extends BaseTime {
     @Length(max = 300)
     private String password;
 
-    @Column
-    @NonNull
-    private String mainRegion;
+    @OneToOne
+    private Region mainRegion;
 
-    @Column
-    private String subRegion1;
+    @OneToOne
+    private Region subRegion1;
 
-    @Column
-    private String subRegion2;
+    @OneToOne
+    private Region subRegion2;
 
     @Column
     @NonNull
@@ -62,7 +61,7 @@ public class User extends BaseTime {
     private Photo photo;
 
     @Builder
-    public User(String id, String password, String nickname){
+    public User(String id, String password, String nickname) {
         this.id = id;
         this.password = password;
         this.nickname = nickname;
@@ -71,7 +70,7 @@ public class User extends BaseTime {
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {
-            throw new NotMatchException("패스워드가 일치하지 않습니다.");
+            throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
     }

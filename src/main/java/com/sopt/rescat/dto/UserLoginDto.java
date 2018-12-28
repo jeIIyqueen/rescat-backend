@@ -1,5 +1,6 @@
 package com.sopt.rescat.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @Getter
@@ -7,7 +8,10 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 public class UserLoginDto {
+
+    @ApiModelProperty(example = "ttmom96", position = 1)
     private String id;
+    @ApiModelProperty(example = "ttmom1234", position = 2)
     private String password;
 
     @Builder

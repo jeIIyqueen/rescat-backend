@@ -20,7 +20,7 @@ public class HttpSessionUtils {
         return session.getAttribute(USER_SESSION_KEY) != null;
     }
 
-    public static void removeUserInSession(HttpSession session){
+    public static void removeUserInSession(HttpSession session) {
         session.removeAttribute(USER_SESSION_KEY);
     }
 }

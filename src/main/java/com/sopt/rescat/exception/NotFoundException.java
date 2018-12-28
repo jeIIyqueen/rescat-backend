@@ -3,14 +3,13 @@ package com.sopt.rescat.exception;
 import lombok.Getter;
 
 @Getter
-public class NotMatchException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
     private String field;
 
-    public NotMatchException() {
-
+    public NotFoundException() {
     }
 
-    public NotMatchException(String field, String message) {
+    public NotFoundException(String field, String message) {
         super(message);
         this.field = field;
     }

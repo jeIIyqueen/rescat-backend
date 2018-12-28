@@ -7,7 +7,6 @@ import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.vo.JwtTokenVO;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +35,7 @@ public class AuthAspect {
 
     /**
      * 토큰 유효성 검사
+     *
      * @param pjp
      * @return
      * @throws Throwable
@@ -49,7 +49,7 @@ public class AuthAspect {
 
         //토큰 존재 여부 확인
 
-        if (jwt == null) throw new UnAuthenticationException();
+        if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
         //토큰 해독
 
@@ -67,7 +67,7 @@ public class AuthAspect {
 
             //유효 사용자 검사
 
-            if (user == null) throw new UnAuthenticationException();
+            if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
             return pjp.proceed(pjp.getArgs());
         }
