@@ -1,5 +1,6 @@
 package com.sopt.rescat.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.User;
@@ -50,6 +51,9 @@ public class MapRequestDto {
     @ApiModelProperty(position = 7)
     private MultipartFile photo;
 
+    @ApiModelProperty(hidden = true)
+    private String photoUrl;
+
     @ApiModelProperty(example = "500", position = 8, dataType = "java.lang.integer")
     // 아래는 고양이 고유
     private Integer radius;
@@ -68,16 +72,7 @@ public class MapRequestDto {
     private Integer tnr;
 
     public MapRequest toMapRequest(User user, Photo photo) {
-        return MapRequest.builder()
-                .writer(user)
-                .isConfirmed(false)
-                .requestType(requestType)
-                .registerType(registerType)
-                .name(name)
-                .etc(etc)
-                .lat(lat)
-                .lng(lng)
-                .photo(photo)
-                .build();
+        return MapRequest.builder().writer(user).isConfirmed(0).requestType(requestType).registerType(registerType)
+                .name(name).etc(etc).lat(lat).lng(lng).photo(photo).build();
     }
 }

@@ -11,10 +11,9 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse-wtp'
+apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
 
 group = 'com.sopt'
 version = '0.0.1-SNAPSHOT'
@@ -55,7 +54,6 @@ dependencies {
     compile('io.springfox:springfox-swagger2:+')
     compile('io.springfox:springfox-swagger-ui:+')
 
-    compile('com.googlecode.json-simple:json-simple')
 }
 
 dependencyManagement {

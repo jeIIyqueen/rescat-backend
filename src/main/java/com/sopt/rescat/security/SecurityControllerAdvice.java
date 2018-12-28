@@ -1,6 +1,7 @@
 package com.sopt.rescat.security;
 
 import com.sopt.rescat.dto.ExceptionDto;
+import com.sopt.rescat.error.ErrorResponse;
 import com.sopt.rescat.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class SecurityControllerAdvice {
         return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(FailureException.class)
+    public ResponseEntity<ErrorResponse> failure(Exception exception) {
+        log.debug("FailureException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.NOT_IMPLEMENTED);
+    }
+
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ExceptionDto> alreadyExists(AlreadyExistsException exception) {
         log.debug("AlreadyExistsException is happened!");
@@ -42,6 +49,12 @@ public class SecurityControllerAdvice {
                 .forEach(validError -> exceptionDtos.add(ExceptionDto.toExceptionDto(validError)));
 
         return new ResponseEntity(exceptionDtos, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotExistException.class)
+    public ResponseEntity<ErrorResponse> notExist(Exception exception) {
+        log.debug("NotExistException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InvalidValueException.class)
