@@ -1,44 +1,60 @@
 package com.sopt.rescat.dto;
 
-import com.sopt.rescat.domain.Cat;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.Photo;
-import lombok.*;
+import com.sopt.rescat.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
-
-@Getter
-@Setter
+@Slf4j
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class MapRequestDto {
+    // 0: 등록, 1: 수정
+    private Integer requestType;
+
+    // 0: 고양이, 1: 배식소, 2: 병원
+    private Integer registerType;
+
     private String name;
-    private Float lat;
-    private Float lng;
-    private Integer radius;
-    private Integer sex;
-    private String age;
-    private Integer tnr;
+
     private String etc;
+
+    private Float lat;
+
+    private Float lng;
+
     private Photo photo;
-    private String region;
 
-    @Builder
-    public MapRequestDto(String name, Float lat, Float lng, Integer radius, Integer sex, String age, Integer tnr, String etc, Photo photo, String region) {
-        this.name = name;
-        this.lat = lat;
-        this.lng = lng;
-        this.radius = radius;
-        this.sex = sex;
-        this.age = age;
-        this.tnr = tnr;
-        this.etc = etc;
-        this.photo = photo;
-        this.region = region;
-    }
+    // 아래는 고양이 고유
+    private Integer radius;
 
-    public MapRequest toMapRequest(Long userIdx){
+    // 0: 남, 1: 여
+    private Integer sex;
 
+    private String age;
 
-        return new MapRequest(name,etc,lat,lng,photo,radius,sex,age,tnr);
+    // 0: 미완료, 1: 완료
+    private Integer tnr;
+
+    public MapRequest toMapRequest(User user){
+        return MapRequest.builder()
+                .writer(user)
+                .isConfirmed(false)
+                .requestType(requestType)
+                .registerType(registerType)
+                .name(name)
+                .etc(etc)
+                .lat(lat)
+                .lng(lng)
+                .photo(photo)
+                .radius(radius)
+                .sex(sex)
+                .age(age)
+                .tnr(tnr)
+                .build();
     }
 }

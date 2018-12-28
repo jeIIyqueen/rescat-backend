@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import lombok.Builder;
 import lombok.NonNull;
 
 import javax.persistence.*;
@@ -34,6 +35,10 @@ public class MapRequest extends BaseEntity {
     private Float lng;
 
     @OneToOne
+    @NonNull
+    private Region region;
+
+    @OneToOne
     private Photo photo;
 
     // 아래는 고양이 고유
@@ -51,9 +56,11 @@ public class MapRequest extends BaseEntity {
     // 0: 미완료, 1: 완료
     private Integer tnr;
 
-    public MapRequest(@NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
-        this.requestType = 0; //등록
-        this.registerType = 0;  //고양이
+    @Builder
+    public MapRequest(User writer, Boolean isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
+        super(writer, isConfirmed);
+        this.requestType = requestType;
+        this.registerType = registerType;
         this.name = name;
         this.etc = etc;
         this.lat = lat;

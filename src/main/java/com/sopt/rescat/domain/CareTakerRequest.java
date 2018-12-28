@@ -20,15 +20,15 @@ public class CareTakerRequest extends BaseEntity {
     @Length(max = 11)
     private String phone;
 
-    @Column
+    @OneToOne
     @NonNull
-    private String mainRegion;
+    private Region mainRegion;
 
-    @Column
-    private String subRegion1;
+    @OneToOne
+    private Region subRegion1;
 
-    @Column
-    private String subRegion2;
+    @OneToOne
+    private Region subRegion2;
 
     @OneToOne
     @NonNull

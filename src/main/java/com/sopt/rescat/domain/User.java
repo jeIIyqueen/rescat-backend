@@ -44,15 +44,14 @@ public class User extends BaseTime {
     @Length(max = 300)
     private String password;
 
-    @Column
-    @NonNull
-    private String mainRegion;
+    @OneToOne
+    private Region mainRegion;
 
-    @Column
-    private String subRegion1;
+    @OneToOne
+    private Region subRegion1;
 
-    @Column
-    private String subRegion2;
+    @OneToOne
+    private Region subRegion2;
 
     @Column
     @NonNull

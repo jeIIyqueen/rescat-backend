@@ -49,7 +49,7 @@ public class AuthAspect {
 
         //토큰 존재 여부 확인
 
-        if (jwt == null) throw new UnAuthenticationException();
+        if (jwt == null) throw new UnAuthenticationException("token", "잘못된 토큰입니다.");
 
         //토큰 해독
 
@@ -67,7 +67,7 @@ public class AuthAspect {
 
             //유효 사용자 검사
 
-            if (user == null) throw new UnAuthenticationException();
+            if (user == null) throw new UnAuthenticationException("token", "잘못된 토큰입니다.");
 
             return pjp.proceed(pjp.getArgs());
         }

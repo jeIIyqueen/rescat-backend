@@ -13,5 +13,5 @@ import java.time.LocalDateTime;
 public abstract class BaseTime {
 
     @CreatedDate
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }
