@@ -85,7 +85,6 @@ public class MapService {
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequestDto mapRequestDto) throws IOException {
         Photo markerPhoto = photoRepository.findByIdx(Photo.DEFAULT_PHOTO_ID).orElseThrow(NotFoundException::new);
-
         if(mapRequestDto.getPhoto()!=null)
             markerPhoto = photoRepository.save(new Photo(s3FileService.upload(mapRequestDto.getPhoto())));
 
@@ -103,5 +102,16 @@ public class MapService {
                 .map(region -> region.toRegionDto())
                 .collect(Collectors.toList());
     }
+
+//    public List<List<MapRequestDto>> getMapRequestList(final Long userIdx) {
+//        // 관리자이면 전체보기
+//        User user = userRepository.findByIdx(userIdx);
+//        if (!(user.getRole() == Role.ADMIN)) {
+//            throw new UnAuthenticationException("user", "관리자 권한이 필요합니다.");
+//        }
+//
+//
+//
+//    }
 
 }

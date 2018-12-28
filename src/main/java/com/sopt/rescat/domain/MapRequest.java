@@ -57,7 +57,7 @@ public class MapRequest extends BaseEntity {
     private Integer tnr;
 
     @Builder
-    public MapRequest(User writer, Boolean isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
+    public MapRequest(User writer, Integer isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
         super(writer, isConfirmed);
         this.requestType = requestType;
         this.registerType = registerType;

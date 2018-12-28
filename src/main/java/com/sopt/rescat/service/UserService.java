@@ -1,11 +1,14 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.FailureException;
 import com.sopt.rescat.exception.UnAuthenticationException;
+import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
@@ -14,17 +17,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final RegionRepository regionRepository;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService) {
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService, final RegionRepository regionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.regionRepository = regionRepository;
     }
 
     public Boolean isExistingId(String id) {
@@ -68,5 +76,11 @@ public class UserService {
 
     private int getRandomCode() {
         return (int) Math.floor(Math.random() * 1000000);
+    }
+
+    public List<List<RegionDto>> getAllRegionList(){
+        List<Region> allRegions = regionRepository.findAll();
+        List<RegionDto> sidoList = allRegions.stream().map(region -> new RegionDto(region.getSdcode(), region.getSdname())).distinct().collect(Collectors.toList());
+
     }
 }

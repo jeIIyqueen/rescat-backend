@@ -21,7 +21,7 @@ import java.util.List;
 @Setter
 @ToString
 public class MapRequestDto {
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
     private Long idx;
 
     @ApiModelProperty(example = "0", notes = "0: 등록, 1: 수정", position = 1, dataType = "java.lang.integer")
@@ -50,6 +50,9 @@ public class MapRequestDto {
     @ApiModelProperty(position = 7)
     private MultipartFile photo;
 
+    @ApiModelProperty(accessMode = ApiModelProperty.AccessMode.READ_ONLY)
+    private String photoUrl;
+
     @ApiModelProperty(example = "500", position = 8, dataType = "java.lang.integer")
     // 아래는 고양이 고유
     private Integer radius;
@@ -68,16 +71,7 @@ public class MapRequestDto {
     private Integer tnr;
 
     public MapRequest toMapRequest(User user, Photo photo) {
-        return MapRequest.builder()
-                .writer(user)
-                .isConfirmed(false)
-                .requestType(requestType)
-                .registerType(registerType)
-                .name(name)
-                .etc(etc)
-                .lat(lat)
-                .lng(lng)
-                .photo(photo)
-                .build();
+        return MapRequest.builder().writer(user).isConfirmed(0).requestType(requestType).registerType(registerType)
+                .name(name).etc(etc).lat(lat).lng(lng).photo(photo).build();
     }
 }

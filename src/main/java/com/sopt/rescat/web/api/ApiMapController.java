@@ -40,7 +40,7 @@ public class ApiMapController {
     })
     @Auth
     @GetMapping
-    public ResponseEntity<MarkerListDto> getMarkerList(@RequestHeader(value = "Authorization", required = true) final String header,
+    public ResponseEntity<MarkerListDto> getMarkerList(@RequestHeader(value = "Authorization") final String header,
                                                        @RequestParam final Optional<Integer> emdcode){
         final Long userIdx = jwtService.decode(header).getIdx();
 
@@ -56,7 +56,7 @@ public class ApiMapController {
     @Auth
     @PostMapping
     public ResponseEntity requestMarkerRegisterOrEdit(
-            @RequestHeader(value = "Authorization", required = true) final String header,
+            @RequestHeader(value = "Authorization") final String header,
             MapRequestDto mapRequestDto) throws IOException {
         final Long userIdx = jwtService.decode(header).getIdx();
         log.info(mapRequestDto.toString());
@@ -73,7 +73,7 @@ public class ApiMapController {
     })
     @Auth
     @GetMapping("/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization", required = true) final String header) {
+    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String header) {
         final Long userIdx = jwtService.decode(header).getIdx();
 
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getRegionList(mapService.getUser(userIdx)));
@@ -85,7 +85,8 @@ public class ApiMapController {
 //    public ResponseEntity getRequestList(@RequestHeader(value = "Authorization", required = false) final String header){
 //        final Long userIdx = jwtService.decode(header).getIdx();
 //
-//        // 미승인, 승인, 거절
+//        // 보류, 승인, 거절
+//
 //        return
 //    }
 //
