@@ -24,10 +24,14 @@ public class ExceptionDto {
     @ApiModelProperty(example = "에러 내용", position = 2)
     private String message;
 
-    public static ExceptionDto toDto(ObjectError validError) {
+    public static ExceptionDto toExceptionDto(ObjectError validError) {
         return ExceptionDto.builder()
                 .message(validError.getDefaultMessage())
                 .field(validError.getCodes()[CODES_FIELD_STRING_INDEX]
                         .substring(NAME_PARSE_INDEX)).build();
+    }
+
+    public static ExceptionDto toExceptionDto(String field, String message) {
+        return ExceptionDto.builder().field(field).message(message).build();
     }
 }

@@ -4,7 +4,6 @@ import com.sopt.rescat.domain.enums.Bank;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

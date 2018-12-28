@@ -1,7 +1,6 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.User;
-
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
@@ -22,14 +21,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,final JWTService jwtService) {
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
 
     public Boolean isExistingId(String id) {
-        if(userRepository.findById(id).isPresent()) {
+        if (userRepository.findById(id).isPresent()) {
             throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
         }
         return Boolean.FALSE;
@@ -61,7 +60,7 @@ public class UserService {
 
         ApiClass api = new ApiClass();
         ApiResult res = api.getResult(api.send(arr));
-        if(res.getCode().equals("0000")) {
+        if (res.getCode().equals("0000")) {
             return new AuthenticationCodeVO(randomCode);
         }
         throw new FailureException("문자 발송을 실패했습니다.");

@@ -25,12 +25,11 @@ import java.util.Random;
 
 public class ApiClass {
 
+    private final static String apiUrl = "http://sms.gabia.com/api";
+    private final static String methodName = "gabiasms";
     private String smsId = "rescat_2018";
     private String apiKey = "3e113d42dd48a1117bccf61e98069e57";
     private String method = "basic";
-    private final static String apiUrl = "http://sms.gabia.com/api";
-    private final static String methodName = "gabiasms";
-
     private String refXmlFormat = "<request>" + "<sms-id>%s</sms-id>"
             + "<access-token>%s</access-token>"
             + "<response-format>xml</response-format>"
@@ -85,6 +84,11 @@ public class ApiClass {
     public ApiClass(String smsId, String apiKey) {
         this.smsId = smsId;
         this.apiKey = apiKey;
+    }
+
+    private static final void handleError(Throwable ex) {
+        // ... handle error here...
+        System.out.println("Error Handler: " + ex.toString());
     }
 
     public String MakeToString(String phone_arr[]) {
@@ -152,7 +156,6 @@ public class ApiClass {
         }
         return "";
     }
-
 
     public CountModel getSmsCount() {
         try {
@@ -444,10 +447,5 @@ public class ApiClass {
         }
 
         return result_ref_all;
-    }
-
-    private static final void handleError(Throwable ex) {
-        // ... handle error here...
-        System.out.println("Error Handler: " + ex.toString());
     }
 }

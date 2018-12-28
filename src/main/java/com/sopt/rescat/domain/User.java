@@ -61,7 +61,7 @@ public class User extends BaseTime {
     private Photo photo;
 
     @Builder
-    public User(String id, String password, String nickname){
+    public User(String id, String password, String nickname) {
         this.id = id;
         this.password = password;
         this.nickname = nickname;
