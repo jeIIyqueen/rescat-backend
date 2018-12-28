@@ -5,7 +5,6 @@ import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
@@ -14,20 +13,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.xmlrpc.client.util.ClientFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
-import java.util.Map;
-
-import java.net.URI;
-
-import static com.sopt.rescat.utils.HttpSessionUtils.getUserFromSession;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -77,9 +68,9 @@ public class ApiUserController {
     })
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody UserLoginDto userLoginDto) {
-       JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
-       HttpHeaders httpHeaders = new HttpHeaders();
-       httpHeaders.add("Authorization",jwtTokenDto.getToken());
+        JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", jwtTokenDto.getToken());
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).build();
     }
 
