@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,6 +31,11 @@ public class CarePost extends BaseEntity {
     @NonNull
     @Length(max = 30)
     private String name;
+
+    @Column
+    @NonNull
+    // 0: 입양, 1: 임시보호
+    private Integer type;
 
     @Column
     @NonNull

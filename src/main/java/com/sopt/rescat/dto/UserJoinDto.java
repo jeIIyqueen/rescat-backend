@@ -19,19 +19,19 @@ public class UserJoinDto {
     private final static String PASSWORD_REGEX = "^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,12}$";
     private final static String NICKNAME_REGEX = "^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,20}$";
 
-    @ApiModelProperty(example = "crystal95", position = 1)
+    @ApiModelProperty(example = "ttmom96", position = 1)
     @Pattern(regexp = ID_REGEX, message = "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.")
     private String id;
 
-    @ApiModelProperty(example = "crystal95", position = 2)
+    @ApiModelProperty(example = "ttmom1234", position = 2)
     @Pattern(regexp = PASSWORD_REGEX, message = "비밀번호는 영문자, 숫자 8~12자이어야 합니다.")
     private String password;
 
-    @ApiModelProperty(example = "crystal95", position = 3)
+    @ApiModelProperty(example = "ttmom1234", position = 3)
     @Pattern(regexp = PASSWORD_REGEX, message = "비밀번호는 영문자, 숫자 8~12자이어야 합니다.")
     private String rePassword;
 
-    @ApiModelProperty(example = "수정이", position = 4)
+    @ApiModelProperty(example = "티티엄마", position = 4)
     @Pattern(regexp = NICKNAME_REGEX, message = "닉네임은 특수문자 제외 2~20자이어야 합니다.")
     private String nickname;
 

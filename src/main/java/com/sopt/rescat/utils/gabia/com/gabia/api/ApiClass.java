@@ -3,6 +3,9 @@ package com.sopt.rescat.utils.gabia.com.gabia.api;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,15 +25,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
 
-
 public class ApiClass {
+    private String smsId;
+    private String apiKey;
 
-    private String smsId = "rescat_2018";
-    private String apiKey = "3e113d42dd48a1117bccf61e98069e57";
     private String method = "basic";
     private final static String apiUrl = "http://sms.gabia.com/api";
     private final static String methodName = "gabiasms";
-
     private String refXmlFormat = "<request>" + "<sms-id>%s</sms-id>"
             + "<access-token>%s</access-token>"
             + "<response-format>xml</response-format>"
@@ -85,6 +86,11 @@ public class ApiClass {
     public ApiClass(String smsId, String apiKey) {
         this.smsId = smsId;
         this.apiKey = apiKey;
+    }
+
+    private static final void handleError(Throwable ex) {
+        // ... handle error here...
+        System.out.println("Error Handler: " + ex.toString());
     }
 
     public String MakeToString(String phone_arr[]) {
@@ -152,7 +158,6 @@ public class ApiClass {
         }
         return "";
     }
-
 
     public CountModel getSmsCount() {
         try {
@@ -444,10 +449,5 @@ public class ApiClass {
         }
 
         return result_ref_all;
-    }
-
-    private static final void handleError(Throwable ex) {
-        // ... handle error here...
-        System.out.println("Error Handler: " + ex.toString());
     }
 }

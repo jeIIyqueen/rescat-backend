@@ -5,7 +5,6 @@ import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
@@ -14,20 +13,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.xmlrpc.client.util.ClientFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
-import java.util.Map;
-
-import java.net.URI;
-
-import static com.sopt.rescat.utils.HttpSessionUtils.getUserFromSession;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -37,7 +28,7 @@ public class ApiUserController {
     private final UserService userService;
     private final JWTService jwtService;
 
-    public ApiUserController(UserService userService, JWTService jwtService) {
+    public ApiUserController(final UserService userService, final JWTService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -77,15 +68,21 @@ public class ApiUserController {
     })
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody UserLoginDto userLoginDto) {
-       JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
-       HttpHeaders httpHeaders = new HttpHeaders();
-       httpHeaders.add("Authorization",jwtTokenDto.getToken());
+        JwtTokenDto jwtTokenDto = new JwtTokenDto(jwtService.create(userService.login(userLoginDto).getIdx()));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", jwtTokenDto.getToken());
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).build();
     }
 
+    @ApiOperation(value = "핸드폰 인증", notes = "핸드폰 번호를 받아 문자를 보내고, 해당 인증코드를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "인증 성공", response = AuthenticationCodeVO.class),
+            @ApiResponse(code = 500, message = "서버 에러"),
+            @ApiResponse(code = 501, message = "문자보내기 실패")
+    })
     @PostMapping("/authentications/{phone}")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(@PathVariable String phone) {
         log.debug("authenticatePhone 시작", phone);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.sendMms(phone));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 }
