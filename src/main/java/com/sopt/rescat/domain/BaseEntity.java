@@ -18,5 +18,6 @@ public abstract class BaseEntity extends BaseTime {
     private User writer;
 
     @Column
-    private Boolean isConfirmed;
+    // 0: 보류, 1: 승인, 2: 거절
+    private Integer isConfirmed;
 }

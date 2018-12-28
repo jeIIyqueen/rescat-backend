@@ -27,13 +27,13 @@ public class Region {
 
     @Column
     @Id
-    private Integer emdcode;
+    private Integer emdCode;
 
     @Column
     private String emdname;
 
     public RegionDto toRegionDto() {
-        return RegionDto.builder().code(this.emdcode).name(sdname + " " + sggname + " " + emdname).build();
+        return RegionDto.builder().code(this.emdCode).name(sdname + " " + sggname + " " + emdname).build();
     }
 
     public boolean equals(Region region) {

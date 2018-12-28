@@ -47,6 +47,9 @@
 2018-12-28 14:57:46.722 WARN  62710 --- [ http-nio-8080-exec-2 ] o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 1364, SQLState: HY000
 2018-12-28 14:58:25.529 WARN  101517 --- [ restartedMain ] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration$JpaWebMvcConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 2018-12-28 15:07:07.676 WARN  11232 --- [ restartedMain ] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration$JpaWebMvcConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+<<<<<<< HEAD
+2018-12-28 16:23:30.218 WARN  11271 --- [ restartedMain ] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration$JpaWebMvcConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+=======
 2018-12-28 16:41:20.006 WARN  11790 --- [ restartedMain ] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration$JpaWebMvcConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 2018-12-28 16:42:46.287 WARN  98071 --- [ http-nio-8080-exec-9 ] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.sopt.rescat.exception.FailureException: 문자 발송을 실패했습니다.]
 2018-12-28 16:43:10.800 WARN  122584 --- [ http-nio-8080-exec-1 ] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.sopt.rescat.exception.FailureException: 문자 발송을 실패했습니다.]
@@ -75,3 +78,4 @@
 2018-12-28 17:28:14.639 WARN  91791 --- [ HikariPool-1 housekeeper ] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1m24s421ms).
 2018-12-28 17:28:20.056 WARN  97208 --- [ http-nio-8080-exec-1 ] o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.sopt.rescat.exception.FailureException: 문자 발송을 실패했습니다.]
 2018-12-28 17:29:59.794 WARN  11527 --- [ restartedMain ] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration$JpaWebMvcConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+>>>>>>> 141e27f27ab3713d5706e2efbea0c9f3a770fee3
