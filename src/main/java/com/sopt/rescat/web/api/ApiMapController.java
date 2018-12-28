@@ -40,30 +40,30 @@ public class ApiMapController {
     })
     @Auth
     @GetMapping
-    public ResponseEntity<MarkerListDto> getMarkerList(@RequestHeader(value = "Authorization", required = false) final String header,
+    public ResponseEntity<MarkerListDto> getMarkerList(@RequestHeader(value = "Authorization", required = true) final String header,
                                                        @RequestParam final Optional<Integer> emdcode){
         final Long userIdx = jwtService.decode(header).getIdx();
 
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMarkerListByRegion(mapService.getUser(userIdx), emdcode));
     }
 
-//    @ApiOperation(value = "맵 마커 수정/등록 요청", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정을 관리자에게 요청합니다.", produces = "multipart/form-data")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "요청 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @Auth
-//    @PostMapping
-//    public ResponseEntity requestMarkerRegisterOrEdit(
-//            @RequestHeader(value = "Authorization", required = false) final String header,
-//            @Valid MapRequestDto mapRequestDto) throws IOException {
-//        final Long userIdx = jwtService.decode(header).getIdx();
-//        log.info(mapRequestDto.toString());
-//
-//        mapService.saveMarkerRequest(mapService.getUser(userIdx), mapRequestDto);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
+    @ApiOperation(value = "맵 마커 수정/등록 요청", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정을 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PostMapping
+    public ResponseEntity requestMarkerRegisterOrEdit(
+            @RequestHeader(value = "Authorization", required = true) final String header,
+            MapRequestDto mapRequestDto) throws IOException {
+        final Long userIdx = jwtService.decode(header).getIdx();
+        log.info(mapRequestDto.toString());
+
+        mapService.saveMarkerRequest(mapService.getUser(userIdx), mapRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
     @ApiResponses(value = {
@@ -73,7 +73,7 @@ public class ApiMapController {
     })
     @Auth
     @GetMapping("/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization", required = false) final String header) {
+    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization", required = true) final String header) {
         final Long userIdx = jwtService.decode(header).getIdx();
 
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getRegionList(mapService.getUser(userIdx)));

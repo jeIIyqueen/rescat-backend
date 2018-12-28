@@ -4,10 +4,7 @@ import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.User;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -21,8 +18,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 public class MapRequestDto {
+    @ApiModelProperty(hidden = true)
+    private Long idx;
+
     @ApiModelProperty(example = "0", notes = "0: 등록, 1: 수정", position = 1, dataType = "java.lang.integer")
     @Range(min = 0, max = 1)
     // 0: 등록, 1: 수정
