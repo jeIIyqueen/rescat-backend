@@ -27,7 +27,7 @@ public class ApiUserController {
     private final UserService userService;
     private final JWTService jwtService;
 
-    public ApiUserController(UserService userService, JWTService jwtService) {
+    public ApiUserController(final UserService userService, final JWTService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -73,15 +73,21 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).build();
     }
 
+    @ApiOperation(value = "핸드폰 인증", notes = "핸드폰 번호를 받아 문자를 보내고, 해당 인증코드를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "인증 성공", response = AuthenticationCodeVO.class),
+            @ApiResponse(code = 500, message = "서버 에러"),
+            @ApiResponse(code = 501, message = "문자보내기 실패")
+    })
     @PostMapping("/authentications/{phone}")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(@PathVariable String phone) {
         log.debug("authenticatePhone 시작", phone);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.sendMms(phone));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 
-    @GetMapping("/authentications/regions")
-    public ResponseEntity<List<List<RegionDto>>> getAllRegionList(@RequestHeader(value = "Authorization") final String header){
-
-
-    }
+//    @GetMapping("/authentications/regions")
+//    public ResponseEntity<List<List<RegionDto>>> getAllRegionList(@RequestHeader(value = "Authorization") final String header){
+//
+//
+//    }
 }

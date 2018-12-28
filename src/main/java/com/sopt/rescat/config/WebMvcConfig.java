@@ -12,6 +12,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 }

@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class Photo extends BaseTime {
-    public static final Long DEFAULT_PHOTO_ID = 1l;
+    public static final Long DEFAULT_PHOTO_ID = 1L;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id

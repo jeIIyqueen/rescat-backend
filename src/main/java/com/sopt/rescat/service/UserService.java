@@ -14,6 +14,7 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final RegionRepository regionRepository;
+
+
+    @Value("${GABIA.SMSPHONENUMBER}")
+    private String ADMIN_PHONE_NUMBER;
+    @Value("${GABIA.SMSID}")
+    private String smsId;
+    @Value("${GABIA.APIKEY}")
+    private String apiKey;
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService, final RegionRepository regionRepository) {
         this.userRepository = userRepository;
@@ -54,23 +63,24 @@ public class UserService {
         return savedUser;
     }
 
-    public AuthenticationCodeVO sendMms(String phone) {
+    public AuthenticationCodeVO sendSms(String phone) {
         int randomCode = getRandomCode();
         String arr[] = {
                 "sms",
                 "rescat",
-                "rescat 입니다.",                             // 제목
-                "고객님의 인증번호는 " + randomCode + " 입니다.",
-                "01040908370",                              // 발신번호
-                phone,                                      // 수신번호
-                "0"                                         // 즉시발송
+                "rescat 입니다.",                                   // 제목
+                "rescat에서 보낸 인증번호 [" + randomCode + "] 입니다.", // 본문
+                ADMIN_PHONE_NUMBER,                               // 발신번호
+                phone,                                            // 수신번호
+                "0"                                               // 즉시발송
         };
 
-        ApiClass api = new ApiClass();
+        ApiClass api = new ApiClass(this.smsId, this.apiKey);
         ApiResult res = api.getResult(api.send(arr));
         if (res.getCode().equals("0000")) {
             return new AuthenticationCodeVO(randomCode);
         }
+        log.debug("sendSms: ", res.getCode() + "", res.getMesg());
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 
@@ -78,9 +88,9 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
-    public List<List<RegionDto>> getAllRegionList(){
-        List<Region> allRegions = regionRepository.findAll();
-        List<RegionDto> sidoList = allRegions.stream().map(region -> new RegionDto(region.getSdcode(), region.getSdname())).distinct().collect(Collectors.toList());
-
-    }
+//    public List<List<RegionDto>> getAllRegionList(){
+//        List<Region> allRegions = regionRepository.findAll();
+//        List<RegionDto> sidoList = allRegions.stream().map(region -> new RegionDto(region.getSdcode(), region.getSdname())).distinct().collect(Collectors.toList());
+//
+//    }
 }
