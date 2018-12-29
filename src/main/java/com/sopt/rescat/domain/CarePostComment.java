@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NonNull;
 
 import javax.persistence.*;
@@ -19,5 +20,6 @@ public class CarePostComment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_care_post_idx"))
+    @JsonIgnore
     private CarePost carePost;
 }

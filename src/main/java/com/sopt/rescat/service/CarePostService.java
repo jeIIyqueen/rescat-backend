@@ -2,6 +2,7 @@ package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.dto.response.CarePostDto;
+import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.CarePostRepository;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +30,10 @@ public class CarePostService {
         return carePostRepository.findTop5ByOrderByCreatedAtDesc().stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
+    }
+
+    public CarePost findByIdx(Long idx) {
+        return carePostRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "해당하는 idx가 존재하지 않습니다."));
     }
 }
