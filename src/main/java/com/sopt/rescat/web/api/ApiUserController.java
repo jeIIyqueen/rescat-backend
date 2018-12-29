@@ -136,20 +136,20 @@ public class ApiUserController {
 
 
     //마이페이지 첫화면(회원조회), (id,닉네임,프사,롤,지역3개)
-//    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "조회 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @Auth
-//    @GetMapping("/mypage")
-//    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader("Authorization") final String header) {
-//        final Long userIdx = jwtService.decode(header).getIdx();
-//        User user = userService.findByUserIdx(userIdx);
-//        UserMypageDto userMypageDto = new UserMypageDto(user);
-//        return ResponseEntity.status(HttpStatus.OK).body(userMypageDto);
-//    }
+    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage")
+    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader("Authorization") final String header) {
+        final Long userIdx = jwtService.decode(header).getIdx();
+        User user = userService.findByUserIdx(userIdx);
+        UserMypageDto userMypageDto = new UserMypageDto(user);
+        return ResponseEntity.status(HttpStatus.OK).body(userMypageDto);
+    }
 
 
     @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
