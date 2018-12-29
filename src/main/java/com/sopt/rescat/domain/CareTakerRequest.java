@@ -27,12 +27,6 @@ public class CareTakerRequest extends BaseEntity {
     @NonNull
     private Region mainRegion;
 
-    @OneToOne
-    private Region subRegion1;
-
-    @OneToOne
-    private Region subRegion2;
-
     @Column
     @NonNull
     private String authenticationPhotoUrl;

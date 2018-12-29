@@ -19,10 +19,12 @@ import java.util.Optional;
 public class CareTakerRequestDto {
     private String name;
     private String phone;
-    private Region mainRegion;
     private Integer emdCode;
     private MultipartFile authenticationPhoto;
-    private String authenticationPhotoUrl;
+
+    public boolean hasAuthenticationPhoto() {
+        return authenticationPhoto == null;
+    }
 
     public CareTakerRequest toCareTakerRequest(User user, Region mainRegion, String authenticationPhotoUrl) {
         return CareTakerRequest.builder()
