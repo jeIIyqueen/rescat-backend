@@ -1,10 +1,12 @@
 package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class CarePostComment extends BaseEntity {
     @Id

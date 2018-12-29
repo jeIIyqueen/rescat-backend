@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain.photo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.Funding;
@@ -26,6 +27,7 @@ public class FundingPhoto extends BaseTime {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_funding_photo_funding_idx"))
+    @JsonIgnore
     private Funding funding;
 
     public FundingPhoto(@NonNull String url) {

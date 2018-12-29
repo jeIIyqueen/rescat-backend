@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.NotMatchException;
@@ -42,6 +43,7 @@ public class User extends BaseTime {
     @Column
     @NonNull
     @Length(max = 300)
+    @JsonIgnore
     private String password;
 
     @OneToOne
