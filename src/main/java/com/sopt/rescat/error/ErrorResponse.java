@@ -1,5 +1,8 @@
 package com.sopt.rescat.error;
 
+import lombok.Data;
+
+@Data
 public class ErrorResponse {
     private String message;
 

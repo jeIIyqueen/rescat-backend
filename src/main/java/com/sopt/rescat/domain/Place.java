@@ -1,11 +1,18 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.dto.PlaceDto;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
+@ToString
+@Getter
 @Entity
+@NoArgsConstructor
 public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +47,19 @@ public class Place extends BaseEntity {
     @Length(max = 11)
     private Integer phone;
 
+    @Column
+    private String photoUrl;
+
     @OneToOne
-    private Photo photo;
+    @NonNull
+    private Region region;
+
+    public PlaceDto toPlaceDto(){
+        return PlaceDto.builder()
+                .address(address).category(category)
+                .etc(etc).idx(idx).lat(lat).lng(lng)
+                .name(name).phone(phone).photoUrl(photoUrl)
+                .region(region.toRegionDto())
+                .build();
+    }
 }

@@ -1,6 +1,6 @@
 package com.sopt.rescat.domain.enums;
 
-public enum  Vaccination {
+public enum Vaccination {
     UNKNOWINGNESS("모름"),
     NOTHING("안함"),
     FIRST("1차"),

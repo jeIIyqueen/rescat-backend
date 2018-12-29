@@ -1,8 +1,11 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.NotMatchException;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,10 +14,11 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     @Column
     @NonNull
@@ -40,26 +44,34 @@ public class User extends BaseTime {
     @Length(max = 300)
     private String password;
 
-    @Column
-    @NonNull
-    private String mainRegion;
-
-    @Column
-    private String subRegion1;
-
-    @Column
-    private String subRegion2;
-
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_role_idx"))
-    private Role role;
+    @OneToOne
+    private Region mainRegion;
 
     @OneToOne
-    private Photo photo;
+    private Region subRegion1;
+
+    @OneToOne
+    private Region subRegion2;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private Role role;
+
+    @Column
+    private String photoUrl;
+
+    @Builder
+    public User(String id, String password, String nickname) {
+        this.id = id;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = Role.MEMBER;
+    }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {
-            throw new NotMatchException("패스워드가 일치하지 않습니다.");
+            throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
     }
