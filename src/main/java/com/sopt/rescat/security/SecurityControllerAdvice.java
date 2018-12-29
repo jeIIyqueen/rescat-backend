@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,15 @@ public class SecurityControllerAdvice {
         return new ResponseEntity(exceptionDtos, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<List<ExceptionDto>> constraintViolationException(ConstraintViolationException exception) {
+        List<ExceptionDto> exceptionDtos = new ArrayList<>();
+        exception.getConstraintViolations()
+                .forEach(constraintViolation -> exceptionDtos.add(buildExceptionDto(constraintViolation.getMessage(), constraintViolation.getInvalidValue().toString())));
+
+        return new ResponseEntity(exceptionDtos, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(NotExistException.class)
     public ResponseEntity<ErrorResponse> notExist(Exception exception) {
         log.debug("NotExistException is happened!");
@@ -64,8 +74,15 @@ public class SecurityControllerAdvice {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ExceptionDto> invalidValue(NotFoundException exception) {
+    public ResponseEntity<ExceptionDto> notFound(NotFoundException exception) {
         log.debug("NotFoundException is happened!");
         return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    public ExceptionDto buildExceptionDto(String message, String field) {
+        return ExceptionDto.builder()
+                .message(message)
+                .field(field)
+                .build();
     }
 }

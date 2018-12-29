@@ -16,7 +16,4 @@ import javax.persistence.OneToOne;
 public abstract class BaseEntity extends BaseTime {
     @OneToOne
     private User writer;
-
-    @Column
-    private Boolean isConfirmed;
 }

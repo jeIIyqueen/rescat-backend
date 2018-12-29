@@ -5,38 +5,42 @@ import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @ToString
 @Getter
 @Entity
 public class Region {
-    @Column
-    private Integer sdcode;
-
-    @Column
-    private String sdname;
-
-    @Column
-    private Integer sggcode;
-
-    @Column
-    private String sggname;
-
-    @Column
     @Id
-    private Integer emdcode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idx;
 
     @Column
-    private String emdname;
+    private Integer emdCode;
+
+    @Column
+    private Integer sdCode;
+
+    @Column
+    private String sdName;
+
+    @Column
+    private Integer sggCode;
+
+    @Column
+    private String sggName;
+
+    @Column
+    private String emdName;
 
     public RegionDto toRegionDto() {
-        return RegionDto.builder().code(this.emdcode).name(sdname + " " + sggname + " " + emdname).build();
+        return RegionDto.builder()
+                .code(this.emdCode)
+                .name(String.format(sdName, " ", sggName, " ", emdName))
+                .build();
     }
 
     public boolean equals(Region region) {
-        return this.emdname == region.emdname;
+        return this.emdName.equals(region.emdName);
     }
 }

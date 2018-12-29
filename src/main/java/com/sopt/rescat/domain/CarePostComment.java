@@ -5,7 +5,7 @@ import lombok.NonNull;
 import javax.persistence.*;
 
 @Entity
-public class Comment<T> extends BaseEntity {
+public class CarePostComment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -14,6 +14,10 @@ public class Comment<T> extends BaseEntity {
     @NonNull
     private String contents;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_care_post_idx"))
+    private CarePost carePost;
 }

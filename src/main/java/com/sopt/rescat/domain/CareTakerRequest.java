@@ -11,10 +11,6 @@ public class CareTakerRequest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne
-    @NonNull
-    private User user;
-
     @Column
     @NonNull
     @Length(max = 11)
@@ -30,7 +26,10 @@ public class CareTakerRequest extends BaseEntity {
     @OneToOne
     private Region subRegion2;
 
-    @OneToOne
+    @Column
     @NonNull
-    private Photo authenticationPhoto;
+    private String authenticationPhotoUrl;
+
+    @Column
+    private Boolean isConfirmed;
 }

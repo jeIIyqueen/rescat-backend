@@ -1,7 +1,5 @@
 package com.sopt.rescat.dto;
 
-import com.sopt.rescat.domain.Photo;
-import com.sopt.rescat.domain.Place;
 import lombok.Builder;
 
 @Builder

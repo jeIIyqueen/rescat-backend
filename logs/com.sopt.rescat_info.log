@@ -654,7 +654,7 @@
 2018-12-28 12:50:05.301 INFO  7173 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 12:50:05.512 INFO  7384 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 12:50:06.060 INFO  7932 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 12:50:06.415 INFO  8287 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 12:50:06.415 INFO  8287 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 12:50:07.733 INFO  9605 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 12:50:07.834 INFO  9706 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 12:50:09.260 INFO  11132 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -702,7 +702,7 @@
 2018-12-28 12:57:56.247 INFO  6599 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 12:57:56.362 INFO  6714 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 12:57:56.737 INFO  7089 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 12:57:56.986 INFO  7338 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 12:57:56.986 INFO  7338 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 12:57:58.334 INFO  8686 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 12:57:58.385 INFO  8737 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 12:58:00.029 INFO  10381 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -750,7 +750,7 @@
 2018-12-28 13:10:17.581 INFO  6445 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:10:17.721 INFO  6585 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:10:18.086 INFO  6950 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:10:18.330 INFO  7194 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:10:18.330 INFO  7194 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:10:19.482 INFO  8346 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:10:19.529 INFO  8393 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:10:20.775 INFO  9639 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -798,7 +798,7 @@
 2018-12-28 13:18:24.909 INFO  6113 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:18:25.038 INFO  6242 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:18:25.397 INFO  6601 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:18:25.635 INFO  6839 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:18:25.635 INFO  6839 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:18:27.122 INFO  8326 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:18:27.177 INFO  8381 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:18:28.334 INFO  9538 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -846,7 +846,7 @@
 2018-12-28 13:22:06.814 INFO  6335 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:22:07.000 INFO  6521 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:22:07.392 INFO  6913 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:22:07.709 INFO  7230 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:22:07.709 INFO  7230 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:22:09.265 INFO  8786 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:22:09.315 INFO  8836 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:22:10.352 INFO  9873 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -894,7 +894,7 @@
 2018-12-28 13:26:20.260 INFO  6293 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:26:20.417 INFO  6450 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:26:20.805 INFO  6838 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:26:21.040 INFO  7073 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:26:21.040 INFO  7073 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:26:22.437 INFO  8470 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:26:22.522 INFO  8555 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:26:23.828 INFO  9861 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -942,7 +942,7 @@
 2018-12-28 13:28:52.576 INFO  6873 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:28:52.699 INFO  6996 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:28:53.042 INFO  7339 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:28:53.268 INFO  7565 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:28:53.268 INFO  7565 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:28:54.733 INFO  9030 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:28:54.772 INFO  9069 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:28:56.280 INFO  10577 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -987,7 +987,7 @@
 2018-12-28 13:30:36.955 INFO  6695 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:30:37.109 INFO  6849 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2018-12-28 13:30:37.499 INFO  7239 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
-2018-12-28 13:30:37.709 INFO  7449 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.Photo (class must be instantiated by Interceptor)
+2018-12-28 13:30:37.709 INFO  7449 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:30:39.157 INFO  8897 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:30:39.203 INFO  8943 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:30:40.264 INFO  10004 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2209,3 +2209,535 @@
 2018-12-28 17:30:15.899 INFO  27632 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:30:15.903 INFO  27636 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2018-12-28 17:30:15.908 INFO  27641 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 17:54:53.934 INFO  931  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 34496 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 17:54:53.946 INFO  943  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 17:54:54.008 INFO  1005 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 17:54:54.008 INFO  1005 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 17:54:58.147 INFO  5144 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 17:54:58.219 INFO  5216 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 66ms. Found 9 repository interfaces.
+2018-12-28 17:54:58.498 INFO  5495 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#57b601f0' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.500 INFO  5497 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#6e92ed27' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.508 INFO  5505 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#6f8a0901' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.511 INFO  5508 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.511 INFO  5508 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.575 INFO  5572 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$8b8a9ce3] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 17:54:58.985 INFO  5982 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 17:54:59.001 INFO  5998 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 17:54:59.009 INFO  6006 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 17:54:59.009 INFO  6006 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 17:54:59.018 INFO  6015 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 17:54:59.204 INFO  6201 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 17:54:59.204 INFO  6201 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5196 ms
+2018-12-28 17:54:59.375 INFO  6372 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 17:54:59.684 INFO  6681 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 17:54:59.749 INFO  6746 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 17:54:59.879 INFO  6876 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 17:54:59.881 INFO  6878 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 17:55:00.126 INFO  7123 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 17:55:00.320 INFO  7317 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 17:55:00.889 INFO  7886 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:55:02.781 INFO  9778 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 17:55:02.827 INFO  9824 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 17:55:04.221 INFO  11218 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 17:55:04.352 INFO  11349 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 17:55:04.565 INFO  11562 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 17:55:04.597 INFO  11594 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 17:55:04.634 INFO  11631 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 17:55:04.835 INFO  11832 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 17:55:04.858 INFO  11855 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 17:55:04.877 INFO  11874 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 17:55:04.891 INFO  11888 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 17:55:04.894 INFO  11891 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.414 seconds (JVM running for 12.473)
+2018-12-28 17:55:20.835 INFO  27832 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 17:55:20.835 INFO  27832 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 17:55:20.846 INFO  27843 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 11 ms
+2018-12-28 18:08:46.504 INFO  833501 --- [ Thread-33 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:08:46.513 INFO  833510 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:08:46.524 INFO  833521 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:08:46.532 INFO  833529 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:08:51.054 INFO  773  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 41789 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:08:51.058 INFO  777  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:08:51.128 INFO  847  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:08:51.129 INFO  848  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:08:55.252 INFO  4971 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:08:55.319 INFO  5038 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 63ms. Found 9 repository interfaces.
+2018-12-28 18:08:55.574 INFO  5293 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#3ca8946b' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.575 INFO  5294 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#7d040828' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.582 INFO  5301 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#e73910' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.586 INFO  5305 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.586 INFO  5305 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.658 INFO  5377 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$377e70e] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:08:55.973 INFO  5692 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:08:55.982 INFO  5701 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:08:55.988 INFO  5707 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:08:55.989 INFO  5708 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:08:55.993 INFO  5712 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:08:56.141 INFO  5860 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:08:56.141 INFO  5860 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5012 ms
+2018-12-28 18:08:56.294 INFO  6013 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:08:56.533 INFO  6252 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:08:56.573 INFO  6292 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:08:56.621 INFO  6340 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:08:56.622 INFO  6341 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:08:56.722 INFO  6441 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:08:56.867 INFO  6586 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:08:57.246 INFO  6965 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:08:58.970 INFO  8689 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:08:59.008 INFO  8727 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:09:00.162 INFO  9881 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:09:00.320 INFO  10039 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:09:00.503 INFO  10222 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:09:00.515 INFO  10234 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:09:00.543 INFO  10262 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:09:00.679 INFO  10398 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:09:00.691 INFO  10410 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:09:00.706 INFO  10425 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:09:00.715 INFO  10434 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:09:00.718 INFO  10437 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 10.148 seconds (JVM running for 10.994)
+2018-12-28 18:09:08.293 INFO  18012 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:09:08.294 INFO  18013 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:09:08.312 INFO  18031 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 17 ms
+2018-12-28 18:24:08.762 INFO  918481 --- [ Thread-30 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:24:08.772 INFO  918491 --- [ Thread-30 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:24:08.784 INFO  918503 --- [ Thread-30 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:24:08.793 INFO  918512 --- [ Thread-30 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:24:13.453 INFO  782  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 49839 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:24:13.458 INFO  787  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:24:13.548 INFO  877  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:24:13.548 INFO  877  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:24:17.620 INFO  4949 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:24:17.690 INFO  5019 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 66ms. Found 9 repository interfaces.
+2018-12-28 18:24:17.920 INFO  5249 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#29d71e3f' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:17.921 INFO  5250 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#5b4bfd3b' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:17.926 INFO  5255 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#18a566e8' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:17.928 INFO  5257 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:17.929 INFO  5258 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:17.991 INFO  5320 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$4e66cbf0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:18.359 INFO  5688 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:24:18.369 INFO  5698 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:24:18.376 INFO  5705 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:24:18.376 INFO  5705 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:24:18.381 INFO  5710 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:24:18.447 INFO  5776 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:24:18.447 INFO  5776 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 4899 ms
+2018-12-28 18:24:18.662 INFO  5991 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:24:18.896 INFO  6225 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:24:18.934 INFO  6263 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:24:18.979 INFO  6308 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:24:18.980 INFO  6309 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:24:19.074 INFO  6403 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:24:19.209 INFO  6538 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:24:19.553 INFO  6882 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:24:21.830 INFO  9159 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:24:21.874 INFO  9203 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:24:23.173 INFO  10502 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:24:23.308 INFO  10637 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:24:23.471 INFO  10800 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:24:23.487 INFO  10816 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:24:23.510 INFO  10839 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:24:23.650 INFO  10979 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:24:23.663 INFO  10992 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:24:23.679 INFO  11008 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:24:23.688 INFO  11017 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:24:23.691 INFO  11020 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 10.723 seconds (JVM running for 11.531)
+2018-12-28 18:24:33.275 INFO  20604 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:24:33.276 INFO  20605 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:24:33.289 INFO  20618 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 13 ms
+2018-12-28 18:24:51.127 INFO  38456 --- [ Thread-31 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:24:51.132 INFO  38461 --- [ Thread-31 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:24:51.139 INFO  38468 --- [ Thread-31 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:24:51.142 INFO  38471 --- [ Thread-31 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:24:54.733 INFO  1091 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 50194 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:24:54.738 INFO  1096 --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:24:54.811 INFO  1169 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:24:54.812 INFO  1170 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:24:59.405 INFO  5763 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:24:59.483 INFO  5841 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 72ms. Found 9 repository interfaces.
+2018-12-28 18:24:59.773 INFO  6131 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#5bde3a8f' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:59.774 INFO  6132 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#38e753e6' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:59.781 INFO  6139 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#29f6db09' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:59.784 INFO  6142 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:59.784 INFO  6142 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:24:59.852 INFO  6210 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$aaf78544] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:25:00.227 INFO  6585 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:25:00.342 INFO  6700 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:25:00.350 INFO  6708 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:25:00.350 INFO  6708 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:25:00.356 INFO  6714 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:25:00.432 INFO  6790 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:25:00.432 INFO  6790 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5620 ms
+2018-12-28 18:25:00.592 INFO  6950 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:25:01.090 INFO  7448 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:25:01.139 INFO  7497 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:25:01.203 INFO  7561 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:25:01.204 INFO  7562 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:25:01.391 INFO  7749 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:25:01.558 INFO  7916 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:25:02.094 INFO  8452 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:25:04.121 INFO  10479 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:25:04.162 INFO  10520 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:25:05.602 INFO  11960 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:25:05.746 INFO  12104 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:25:05.958 INFO  12316 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:25:05.976 INFO  12334 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:25:06.007 INFO  12365 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:25:06.166 INFO  12524 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:25:06.185 INFO  12543 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:25:06.202 INFO  12560 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:25:06.214 INFO  12572 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:25:06.217 INFO  12575 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.94 seconds (JVM running for 13.971)
+2018-12-28 18:25:11.178 INFO  17536 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:25:11.178 INFO  17536 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:25:11.189 INFO  17547 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 11 ms
+2018-12-28 18:25:25.516 INFO  31874 --- [ Thread-34 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:25:25.524 INFO  31882 --- [ Thread-34 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:25:25.533 INFO  31891 --- [ Thread-34 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:25:25.541 INFO  31899 --- [ Thread-34 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:32:52.103 INFO  763  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 54362 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:32:52.123 INFO  783  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:32:52.180 INFO  840  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:32:52.180 INFO  840  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:32:56.452 INFO  5112 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:32:56.547 INFO  5207 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 82ms. Found 9 repository interfaces.
+2018-12-28 18:32:56.808 INFO  5468 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$823cabcd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.854 INFO  5514 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#1abaa1a6' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.855 INFO  5515 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#5878e04f' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.864 INFO  5524 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#10f167e' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.867 INFO  5527 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.867 INFO  5527 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:56.897 INFO  5557 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$18330d8b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:32:57.317 INFO  5977 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:32:57.337 INFO  5997 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:32:57.346 INFO  6006 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:32:57.347 INFO  6007 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:32:57.355 INFO  6015 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:32:57.544 INFO  6204 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:32:57.544 INFO  6204 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5364 ms
+2018-12-28 18:32:57.733 INFO  6393 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:32:57.984 INFO  6644 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:32:58.053 INFO  6713 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:32:58.175 INFO  6835 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:32:58.177 INFO  6837 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:32:58.472 INFO  7132 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:32:58.670 INFO  7330 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:32:59.231 INFO  7891 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:33:01.658 INFO  10318 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:33:01.695 INFO  10355 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:33:03.134 INFO  11794 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:33:03.267 INFO  11927 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:33:03.470 INFO  12130 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:33:03.488 INFO  12148 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:33:03.515 INFO  12175 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:33:03.650 INFO  12310 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:33:03.662 INFO  12322 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:33:03.678 INFO  12338 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:33:03.691 INFO  12351 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:33:03.695 INFO  12355 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.982 seconds (JVM running for 12.935)
+2018-12-28 18:33:10.244 INFO  18904 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:33:10.245 INFO  18905 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:33:10.258 INFO  18918 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 13 ms
+2018-12-28 18:45:17.865 INFO  746525 --- [ Thread-33 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:45:17.875 INFO  746535 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:45:17.885 INFO  746545 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:45:17.894 INFO  746554 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:45:22.998 INFO  1078 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 60869 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:45:23.003 INFO  1083 --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:45:23.072 INFO  1152 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:45:23.073 INFO  1153 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:45:27.628 INFO  5708 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:45:27.717 INFO  5797 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 82ms. Found 9 repository interfaces.
+2018-12-28 18:45:28.028 INFO  6108 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$69b0995b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.070 INFO  6150 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#2f917296' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.071 INFO  6151 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#50a4a550' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.078 INFO  6158 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#2c5bc5ef' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.081 INFO  6161 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.081 INFO  6161 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.118 INFO  6198 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$ffa6fb19] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:45:28.537 INFO  6617 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:45:28.665 INFO  6745 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:45:28.673 INFO  6753 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:45:28.673 INFO  6753 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:45:28.682 INFO  6762 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:45:28.772 INFO  6852 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:45:28.772 INFO  6852 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5699 ms
+2018-12-28 18:45:28.929 INFO  7009 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:45:29.278 INFO  7358 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:45:29.331 INFO  7411 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:45:29.394 INFO  7474 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:45:29.395 INFO  7475 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:45:29.570 INFO  7650 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:45:29.734 INFO  7814 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:45:30.289 INFO  8369 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:45:32.128 INFO  10208 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:45:32.171 INFO  10251 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:45:33.574 INFO  11654 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:45:33.715 INFO  11795 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:45:33.923 INFO  12003 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:45:33.943 INFO  12023 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:45:33.980 INFO  12060 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:45:34.156 INFO  12236 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:45:34.171 INFO  12251 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:45:34.188 INFO  12268 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:45:34.200 INFO  12280 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:45:34.203 INFO  12283 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.635 seconds (JVM running for 13.022)
+2018-12-28 18:45:38.203 INFO  16283 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:45:38.203 INFO  16283 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:45:38.212 INFO  16292 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2018-12-28 18:46:10.247 INFO  48327 --- [ Thread-33 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:46:10.253 INFO  48333 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:46:10.256 INFO  48336 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:46:10.265 INFO  48345 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:46:18.530 INFO  1332 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 61359 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:46:18.541 INFO  1343 --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:46:18.660 INFO  1462 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:46:18.660 INFO  1462 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:46:22.893 INFO  5695 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:46:22.972 INFO  5774 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 73ms. Found 9 repository interfaces.
+2018-12-28 18:46:23.259 INFO  6061 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$e4d1d8e9] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.298 INFO  6100 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#352481f8' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.299 INFO  6101 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#1ecc5dcb' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.305 INFO  6107 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#4fd1e409' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.307 INFO  6109 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.308 INFO  6110 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.347 INFO  6149 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$7ac83aa7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:46:23.705 INFO  6507 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:46:23.815 INFO  6617 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:46:23.823 INFO  6625 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:46:23.824 INFO  6626 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:46:23.830 INFO  6632 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:46:23.901 INFO  6703 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:46:23.901 INFO  6703 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5241 ms
+2018-12-28 18:46:24.061 INFO  6863 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:46:24.287 INFO  7089 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:46:24.335 INFO  7137 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:46:24.397 INFO  7199 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:46:24.398 INFO  7200 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:46:24.544 INFO  7346 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:46:24.721 INFO  7523 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:46:25.240 INFO  8042 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:46:27.115 INFO  9917 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:46:27.162 INFO  9964 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:46:28.544 INFO  11346 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:46:28.692 INFO  11494 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:46:28.910 INFO  11712 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:46:28.929 INFO  11731 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:46:28.961 INFO  11763 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:46:29.133 INFO  11935 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:46:29.149 INFO  11951 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:46:29.166 INFO  11968 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:46:29.178 INFO  11980 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:46:29.181 INFO  11983 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.267 seconds (JVM running for 12.683)
+2018-12-28 18:46:39.109 INFO  21911 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:46:39.109 INFO  21911 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:46:39.118 INFO  21920 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 9 ms
+2018-12-28 18:48:41.038 INFO  143840 --- [ Thread-32 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:48:41.046 INFO  143848 --- [ Thread-32 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:48:41.055 INFO  143857 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 18:48:41.062 INFO  143864 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 18:57:43.496 INFO  811  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 67432 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 18:57:43.499 INFO  814  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 18:57:43.555 INFO  870  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 18:57:43.556 INFO  871  --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 18:57:47.916 INFO  5231 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 18:57:48.006 INFO  5321 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 80ms. Found 9 repository interfaces.
+2018-12-28 18:57:48.275 INFO  5590 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$8bc3d54e] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.308 INFO  5623 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#1fcb96c1' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.309 INFO  5624 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#22d7d0fa' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.319 INFO  5634 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#125127b2' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.324 INFO  5639 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.324 INFO  5639 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.357 INFO  5672 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$21ba370c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 18:57:48.757 INFO  6072 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 18:57:48.773 INFO  6088 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:57:48.781 INFO  6096 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 18:57:48.781 INFO  6096 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 18:57:48.788 INFO  6103 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 18:57:48.968 INFO  6283 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 18:57:48.968 INFO  6283 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5412 ms
+2018-12-28 18:57:49.137 INFO  6452 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 18:57:49.344 INFO  6659 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 18:57:49.407 INFO  6722 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 18:57:49.530 INFO  6845 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 18:57:49.532 INFO  6847 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 18:57:49.716 INFO  7031 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 18:57:49.931 INFO  7246 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 18:57:50.470 INFO  7785 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:57:52.478 INFO  9793 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 18:57:52.527 INFO  9842 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 18:57:53.939 INFO  11254 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 18:57:54.066 INFO  11381 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 18:57:54.268 INFO  11583 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 18:57:54.285 INFO  11600 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 18:57:54.309 INFO  11624 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 18:57:54.454 INFO  11769 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 18:57:54.466 INFO  11781 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 18:57:54.481 INFO  11796 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 18:57:54.496 INFO  11811 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 18:57:54.499 INFO  11814 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.428 seconds (JVM running for 12.687)
+2018-12-28 18:57:58.767 INFO  16082 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 18:57:58.767 INFO  16082 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 18:57:58.778 INFO  16093 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 11 ms
+2018-12-28 20:46:42.313 INFO  6539628 --- [ Thread-32 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:46:42.324 INFO  6539639 --- [ Thread-32 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:46:42.339 INFO  6539654 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 20:46:42.348 INFO  6539663 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 20:46:50.605 INFO  958  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 4767 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 20:46:50.609 INFO  962  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 20:46:50.680 INFO  1033 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 20:46:50.680 INFO  1033 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 20:46:54.738 INFO  5091 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 20:46:54.810 INFO  5163 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 68ms. Found 9 repository interfaces.
+2018-12-28 20:46:55.072 INFO  5425 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$fa0baead] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.118 INFO  5471 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#d7d82f4' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.119 INFO  5472 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#38104759' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.125 INFO  5478 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#2f22519d' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.127 INFO  5480 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.128 INFO  5481 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.176 INFO  5529 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$9002106b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:46:55.531 INFO  5884 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 20:46:55.543 INFO  5896 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:46:55.553 INFO  5906 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 20:46:55.553 INFO  5906 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 20:46:55.560 INFO  5913 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 20:46:55.786 INFO  6139 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 20:46:55.787 INFO  6140 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5106 ms
+2018-12-28 20:46:55.974 INFO  6327 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 20:46:56.597 INFO  6950 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 20:46:56.640 INFO  6993 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 20:46:56.709 INFO  7062 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 20:46:56.710 INFO  7063 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 20:46:56.862 INFO  7215 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 20:46:57.006 INFO  7359 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 20:46:57.488 INFO  7841 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:47:01.699 INFO  12052 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:47:01.734 INFO  12087 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 20:47:03.161 INFO  13514 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 20:47:03.311 INFO  13664 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:47:03.519 INFO  13872 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 20:47:03.538 INFO  13891 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 20:47:03.567 INFO  13920 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 20:47:03.788 INFO  14141 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 20:47:03.805 INFO  14158 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:47:03.825 INFO  14178 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 20:47:03.839 INFO  14192 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 20:47:03.842 INFO  14195 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 13.632 seconds (JVM running for 17.076)
+2018-12-28 20:47:14.210 INFO  24563 --- [ Thread-38 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:47:14.215 INFO  24568 --- [ Thread-38 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:47:14.223 INFO  24576 --- [ Thread-38 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 20:47:14.230 INFO  24583 --- [ Thread-38 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 20:47:23.953 INFO  1257 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 5096 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 20:47:23.958 INFO  1262 --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 20:47:24.044 INFO  1348 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 20:47:24.045 INFO  1349 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 20:47:28.211 INFO  5515 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 20:47:28.277 INFO  5581 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 61ms. Found 9 repository interfaces.
+2018-12-28 20:47:28.545 INFO  5849 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$9559bac2] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.583 INFO  5887 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#7d9bedbe' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.584 INFO  5888 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#16c28433' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.591 INFO  5895 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#76529a3d' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.594 INFO  5898 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.594 INFO  5898 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.627 INFO  5931 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$2b501c80] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:47:28.946 INFO  6250 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 20:47:28.959 INFO  6263 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:47:28.966 INFO  6270 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 20:47:28.966 INFO  6270 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 20:47:28.972 INFO  6276 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 20:47:29.132 INFO  6436 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 20:47:29.132 INFO  6436 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5087 ms
+2018-12-28 20:47:29.293 INFO  6597 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 20:47:29.713 INFO  7017 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 20:47:29.760 INFO  7064 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 20:47:29.810 INFO  7114 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 20:47:29.811 INFO  7115 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 20:47:29.919 INFO  7223 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 20:47:30.082 INFO  7386 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 20:47:30.494 INFO  7798 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:48:41.725 INFO  79029 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:48:41.812 INFO  79116 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 20:48:43.463 INFO  80767 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 20:48:43.638 INFO  80942 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:48:43.917 INFO  81221 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 20:48:43.939 INFO  81243 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 20:48:43.978 INFO  81282 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 20:48:44.188 INFO  81492 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 20:48:44.207 INFO  81511 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:48:44.230 INFO  81534 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 20:48:44.246 INFO  81550 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 20:48:44.250 INFO  81554 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 81.011 seconds (JVM running for 82.235)
+2018-12-28 20:48:57.776 INFO  95080 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 20:48:57.777 INFO  95081 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 20:48:57.788 INFO  95092 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 11 ms
+2018-12-28 20:49:23.749 INFO  121053 --- [ Thread-170 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:49:23.754 INFO  121058 --- [ Thread-170 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:49:23.758 INFO  121062 --- [ Thread-170 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 20:49:23.767 INFO  121071 --- [ Thread-170 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2018-12-28 20:49:38.478 INFO  935  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 6265 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
+2018-12-28 20:49:38.508 INFO  965  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 20:49:38.586 INFO  1043 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 20:49:38.587 INFO  1044 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 20:49:42.828 INFO  5285 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 20:49:42.903 INFO  5360 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 70ms. Found 9 repository interfaces.
+2018-12-28 20:49:43.192 INFO  5649 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'webMvcConfig' of type [com.sopt.rescat.config.WebMvcConfig$$EnhancerBySpringCGLIB$$58e6cb17] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.230 INFO  5687 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#47407b66' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.231 INFO  5688 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#41badc67' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.237 INFO  5694 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#58798513' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.239 INFO  5696 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.240 INFO  5697 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.276 INFO  5733 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$eedd2cd5] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 20:49:43.620 INFO  6077 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 20:49:43.634 INFO  6091 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:49:43.641 INFO  6098 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 20:49:43.641 INFO  6098 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 20:49:43.646 INFO  6103 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/gwonhyeon-a/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 20:49:43.808 INFO  6265 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 20:49:43.808 INFO  6265 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5221 ms
+2018-12-28 20:49:43.975 INFO  6432 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 20:49:45.079 INFO  7536 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 20:49:45.124 INFO  7581 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 20:49:45.180 INFO  7637 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 20:49:45.181 INFO  7638 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 20:49:45.308 INFO  7765 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 20:49:45.432 INFO  7889 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 20:49:45.816 INFO  8273 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:49:56.719 INFO  19176 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:49:56.757 INFO  19214 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 20:49:58.019 INFO  20476 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 20:49:58.162 INFO  20619 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:49:58.370 INFO  20827 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 20:49:58.388 INFO  20845 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 20:49:58.420 INFO  20877 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 20:49:58.581 INFO  21038 --- [ restartedMain ] s.d.s.w.r.o.CachingOperationNameGenerator - Generating unique operation named: listUsingGET_1
+2018-12-28 20:49:58.597 INFO  21054 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 20:49:58.616 INFO  21073 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 20:49:58.627 INFO  21084 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 20:49:58.630 INFO  21087 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 20.66 seconds (JVM running for 21.805)
+2018-12-28 20:50:10.189 INFO  32646 --- [ http-nio-8080-exec-1 ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2018-12-28 20:50:10.190 INFO  32647 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2018-12-28 20:50:10.204 INFO  32661 --- [ http-nio-8080-exec-1 ] o.s.web.servlet.DispatcherServlet - Completed initialization in 14 ms
+2018-12-28 20:50:20.273 INFO  42730 --- [ Thread-50 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 20:50:20.279 INFO  42736 --- [ Thread-50 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 20:50:20.285 INFO  42742 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 20:50:20.293 INFO  42750 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

@@ -54,11 +54,12 @@ public class User extends BaseTime {
     private Region subRegion2;
 
     @Column
+    @Enumerated(EnumType.STRING)
     @NonNull
     private Role role;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
 
     @Builder
     public User(String id, String password, String nickname) {

@@ -37,7 +37,7 @@ public class Cat extends BaseEntity {
     private Integer sex;
 
     @Column
-    private LocalDateTime birth;
+    private String age;
 
     @Column
     // 0: 미완료, 1: 완료
@@ -46,16 +46,18 @@ public class Cat extends BaseEntity {
     @Column
     private String etc;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
 
     @OneToOne
     @NonNull
     private Region region;
 
     public CatDto toCatDto(){
-        return CatDto.builder().birth(this.birth).etc(this.etc).idx(this.idx)
-                .lat(this.lat).lng(this.lng).name(this.name).photoUrl(this.photo.getUrl())
-                .radius(this.radius).region(this.region.toRegionDto()).sex(this.sex).tnr(this.tnr).build();
+        return CatDto.builder()
+                .age(age).etc(etc).idx(idx).lat(lat).lng(lng)
+                .name(name).photoUrl(photoUrl).radius(radius)
+                .region(region.toRegionDto()).sex(sex).tnr(tnr)
+                .build();
     }
 }

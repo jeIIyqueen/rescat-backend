@@ -8,23 +8,24 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
+@Validated
 public class ApiUserController {
+    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
     private final UserService userService;
     private final JWTService jwtService;
 
@@ -77,12 +78,16 @@ public class ApiUserController {
     @ApiOperation(value = "핸드폰 인증", notes = "핸드폰 번호를 받아 문자를 보내고, 해당 인증코드를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "인증 성공", response = AuthenticationCodeVO.class),
+            @ApiResponse(code = 400, message = "잘못된 번호", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러"),
             @ApiResponse(code = 501, message = "문자보내기 실패")
     })
     @PostMapping("/authentications/{phone}")
-    public ResponseEntity<AuthenticationCodeVO> authenticatePhone(@PathVariable String phone) {
-        log.debug("authenticatePhone 시작", phone);
+    public ResponseEntity<AuthenticationCodeVO> authenticatePhone(
+            @ApiParam(value = "01000000000 또는 010-0000-0000", required = true)
+            @Valid
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 000-0000-0000 또는 00000000000 형식이어야 합니다.")
+            @PathVariable String phone) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 }
