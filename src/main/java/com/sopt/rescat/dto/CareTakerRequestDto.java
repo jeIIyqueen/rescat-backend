@@ -15,14 +15,16 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @ToString
 public class CareTakerRequestDto {
+    private String name;
     private String phone;
     private Region mainRegion;
     private MultipartFile authenticationPhoto;
 
     public CareTakerRequest toCareTakerRequest(User user, Photo authenticationPhoto) {
         return CareTakerRequest.builder()
-                .name(user)
+                .user(user)
                 .isConfirmed(false)
+                .name(name)
                 .phone(phone)
                 .mainRegion(mainRegion)
                 .authenticationPhoto(authenticationPhoto)

@@ -1,12 +1,9 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Photo;
+import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.CareTakerRequestDto;
-import com.sopt.rescat.dto.UserJoinDto;
-import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.PhotoRepository;
@@ -21,6 +18,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -107,10 +108,10 @@ public class UserService {
     public User findByUserIdx(Long idx) {
         User user = userRepository.findByIdx(idx);
 
-        if(user!=null){
-            return user;
+        if(user == null){
+            throw new NotMatchException("해당 IDX를 가진 사용자가 존재하지 않습니다.");
         }
-        throw new NotMatchException("해당 IDX를 가진 사용자가 존재하지 않습니다.");
+        return user;
     }
 
     @Transactional
@@ -122,6 +123,19 @@ public class UserService {
 
         careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, authenticationPhoto));
     }
+
+    public List<RegionDto> getRegionList(User user) {
+
+        List<Region> regions = new ArrayList<>();
+        regions.add(user.getMainRegion());
+        regions.add(user.getSubRegion1());
+        regions.add(user.getSubRegion2());
+
+        return regions.stream().filter(Objects::nonNull)
+                .map(region -> region.toRegionDto())
+                .collect(Collectors.toList());
+    }
+
 
 
 }

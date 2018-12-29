@@ -18,6 +18,11 @@ public class CareTakerRequest extends BaseEntity {
 
     @Column
     @NonNull
+    @Length(max = 10)
+    private String name;
+
+    @Column
+    @NonNull
     @Length(max = 11)
     private String phone;
 
@@ -36,8 +41,9 @@ public class CareTakerRequest extends BaseEntity {
     private Photo authenticationPhoto;
 
     @Builder
-    public CareTakerRequest(User name, Boolean isConfirmed, String phone, Region mainRegion, Photo authenticationPhoto){
-        super(name, isConfirmed);
+    public CareTakerRequest(User user, Boolean isConfirmed, String name, String phone, Region mainRegion, Photo authenticationPhoto){
+        super(user, isConfirmed);
+        this.name = name;
         this.phone = phone;
         this.mainRegion = mainRegion;
         this.authenticationPhoto = authenticationPhoto;

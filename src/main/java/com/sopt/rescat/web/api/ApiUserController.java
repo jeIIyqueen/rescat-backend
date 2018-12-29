@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -116,21 +117,69 @@ public class ApiUserController {
     }
 
     //그다음에 CareTakerRequest에 데이터 저장 (일단 userIdx, phone, 인증사진만 저장) mainRegion 해야함!!!
-//    @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
+    @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PostMapping("/caretaker")
+    public ResponseEntity requestCareTaker(@RequestHeader(value = "Authorization") final String header,
+                                                             CareTakerRequestDto careTakerRequestDto) throws IOException {
+        final Long userIdx = jwtService.decode(header).getIdx();
+
+        userService.saveCareTakerRequest(userService.findByUserIdx(userIdx), careTakerRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
+
+    //마이페이지 첫화면(회원조회), (id,닉네임,프사,롤,지역3개)
+//    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
 //    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "요청 성공"),
+//            @ApiResponse(code = 200, message = "조회 성공"),
 //            @ApiResponse(code = 401, message = "권한 없음"),
 //            @ApiResponse(code = 500, message = "서버 에러")
 //    })
 //    @Auth
-//    @PostMapping("/caretaker")
-//    public ResponseEntity requestCareTaker(@RequestHeader(value = "Authorization") final String header,
-//                                                             CareTakerRequestDto careTakerRequestDto) throws IOException {
+//    @GetMapping("/mypage")
+//    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader("Authorization") final String header) {
 //        final Long userIdx = jwtService.decode(header).getIdx();
-//
-//        userService.saveCareTakerRequest(userService.findByUserIdx(userIdx), careTakerRequestDto);
+//        User user = userService.findByUserIdx(userIdx);
+//        UserMypageDto userMypageDto = new UserMypageDto(user);
+//        return ResponseEntity.status(HttpStatus.OK).body(userMypageDto);
+//    }
+
+
+    @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/regions")
+    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String header) {
+        final Long userIdx = jwtService.decode(header).getIdx();
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
+    }
+
+    //지역 수정
+//    @Auth
+//    @PutMapping("/mypage/regions/edit")
+//    public ResponseEntity<List<RegionDto>> updateRegionList(@RequestHeader(value = "Authorization") final String header) {
+////        final Long userIdx = jwtService.decode(header).getIdx();
+////        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
+//    }
+
+    //회원 정보 수정 //일반회원,,
+//    @Auth
+//    @PutMapping("/mypage/edit")
+//    public ResponseEntity<Void> updateUser(@RequestHeader(value = "Authorization") final String header,
+//                                           @RequestBody @Valid UserJoinDto userJoinDto) {
+//        userService.create(userJoinDto);
 //        return ResponseEntity.status(HttpStatus.CREATED).build();
-//
 //    }
 
 
