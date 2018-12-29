@@ -50,15 +50,4 @@ public class CareTakerRequest extends BaseEntity {
         this.authenticationPhotoUrl = authenticationPhotoUrl;
     }
 
-//    public CareTakerRequestDto toCareTakerRequestDto(){
-//        return CareTakerRequestDto.builder()
-//                .name(name)
-//                .phone(phone)
-//                .mainRegion(mainRegion.toRegionDto())
-//                .authenticationPhotoUrl(authenticationPhotoUrl)
-//                .build();
-//    }
-
-
-
 }

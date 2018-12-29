@@ -124,8 +124,9 @@ public class UserService {
 
         String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
 
-        Region region = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
-        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, region, authenticationPhotoUrl));
+        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
+
+        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, mainRegion, authenticationPhotoUrl));
 
     }
 
