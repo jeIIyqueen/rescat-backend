@@ -35,29 +35,6 @@ public class ApiMapController {
         this.mapService = mapService;
     }
 
-//    @Auth
-//    @PostMapping("/request/cat/register")
-//    public ResponseEntity requestCatRegister(@RequestHeader(value = "Authorization") final String header,
-//                                             MapRequestDto mapRequestDto){
-//        return ResponseEntity.status(HttpStatus.OK).body(mapService.saveCatRequest(jwtService.decode(header).getIdx(),mapRequestDto));
-//    }
-
-//    @Auth
-//    @PostMapping("/requeset/cat/edit")
-//    public ResponseEntity editCat(@RequestBody User user, MapRequestDto mapRequestDto){
-//        mapRequestDto.builder().birth(user.getIdx(), mapRequestDto);
-//
-//        mapService.saveCatRequest(user.getIdx(),mapRequestDto);
-//
-//       return ResponseEntity.status(HttpStatus.OK).body(c);
-//    }
-
-//    @Auth
-//    @PostMapping("/request/place/register")
-//    public ResponseEntity requestPlaceRegister(
-//            @RequestHeader(value = "Authorization", required = false) final String header,
-//            @RequestBody MapRequestDto mapRequestDto){
-//
     @ApiOperation(value = "맵 마커 목록 전체 조회", notes = "유저가 선택한 지역과 해당 지역의 마커 목록을 반환합니다. 파라미터로 지역코드를 보내지 않으면 메인지역의 마커 목록을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공", response = MarkerListDto.class),
@@ -143,7 +120,6 @@ public class ApiMapController {
 //    }
 //
 //    //삭제
-
 
 
 }

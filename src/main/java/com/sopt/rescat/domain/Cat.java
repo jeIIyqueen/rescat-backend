@@ -54,7 +54,7 @@ public class Cat extends BaseEntity {
     private Region region;
 
     public CatDto toCatDto(){
-        return CatDto.builder().birth(this.birth).etc(this.etc).idx(this.idx)
+        return CatDto.builder().age(this.age).etc(this.etc).idx(this.idx)
                 .lat(this.lat).lng(this.lng).name(this.name).photoUrl(this.photo.getUrl())
                 .radius(this.radius).region(this.region.toRegionDto()).sex(this.sex).tnr(this.tnr).build();
     }

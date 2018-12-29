@@ -82,17 +82,6 @@ public class MapService {
         return MarkerListDto.builder()
                 .cats(cats).hospitals(hospitals).feeders(feeders).build();
     }
-//
-//    public MapRequest saveRequestCatRegister(final Long userIdx, final MapRequestDto mapRequestDto) {
-//        User user = userRepository.findByIdx(userIdx);
-//        return mapRequestRepository.save(mapRequestDto.toMapRequest(user));
-//    }
-//
-//    public void saveRequestPlaceRegister(final Long userIdx, final MapRequestDto mapRequestDto){
-//        // registerType이 1이거나 2이어야만 함.
-//        User user = userRepository.findByIdx(userIdx);
-//
-//       // mapRequestRepository.save(mapRequestDto.toMapRequest(user));
 
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequestDto mapRequestDto) throws IOException {
