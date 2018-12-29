@@ -6,8 +6,8 @@ import lombok.NonNull;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 public class MapRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,9 +58,13 @@ public class MapRequest extends BaseEntity {
     // 0: 미완료, 1: 완료
     private Integer tnr;
 
+    @Column
+    private Integer isConfirmed;
+
     @Builder
     public MapRequest(User writer, Integer isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, String photoUrl, Integer radius, Integer sex, String age, Integer tnr) {
-        super(writer, isConfirmed);
+        super(writer);
+        this.isConfirmed = isConfirmed;
         this.requestType = requestType;
         this.registerType = registerType;
         this.name = name;
@@ -72,5 +76,6 @@ public class MapRequest extends BaseEntity {
         this.sex = sex;
         this.age = age;
         this.tnr = tnr;
+
     }
 }

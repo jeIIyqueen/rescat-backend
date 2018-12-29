@@ -1,11 +1,11 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.Place;
+import com.sopt.rescat.domain.Region;
+import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
-import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,28 +22,27 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MapService {
+    private final String DEFAULT_PHOTO_URL = "https://s3.ap-northeast-2.amazonaws.com/rescat/profile.png";
+
     private final CatRepository catRepository;
     private final PlaceRepository placeRepository;
     private final UserRepository userRepository;
     private final MapRequestRepository mapRequestRepository;
     private final RegionRepository regionRepository;
     private final S3FileService s3FileService;
-    private final PhotoRepository photoRepository;
 
     public MapService(CatRepository catRepository,
                       PlaceRepository placeRepository,
                       UserRepository userRepository,
                       MapRequestRepository mapRequestRepository,
                       RegionRepository regionRepository,
-                      S3FileService s3FileService,
-                      PhotoRepository photoRepository) {
+                      S3FileService s3FileService) {
         this.catRepository = catRepository;
         this.placeRepository = placeRepository;
         this.userRepository = userRepository;
         this.mapRequestRepository = mapRequestRepository;
         this.regionRepository = regionRepository;
         this.s3FileService = s3FileService;
-        this.photoRepository = photoRepository;
     }
 
     public User getUser(final Long userIdx){
@@ -61,7 +60,8 @@ public class MapService {
             if(!getRegionList(user).stream().anyMatch(regionDto -> regionDto.getCode()==emdCode.get())){
                 throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
             }
-            selectedRegion = regionRepository.findByemdCode(emdCode.get()).orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+            selectedRegion = regionRepository.findByEmdCode(emdCode.get()).orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
         }
 
         List<CatDto> cats = catRepository.findByRegion(selectedRegion).stream().map(cat -> cat.toCatDto()).collect(Collectors.toList());
@@ -85,11 +85,12 @@ public class MapService {
 
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequestDto mapRequestDto) throws IOException {
-        Photo markerPhoto = photoRepository.findByIdx(Photo.DEFAULT_PHOTO_ID).orElseThrow(NotFoundException::new);
-        if(mapRequestDto.getPhoto()!=null)
-            markerPhoto = photoRepository.save(new Photo(s3FileService.upload(mapRequestDto.getPhoto())));
+        String markerPhotoUrl = DEFAULT_PHOTO_URL;
 
-        mapRequestRepository.save(mapRequestDto.toMapRequest(user, markerPhoto));
+        if(mapRequestDto.getPhoto()!=null)
+            markerPhotoUrl = s3FileService.upload(mapRequestDto.getPhoto());
+
+        mapRequestRepository.save(mapRequestDto.toMapRequest(user, markerPhotoUrl));
     }
 
     public List<RegionDto> getRegionList(final User user) {

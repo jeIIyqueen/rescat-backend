@@ -26,7 +26,10 @@ public class CareTakerRequest extends BaseEntity {
     @OneToOne
     private Region subRegion2;
 
-    @OneToOne
+    @Column
     @NonNull
-    private Photo authenticationPhoto;
+    private String authenticationPhotoUrl;
+
+    @Column
+    private Boolean isConfirmed;
 }

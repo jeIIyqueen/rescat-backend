@@ -2,7 +2,6 @@ package com.sopt.rescat.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.MapRequest;
-import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -10,10 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.annotations.ApiIgnore;
-
-import javax.persistence.Transient;
-import java.util.List;
 
 @Slf4j
 @NoArgsConstructor
@@ -22,6 +17,10 @@ import java.util.List;
 @Setter
 @ToString
 public class MapRequestDto {
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER   = 0;
+    private final Integer REFUSE  = 2;
+
     @ApiModelProperty(hidden = true)
     private Long idx;
 
@@ -71,8 +70,17 @@ public class MapRequestDto {
     // 0: 미완료, 1: 완료
     private Integer tnr;
 
-    public MapRequest toMapRequest(User user, Photo photo) {
-        return MapRequest.builder().writer(user).isConfirmed(0).requestType(requestType).registerType(registerType)
-                .name(name).etc(etc).lat(lat).lng(lng).photo(photo).build();
+    public MapRequest toMapRequest(User user, String photoUrl) {
+        return MapRequest.builder()
+                .writer(user)
+                .isConfirmed(DEFER)
+                .requestType(requestType)
+                .registerType(registerType)
+                .name(name)
+                .etc(etc)
+                .lat(lat)
+                .lng(lng)
+                .photoUrl(photoUrl)
+                .build();
     }
 }

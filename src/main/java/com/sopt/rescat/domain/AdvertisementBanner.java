@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.response.BannerDto;
+import lombok.NonNull;
 
 import javax.persistence.*;
 
@@ -10,8 +11,9 @@ public class AdvertisementBanner extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    @NonNull
+    private String photoUrl;
 
     @Column
     private String title;
@@ -23,7 +25,7 @@ public class AdvertisementBanner extends BaseEntity {
         return BannerDto.builder()
                 .idx(idx)
                 .link(link)
-                .photoUrl(photo.getUrl())
+                .photoUrl(photoUrl)
                 .title(title)
                 .build();
     }
