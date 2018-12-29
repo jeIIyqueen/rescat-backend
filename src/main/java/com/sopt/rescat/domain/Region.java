@@ -37,6 +37,6 @@ public class Region {
     }
 
     public boolean equals(Region region) {
-        return this.emdname == region.emdname;
+        return this.emdname.equals(region.emdname);
     }
 }

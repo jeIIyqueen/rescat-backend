@@ -1,10 +1,12 @@
 package com.sopt.rescat.domain;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Entity
 public class MapRequest extends BaseEntity {
     @Id
@@ -38,8 +40,8 @@ public class MapRequest extends BaseEntity {
     @NonNull
     private Region region;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
 
     // 아래는 고양이 고유
     @Column
@@ -57,7 +59,7 @@ public class MapRequest extends BaseEntity {
     private Integer tnr;
 
     @Builder
-    public MapRequest(User writer, Integer isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, Photo photo, Integer radius, Integer sex, String age, Integer tnr) {
+    public MapRequest(User writer, Integer isConfirmed, @NonNull Integer requestType, @NonNull Integer registerType, @NonNull String name, String etc, Float lat, Float lng, String photoUrl, Integer radius, Integer sex, String age, Integer tnr) {
         super(writer, isConfirmed);
         this.requestType = requestType;
         this.registerType = registerType;
@@ -65,7 +67,7 @@ public class MapRequest extends BaseEntity {
         this.etc = etc;
         this.lat = lat;
         this.lng = lng;
-        this.photo = photo;
+        this.photoUrl = photoUrl;
         this.radius = radius;
         this.sex = sex;
         this.age = age;

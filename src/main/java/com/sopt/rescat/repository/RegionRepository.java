@@ -11,6 +11,12 @@ import java.util.Optional;
 public interface RegionRepository extends CrudRepository<Region, Long> {
     Optional<Region> findByemdCode(Integer emdCode);
 
-//    @Query("select new RegionDto(sdcode, sdname) from region")
-//    List<RegionDto> findAll();
+    @Query("select distinct new RegionDto(sdCode, sdName) from region")
+    List<RegionDto> findAllSd();
+
+    @Query("select distinct new RegionDto(sggCode, sggName) from region")
+    List<RegionDto> findAllSgg();
+
+    @Query("select distinct new RegionDto(emdCode, emdName) from region")
+    List<RegionDto> findAllEmd();
 }

@@ -53,6 +53,7 @@ public class User extends BaseTime {
     @OneToOne
     private Region subRegion2;
 
+    @Enumerated
     @Column
     @NonNull
     private Role role;

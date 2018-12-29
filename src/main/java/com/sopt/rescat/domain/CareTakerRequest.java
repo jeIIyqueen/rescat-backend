@@ -11,10 +11,6 @@ public class CareTakerRequest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne
-    @NonNull
-    private User user;
-
     @Column
     @NonNull
     @Length(max = 11)
