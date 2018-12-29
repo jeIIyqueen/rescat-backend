@@ -1,6 +1,5 @@
 package com.sopt.rescat.dto;
 
-import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Role;
 import lombok.*;
@@ -14,7 +13,7 @@ import java.util.List;
 public class UserMypageDto {
     private String id;
     private String nickname;
-    private Photo photo;
+    private String photoUrl;
     private Role role;
     private List<RegionDto> regions;
 

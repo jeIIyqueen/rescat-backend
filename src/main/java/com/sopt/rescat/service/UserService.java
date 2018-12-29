@@ -1,12 +1,11 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.Photo;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
-import com.sopt.rescat.repository.PhotoRepository;
+import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
@@ -21,17 +20,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final S3FileService s3FileService;
-    private final PhotoRepository photoRepository;
+    private final RegionRepository regionRepository;
+
 
 
     @Value("${GABIA.SMSPHONENUMBER}")
@@ -43,13 +45,13 @@ public class UserService {
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService,
                        final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
-                       PhotoRepository photoRepository) {
+                       final RegionRepository regionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.s3FileService = s3FileService;
-        this.photoRepository = photoRepository;
+        this.regionRepository = regionRepository;
     }
 
     public Boolean isExistingId(String id) {
@@ -116,12 +118,15 @@ public class UserService {
 
     @Transactional
     public void saveCareTakerRequest(User user, CareTakerRequestDto careTakerRequestDto) throws IOException {
-        Photo authenticationPhoto = photoRepository.findByIdx(Photo.DEFAULT_PHOTO_ID).orElseThrow(NotFoundException::new);
 
-        if(careTakerRequestDto.getAuthenticationPhoto()!=null)
-            authenticationPhoto = photoRepository.save(new Photo(s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto())));
+        if(careTakerRequestDto.getAuthenticationPhoto()==null)
+            throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
 
-        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, authenticationPhoto));
+        String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
+
+        Region region = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
+        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, region, authenticationPhotoUrl));
+
     }
 
     public List<RegionDto> getRegionList(User user) {

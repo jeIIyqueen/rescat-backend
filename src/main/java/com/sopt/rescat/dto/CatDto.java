@@ -1,7 +1,5 @@
 package com.sopt.rescat.dto;
 
-import com.sopt.rescat.domain.Cat;
-import com.sopt.rescat.domain.Photo;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -21,7 +19,7 @@ public class CatDto {
     // 0: 남, 1: 여
     private Integer sex;
 
-    private LocalDateTime birth;
+    private String age;
 
     // 0: 미완료, 1: 완료
     private Integer tnr;
