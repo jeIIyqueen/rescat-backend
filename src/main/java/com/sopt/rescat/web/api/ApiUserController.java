@@ -121,7 +121,6 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //맞는지 확인
     }
 
-    //그다음에 CareTakerRequest에 데이터 저장 (일단 userIdx, phone, 인증사진만 저장) mainRegion 해야함!!!
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "요청 성공"),
@@ -134,7 +133,7 @@ public class ApiUserController {
                                                              CareTakerRequestDto careTakerRequestDto) throws IOException {
         final Long userIdx = jwtService.decode(header).getIdx();
 
-        userService.saveCareTakerRequest(userService.findByUserIdx(userIdx), careTakerRequestDto);
+        userService.saveCareTakerRequest(userIdx, careTakerRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }

@@ -117,17 +117,16 @@ public class UserService {
     }
 
     @Transactional
-    public void saveCareTakerRequest(User user, CareTakerRequestDto careTakerRequestDto) throws IOException {
-
-        if(careTakerRequestDto.getAuthenticationPhoto()==null)
+    public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
+        User tokenUser = userRepository.findByIdx(idx);
+        if(careTakerRequestDto.hasAuthenticationPhoto())
             throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
 
         String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
 
         Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
 
-        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, mainRegion, authenticationPhotoUrl));
-
+        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(tokenUser, mainRegion, authenticationPhotoUrl));
     }
 
     public List<RegionDto> getRegionList(User user) {
