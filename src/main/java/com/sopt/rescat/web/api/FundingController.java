@@ -1,17 +1,14 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.dto.response.FundingDetailDto;
 import com.sopt.rescat.dto.response.FundingDto;
 import com.sopt.rescat.service.FundingService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api(value = "FundingController", description = "크라우드 펀딩 글 api")
 @RestController
 @RequestMapping("/api/fundings")
 public class FundingController {
