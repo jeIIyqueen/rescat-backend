@@ -8,4 +8,5 @@ import lombok.Getter;
 public class RegionDto {
     private Integer code;
     private String name;
+
 }

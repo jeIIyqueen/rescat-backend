@@ -6,7 +6,7 @@ import lombok.Getter;
 public class NotMatchException extends RuntimeException {
     private String field;
 
-    public NotMatchException() {
+    public NotMatchException(String s) {
 
     }
 
