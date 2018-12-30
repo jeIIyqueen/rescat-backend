@@ -163,5 +163,12 @@ public class ApiUserController {
 //        return ResponseEntity.status(HttpStatus.CREATED).build();
 //    }
 
+    @Auth
+    @PutMapping("/mypage/edit/password")
+    public ResponseEntity editUserPassword(@RequestHeader (value = "Authorization") final String header,
+                                           @RequestBody @Valid UserJoinDto userJoinDto) {
+        userService.create(userJoinDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
 }
