@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.Funding;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
 @Getter
 @Entity
 public class FundingPhoto extends BaseTime {
@@ -30,7 +28,24 @@ public class FundingPhoto extends BaseTime {
     @JsonIgnore
     private Funding funding;
 
+    @Column
+    @NonNull
+    private boolean isCertification;
+
+    public FundingPhoto() {
+        this.isCertification = false;
+    }
+
     public FundingPhoto(@NonNull String url) {
         this.url = url;
+    }
+
+    public void setCertification() {
+        this.isCertification = true;
+    }
+
+    public FundingPhoto initFunding(Funding funding) {
+        this.funding = funding;
+        return this;
     }
 }

@@ -3,6 +3,7 @@ package com.sopt.rescat.dto.request;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
+import com.sopt.rescat.domain.photo.CarePostPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -10,6 +11,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class CarePostRequestDto {
@@ -51,6 +53,14 @@ public class CarePostRequestDto {
                 .tnr(tnr)
                 .type(type)
                 .vaccination(vaccination)
+                .isConfirmed(false)
                 .build();
+    }
+
+    public List<CarePostPhoto> convertPhotoUrlsToCarePostPhoto(CarePost carePost) {
+        return this.photoUrls.stream()
+                .map(CarePostPhoto::new)
+                .map(carePostPhoto -> carePostPhoto.initCarePost(carePost))
+                .collect(Collectors.toList());
     }
 }

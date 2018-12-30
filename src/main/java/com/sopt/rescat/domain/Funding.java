@@ -2,12 +2,10 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
-import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +13,9 @@ import java.util.List;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Funding extends BaseEntity {
     @Transient
     private final static int MAIN_PHOTO_INDEX = 0;
@@ -60,8 +61,7 @@ public class Funding extends BaseEntity {
     private String mainRegion;
 
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
-    @NonNull
-    private List<CertificationPhoto> certifications;
+    private List<FundingPhoto> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
@@ -73,6 +73,9 @@ public class Funding extends BaseEntity {
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date limitAt;
+
+    @Column
+    private Boolean isConfirmed;
 
     @Transient
     private String nickname;
@@ -99,5 +102,24 @@ public class Funding extends BaseEntity {
 
     public void updateCurrentAmount(Long amount) {
         this.currentAmount += amount;
+    }
+
+    public Funding setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public Funding initCertifications(List<FundingPhoto> certificationPhotos) {
+        this.certifications = certificationPhotos;
+        return this;
+    }
+
+    public Funding initPhotos(List<FundingPhoto> photos) {
+        this.photos = photos;
+        return this;
+    }
+
+    public void updateConfirmStatus(Boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }

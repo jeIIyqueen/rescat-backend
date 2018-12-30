@@ -5,11 +5,8 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -19,6 +16,8 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarePost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,6 +79,10 @@ public class CarePost extends BaseEntity {
     @Column
     private LocalDateTime endProtectionPeriod;
 
+    @Column
+    @NonNull
+    private Boolean isConfirmed;
+
     @Transient
     private String nickname;
 
@@ -105,5 +108,14 @@ public class CarePost extends BaseEntity {
     public CarePost initPhotos(List<CarePostPhoto> carePostPhotos) {
         this.photos = carePostPhotos;
         return this;
+    }
+
+    public CarePost setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public void updateConfirmStatus(Boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }

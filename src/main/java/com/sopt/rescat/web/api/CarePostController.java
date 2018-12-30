@@ -2,16 +2,20 @@ package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
+import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.service.CarePostService;
+import com.sopt.rescat.utils.auth.AdminAuth;
+import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Api(value = "ApiCarePostController", description = "입양/임시보호 글 관련 api")
@@ -45,8 +49,12 @@ public class CarePostController {
     })
     @CareTakerAuth
     @PostMapping("")
-    public ResponseEntity<Void> create(@Valid @RequestBody CarePostRequestDto carePostRequestDto) {
-        carePostService.create(carePostRequestDto);
+    public ResponseEntity<Void> create(
+            @RequestHeader(value = "Authorization") final String token,
+            HttpServletRequest httpServletRequest,
+            @Valid @RequestBody CarePostRequestDto carePostRequestDto) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        carePostService.create(carePostRequestDto, loginUser);
         return ResponseEntity.ok().build();
     }
 
@@ -60,7 +68,22 @@ public class CarePostController {
     public ResponseEntity<CarePost> getPostByIdx(
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findBy(idx));
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx));
+    }
+
+    @ApiOperation(value = "입양/임시보호 글 승인", notes = "idx 에 따른 입양/임시보호 글을 승인합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "입양/임시보호 글 승인 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @AdminAuth
+    @PutMapping("/{idx}")
+    public ResponseEntity<Void> confirmPost(
+            @RequestHeader(value = "Authorization") final String token,
+            @PathVariable Long idx) {
+        carePostService.confirmPost(idx);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "입양/임시보호 글의 댓글 조회", notes = "idx에 해당하는 입양/임시보호 글의 댓글 리스트를 조회합니다.")

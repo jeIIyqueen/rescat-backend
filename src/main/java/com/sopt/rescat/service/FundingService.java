@@ -3,6 +3,7 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.domain.FundingComment;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.FundingRepository;
@@ -14,10 +15,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class FundingService {
+    private final static Boolean IS_CONFIRMED  = true;
+    private final static Boolean NOT_CONFIRMED = false;
+
     private FundingRepository fundingRepository;
 
     public FundingService(final FundingRepository fundingRepository) {
         this.fundingRepository = fundingRepository;
+    }
+
+    @Transactional
+    public void create(FundingRequestDto fundingRequestDto, User loginUser) {
+        Funding funding = fundingRepository.save(fundingRequestDto.toFunding()
+                .setWriter(loginUser));
+
+        funding.initPhotos(fundingRequestDto.convertPhotoUrlsToPhotos(funding));
+        funding.initCertifications(fundingRequestDto.convertCertificationUrlsToCertifications(funding));
     }
 
     public Iterable<FundingResponseDto> find4Fundings() {
@@ -51,6 +64,11 @@ public class FundingService {
         // TODO funding 글 작성자의 마일리지 업데이트
         loginUser.updateMileage(mileage * (-1));
         getFundingBy(idx).updateCurrentAmount(mileage);
+    }
+
+    @Transactional
+    public void confirmFunding(Long idx) {
+        getFundingBy(idx).updateConfirmStatus(IS_CONFIRMED);
     }
 
     private Funding getFundingBy(Long idx) {
