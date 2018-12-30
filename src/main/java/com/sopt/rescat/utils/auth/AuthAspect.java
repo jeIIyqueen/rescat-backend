@@ -7,11 +7,16 @@ import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.vo.JwtTokenVO;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Component
+@Aspect
 public class AuthAspect {
     private final static String AUTHORIZATION = "Authorization";
+    public final static String USER_KEY = "rescat-user";
 
     /**
      * 실패 시 기본 반환 Response
@@ -46,29 +51,16 @@ public class AuthAspect {
     public Object around(final ProceedingJoinPoint pjp) throws Throwable {
 
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
-
-        //토큰 존재 여부 확인
-
         if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
-        //토큰 해독
-
         final JwtTokenVO token = jwtService.decode(jwt);
-
-        //토큰 검사
-
         if (token == null) {
-
             throw new UnAuthenticationException();
-
         } else {
-
             final User user = userRepository.findByIdx(token.getIdx());
-
-            //유효 사용자 검사
-
             if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
+            httpServletRequest.setAttribute(USER_KEY, user);
             return pjp.proceed(pjp.getArgs());
         }
     }
