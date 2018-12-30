@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
-import com.sopt.rescat.dto.response.CarePostDto;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
-import com.sopt.rescat.exception.NotMatchException;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
 @Entity
 public class CarePost extends BaseEntity {
     @Id
@@ -86,11 +88,11 @@ public class CarePost extends BaseEntity {
         return this;
     }
 
-    public CarePostDto toCarePostDto() {
+    public CarePostResponseDto toCarePostDto() {
         Integer MAIN_PHOTO_INDEX = 0;
-        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("해당 글의 사진이 등록되어 있지 않습니다.");
+        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
-        return CarePostDto.builder()
+        return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
                 .contents(contents)
@@ -98,5 +100,10 @@ public class CarePost extends BaseEntity {
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
                 .build();
+    }
+
+    public CarePost initPhotos(List<CarePostPhoto> carePostPhotos) {
+        this.photos = carePostPhotos;
+        return this;
     }
 }

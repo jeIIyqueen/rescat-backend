@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Builder
-public class FundingDto {
+public class FundingResponseDto {
     private Long idx;
     private String title;
     private String introduction;

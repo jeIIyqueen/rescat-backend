@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-import com.sopt.rescat.dto.response.FundingDto;
+import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.Getter;
 import lombok.NonNull;
@@ -44,7 +44,7 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
-    private Long currentAmount;
+    private Long currentAmount = 0L;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -55,9 +55,9 @@ public class Funding extends BaseEntity {
     @NonNull
     private String account;
 
-    @OneToOne
+    @Column
     @NonNull
-    private Region mainRegion;
+    private String mainRegion;
 
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
     @NonNull
@@ -82,10 +82,10 @@ public class Funding extends BaseEntity {
         return this;
     }
 
-    public FundingDto toFundingDto() {
-        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("해당 글의 사진이 등록되어 있지 않습니다.");
+    public FundingResponseDto toFundingDto() {
+        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
-        return FundingDto.builder()
+        return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
                 .currentAmount(currentAmount)
@@ -95,5 +95,9 @@ public class Funding extends BaseEntity {
                 .title(title)
                 .mainPhoto(photos.get(MAIN_PHOTO_INDEX))
                 .build();
+    }
+
+    public void updateCurrentAmount(Long amount) {
+        this.currentAmount += amount;
     }
 }
