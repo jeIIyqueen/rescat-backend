@@ -1,18 +1,14 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.dto.response.FundingDetailDto;
 import com.sopt.rescat.dto.response.FundingDto;
 import com.sopt.rescat.service.FundingService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@Api(value = "FundingController", description = "크라우드 펀딩 글 api")
 @RestController
 @RequestMapping("/api/fundings")
 public class FundingController {
@@ -23,14 +19,29 @@ public class FundingController {
         this.fundingService = fundingService;
     }
 
-    @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
+    @ApiOperation(value = "치료비 모금/ 프로젝트 모금 리스트 조회", notes = "category에 따라 펀딩 글 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "치료비 모금/ 프로젝트 모금 리스트 반환 성공"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("")
-    public ResponseEntity<Iterable<FundingDto>> get4Fundings() {
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.find4Fundings());
+    public ResponseEntity<Iterable<FundingDto>> getAllBy(
+            @ApiParam(value = "0: 치료비 모금, 1: 프로젝트", required = true)
+            @RequestParam Integer category) {
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(category));
+    }
+
+    @ApiOperation(value = "크라우드 펀딩 글 조회", notes = "idx 에 따른 크라우드 펀딩 글을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글 반환 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @GetMapping("/{idx}")
+    public ResponseEntity<FundingDetailDto> getFundingByIdx(
+            @ApiParam(value = "글 번호", required = true)
+            @PathVariable Long idx) {
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findByIdx(idx));
     }
 
     @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
@@ -38,10 +49,8 @@ public class FundingController {
             @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @GetMapping("/{category}")
-    public ResponseEntity<Iterable<FundingDto>> getAllBy(
-            @ApiParam(value = "0: 치료비 모금, 1: 프로젝트", required = true)
-            @PathVariable Integer category) {
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(category));
+    @GetMapping("/main")
+    public ResponseEntity<Iterable<FundingDto>> get4Fundings() {
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.find4Fundings());
     }
 }

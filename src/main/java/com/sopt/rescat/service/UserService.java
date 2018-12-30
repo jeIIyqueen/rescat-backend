@@ -2,6 +2,7 @@ package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,8 +33,7 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
-
-
+    private final MapService mapService;
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -45,13 +44,14 @@ public class UserService {
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService,
                        final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
-                       final RegionRepository regionRepository) {
+                       final RegionRepository regionRepository, final MapService mapService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
+        this.mapService = mapService;
     }
 
     public Boolean isExistingId(String id) {
@@ -106,42 +106,42 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
+    public User getUser(final Long userIdx){
+        User tokenUser = userRepository.findByIdx(userIdx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
-    public User findByUserIdx(Long idx) {
-        User user = userRepository.findByIdx(idx);
-
-        if(user == null){
-            throw new NotMatchException("해당 IDX를 가진 사용자가 존재하지 않습니다.");
+        if(!(tokenUser.getRole() == Role.CARETAKER)){
+            throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
         }
-        return user;
+        return tokenUser;
     }
 
     @Transactional
     public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
         User tokenUser = userRepository.findByIdx(idx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
-        if(careTakerRequestDto.hasAuthenticationPhoto())
+        if(!careTakerRequestDto.hasAuthenticationPhoto())
             throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
 
         String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
 
-        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
+        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode())
+                .orElseThrow(() -> new NotFoundException("emdcode", "해당 지역을 찾을 수 없습니다."));
 
         careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(tokenUser, mainRegion, authenticationPhotoUrl));
     }
 
-    public List<RegionDto> getRegionList(User user) {
+    public UserMypageDto getUserMypage(Long idx){
+        User tokenUser = userRepository.findByIdx(idx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
-        List<Region> regions = new ArrayList<>();
-        regions.add(user.getMainRegion());
-        regions.add(user.getSubRegion1());
-        regions.add(user.getSubRegion2());
+        List<RegionDto> regions = mapService.getRegionList(tokenUser);
 
-        return regions.stream().filter(Objects::nonNull)
-                .map(region -> region.toRegionDto())
-                .collect(Collectors.toList());
+        UserMypageDto userMypageDto = new UserMypageDto(tokenUser, regions);
+
+        return userMypageDto;
     }
-
 
 
 }

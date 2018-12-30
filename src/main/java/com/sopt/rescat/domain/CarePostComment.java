@@ -1,9 +1,12 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class CarePostComment extends BaseEntity {
     @Id
@@ -19,5 +22,6 @@ public class CarePostComment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_care_post_idx"))
+    @JsonIgnore
     private CarePost carePost;
 }

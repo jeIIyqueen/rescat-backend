@@ -1,17 +1,25 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
+import com.sopt.rescat.dto.CommentDto;
+import com.sopt.rescat.dto.response.FundingDetailDto;
 import com.sopt.rescat.dto.response.FundingDto;
+import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
 @Entity
 public class Funding extends BaseEntity {
+    @Transient
     private final static int MAIN_PHOTO_INDEX = 0;
 
     @Id
@@ -19,7 +27,8 @@ public class Funding extends BaseEntity {
     private Long idx;
 
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
-    private List<FundingComment> fundingComments;
+    @JsonIgnore
+    private List<FundingComment> comments;
 
     @Column(length = 100)
     @NonNull
@@ -49,9 +58,9 @@ public class Funding extends BaseEntity {
     @NonNull
     private String account;
 
-    @Column
+    @OneToOne
     @NonNull
-    private String mainRigion;
+    private Region mainRegion;
 
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
     @NonNull
@@ -67,6 +76,26 @@ public class Funding extends BaseEntity {
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date limitAt;
+
+    public FundingDetailDto toFundingDetailDto() {
+        return FundingDetailDto.builder()
+                .idx(idx)
+                .title(title)
+                .contents(contents)
+                .category(category)
+                .account(account)
+                .bankName(bankName)
+                .currentAmount(currentAmount)
+                .goalAmount(goalAmount)
+                .createdAt(getCreatedAt())
+                .limitAt(limitAt)
+                .introduction(introduction)
+                .photos(photos)
+                .certifications(certifications)
+                .writer(getWriter().getNickname())
+                .comments(comments.stream().map(FundingComment::toCommentDto).collect(Collectors.toList()))
+                .build();
+    }
 
     public FundingDto toFundingDto() {
         return FundingDto.builder()

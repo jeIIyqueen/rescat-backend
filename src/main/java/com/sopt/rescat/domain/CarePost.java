@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostDto;
+import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,10 +12,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
 @Entity
 public class CarePost extends BaseEntity {
-    private final Integer MAIN_PHOTO_INDEX = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -27,8 +27,7 @@ public class CarePost extends BaseEntity {
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
     private List<CarePostPhoto> photos;
 
-    @OneToMany
-    @JoinColumn(name = "care_post_idx")
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
     private List<CarePostComment> comments;
 
     @Column
@@ -43,7 +42,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    private LocalDateTime birth;
+    private String age;
 
     @Column
     @NonNull
@@ -76,6 +75,7 @@ public class CarePost extends BaseEntity {
     private LocalDateTime endProtectionPeriod;
 
     public CarePostDto toCarePostDto() {
+        Integer MAIN_PHOTO_INDEX = 0;
         return CarePostDto.builder()
                 .idx(idx)
                 .name(name)
