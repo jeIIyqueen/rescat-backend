@@ -2,7 +2,6 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.CommentDto;
 import lombok.Getter;
 import lombok.NonNull;
 

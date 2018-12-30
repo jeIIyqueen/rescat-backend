@@ -2,8 +2,6 @@ package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.FundingComment;
-import com.sopt.rescat.dto.CommentDto;
 import com.sopt.rescat.dto.response.CarePostDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.CarePostRepository;

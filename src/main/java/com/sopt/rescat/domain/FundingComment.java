@@ -2,7 +2,6 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.CommentDto;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -43,15 +42,5 @@ public class FundingComment extends BaseEntity {
     public FundingComment setUserRole() {
         this.userRole = getWriter().getRole();
         return this;
-    }
-
-    public CommentDto toCommentDto() {
-        return CommentDto.builder()
-                .idx(idx)
-                .contents(contents)
-                .nickName(getWriter().getNickname())
-                .userRole(getWriter().getRole())
-                .createdAt(getCreatedAt())
-                .build();
     }
 }
