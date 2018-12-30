@@ -4,17 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-import com.sopt.rescat.dto.CommentDto;
-import com.sopt.rescat.dto.response.FundingDetailDto;
 import com.sopt.rescat.dto.response.FundingDto;
+import com.sopt.rescat.exception.NotExistException;
 import lombok.Getter;
 import lombok.NonNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -77,27 +74,17 @@ public class Funding extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date limitAt;
 
-    public FundingDetailDto toFundingDetailDto() {
-        return FundingDetailDto.builder()
-                .idx(idx)
-                .title(title)
-                .contents(contents)
-                .category(category)
-                .account(account)
-                .bankName(bankName)
-                .currentAmount(currentAmount)
-                .goalAmount(goalAmount)
-                .createdAt(getCreatedAt())
-                .limitAt(limitAt)
-                .introduction(introduction)
-                .photos(photos)
-                .certifications(certifications)
-                .writer(getWriter().getNickname())
-                .comments(comments.stream().map(FundingComment::toCommentDto).collect(Collectors.toList()))
-                .build();
+    @Transient
+    private String nickname;
+
+    public Funding setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
     }
 
     public FundingDto toFundingDto() {
+        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("해당 글의 사진이 등록되어 있지 않습니다.");
+
         return FundingDto.builder()
                 .idx(idx)
                 .category(category)

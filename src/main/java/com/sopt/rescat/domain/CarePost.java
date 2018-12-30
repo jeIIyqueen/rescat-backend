@@ -1,9 +1,12 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostDto;
+import com.sopt.rescat.exception.NotExistException;
+import com.sopt.rescat.exception.NotMatchException;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
@@ -28,6 +31,7 @@ public class CarePost extends BaseEntity {
     private List<CarePostPhoto> photos;
 
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CarePostComment> comments;
 
     @Column
@@ -74,8 +78,18 @@ public class CarePost extends BaseEntity {
     @Column
     private LocalDateTime endProtectionPeriod;
 
+    @Transient
+    private String nickname;
+
+    public CarePost setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
+    }
+
     public CarePostDto toCarePostDto() {
         Integer MAIN_PHOTO_INDEX = 0;
+        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("해당 글의 사진이 등록되어 있지 않습니다.");
+
         return CarePostDto.builder()
                 .idx(idx)
                 .name(name)

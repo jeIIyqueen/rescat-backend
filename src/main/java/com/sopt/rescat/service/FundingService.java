@@ -1,12 +1,13 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.dto.response.FundingDetailDto;
+import com.sopt.rescat.domain.FundingComment;
 import com.sopt.rescat.dto.response.FundingDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.FundingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,9 +30,19 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public FundingDetailDto findByIdx(Long idx) {
+    public Funding findByIdx(Long idx) {
         return fundingRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "해당하는 idx가 존재하지 않습니다."))
-                .toFundingDetailDto();
+                .setWriterNickname();
+    }
+
+    public List<FundingComment> findCommentsBy(Long idx) {
+        return fundingRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "해당하는 idx가 존재하지 않습니다."))
+                .getComments().stream()
+                .peek((fundingComment) -> {
+                    fundingComment.setUserRole();
+                    fundingComment.setWriterNickname();
+                }).collect(Collectors.toList());
     }
 }

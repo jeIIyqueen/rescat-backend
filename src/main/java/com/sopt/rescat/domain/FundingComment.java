@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.CommentDto;
 import lombok.Getter;
 import lombok.NonNull;
@@ -27,6 +28,22 @@ public class FundingComment extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_funding_idx"))
     @JsonIgnore
     private Funding funding;
+
+    @Transient
+    private String nickname;
+
+    @Transient
+    private Role userRole;
+
+    public FundingComment setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
+    }
+
+    public FundingComment setUserRole() {
+        this.userRole = getWriter().getRole();
+        return this;
+    }
 
     public CommentDto toCommentDto() {
         return CommentDto.builder()

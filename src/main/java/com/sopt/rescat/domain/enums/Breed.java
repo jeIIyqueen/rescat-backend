@@ -16,6 +16,7 @@ public enum Breed {
     SCOTTISHSTRAIGHT("스코티쉬 스트레이트"),
     RAGDOLL("랙돌"),
     ETC("기타"),
+    MIX("믹스"),
     UNKNOWN("모름");
 
     private String value;
