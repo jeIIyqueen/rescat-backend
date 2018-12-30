@@ -1,7 +1,5 @@
 package com.sopt.rescat.dto;
 
-import com.sopt.rescat.domain.Cat;
-import com.sopt.rescat.domain.Photo;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

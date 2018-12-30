@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class RegionDto {
     private Integer code;
     private String name;
+
 }

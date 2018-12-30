@@ -12,14 +12,11 @@ public class FundingBanner extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
 
     @Column
     private String title;
-
-    @OneToOne
-    private Funding funding;
 
     @Column
     private String link;
@@ -28,7 +25,7 @@ public class FundingBanner extends BaseEntity {
         return BannerDto.builder()
                 .idx(idx)
                 .link(link)
-                .photoUrl(photo.getUrl())
+                .photoUrl(photoUrl)
                 .title(title)
                 .build();
     }

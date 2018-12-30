@@ -1,5 +1,7 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.dto.CareTakerRequestDto;
+import lombok.Builder;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -11,9 +13,10 @@ public class CareTakerRequest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToOne
+    @Column
     @NonNull
-    private User user;
+    @Length(max = 10)
+    private String name;
 
     @Column
     @NonNull
@@ -24,13 +27,21 @@ public class CareTakerRequest extends BaseEntity {
     @NonNull
     private Region mainRegion;
 
-    @OneToOne
-    private Region subRegion1;
-
-    @OneToOne
-    private Region subRegion2;
-
-    @OneToOne
+    @Column
     @NonNull
-    private Photo authenticationPhoto;
+    private String authenticationPhotoUrl;
+
+    @Column
+    private Boolean isConfirmed;
+
+    @Builder
+    public CareTakerRequest(User user, Boolean isConfirmed, String name, String phone, Region mainRegion, String authenticationPhotoUrl){
+        super(user);
+        this.isConfirmed = isConfirmed;
+        this.name = name;
+        this.phone = phone;
+        this.mainRegion = mainRegion;
+        this.authenticationPhotoUrl = authenticationPhotoUrl;
+    }
+
 }

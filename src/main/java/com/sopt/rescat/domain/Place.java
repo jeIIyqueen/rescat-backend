@@ -47,16 +47,19 @@ public class Place extends BaseEntity {
     @Length(max = 11)
     private Integer phone;
 
-    @OneToOne
-    private Photo photo;
+    @Column
+    private String photoUrl;
 
     @OneToOne
     @NonNull
     private Region region;
 
     public PlaceDto toPlaceDto(){
-        return PlaceDto.builder().address(this.address).category(this.category)
-                .etc(this.etc).idx(this.idx).lat(this.lat).lng(this.lng).name(this.name)
-                .phone(this.phone).photoUrl(this.photo.getUrl()).region(this.region.toRegionDto()).build();
+        return PlaceDto.builder()
+                .address(address).category(category)
+                .etc(etc).idx(idx).lat(lat).lng(lng)
+                .name(name).phone(phone).photoUrl(photoUrl)
+                .region(region.toRegionDto())
+                .build();
     }
 }
