@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.CarePost;
+import com.sopt.rescat.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -32,5 +33,10 @@ public class CarePostPhoto extends BaseTime {
 
     public CarePostPhoto(@NonNull String url) {
         this.url = url;
+    }
+
+    public CarePostPhoto initCarePost(CarePost carePost) {
+        this.carePost = carePost;
+        return this;
     }
 }

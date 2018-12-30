@@ -2,22 +2,20 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
-import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-import com.sopt.rescat.dto.CommentDto;
-import com.sopt.rescat.dto.response.FundingDetailDto;
-import com.sopt.rescat.dto.response.FundingDto;
-import lombok.Getter;
-import lombok.NonNull;
+import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.NotExistException;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Funding extends BaseEntity {
     @Transient
     private final static int MAIN_PHOTO_INDEX = 0;
@@ -47,7 +45,7 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
-    private Long currentAmount;
+    private Long currentAmount = 0L;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -58,13 +56,12 @@ public class Funding extends BaseEntity {
     @NonNull
     private String account;
 
-    @OneToOne
+    @Column
     @NonNull
-    private Region mainRegion;
+    private String mainRegion;
 
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
-    @NonNull
-    private List<CertificationPhoto> certifications;
+    private List<FundingPhoto> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
@@ -77,28 +74,21 @@ public class Funding extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date limitAt;
 
-    public FundingDetailDto toFundingDetailDto() {
-        return FundingDetailDto.builder()
-                .idx(idx)
-                .title(title)
-                .contents(contents)
-                .category(category)
-                .account(account)
-                .bankName(bankName)
-                .currentAmount(currentAmount)
-                .goalAmount(goalAmount)
-                .createdAt(getCreatedAt())
-                .limitAt(limitAt)
-                .introduction(introduction)
-                .photos(photos)
-                .certifications(certifications)
-                .writer(getWriter().getNickname())
-                .comments(comments.stream().map(FundingComment::toCommentDto).collect(Collectors.toList()))
-                .build();
+    @Column
+    private Boolean isConfirmed;
+
+    @Transient
+    private String nickname;
+
+    public Funding setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
     }
 
-    public FundingDto toFundingDto() {
-        return FundingDto.builder()
+    public FundingResponseDto toFundingDto() {
+        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+
+        return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
                 .currentAmount(currentAmount)
@@ -108,5 +98,28 @@ public class Funding extends BaseEntity {
                 .title(title)
                 .mainPhoto(photos.get(MAIN_PHOTO_INDEX))
                 .build();
+    }
+
+    public void updateCurrentAmount(Long amount) {
+        this.currentAmount += amount;
+    }
+
+    public Funding setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public Funding initCertifications(List<FundingPhoto> certificationPhotos) {
+        this.certifications = certificationPhotos;
+        return this;
+    }
+
+    public Funding initPhotos(List<FundingPhoto> photos) {
+        this.photos = photos;
+        return this;
+    }
+
+    public void updateConfirmStatus(Boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }
