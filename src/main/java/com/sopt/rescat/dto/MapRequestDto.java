@@ -17,55 +17,60 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @ToString
 public class MapRequestDto {
+    @ApiModelProperty(hidden = true)
     private final Integer CONFIRM = 1;
+    @ApiModelProperty(hidden = true)
     private final Integer DEFER   = 0;
+    @ApiModelProperty(hidden = true)
     private final Integer REFUSE  = 2;
 
     @ApiModelProperty(hidden = true)
     private Long idx;
 
-    @ApiModelProperty(example = "0", notes = "0: 등록, 1: 수정", position = 1, dataType = "java.lang.integer")
+    @ApiModelProperty(notes = "요청 유형(0: 등록, 1: 수정)", position = 1)
     @Range(min = 0, max = 1)
     // 0: 등록, 1: 수정
     private Integer requestType;
 
-    @ApiModelProperty(example = "0", notes = "0: 고양이, 1: 배식소, 2: 병원", position = 2, dataType = "java.lang.integer")
+    @ApiModelProperty(notes = "마커 유형(0: 배식소, 1: 병원, 2: 길고양이)", position = 2)
     @Range(min = 0, max = 2)
-    // 0: 고양이, 1: 배식소, 2: 병원
+    // 0: 배식소, 1: 병원, 2: 고양이
     private Integer registerType;
 
-    @ApiModelProperty(example = "뿌꾸", notes = "10자 이내", position = 3)
-    @Length(max = 10)
+    @ApiModelProperty(notes = "고양이 이름(10자이내) 또는 배식소, 병원 이름(50자이내)", position = 3)
     private String name;
 
-    @ApiModelProperty(example = "손을 자주 문다.", position = 4)
+    @ApiModelProperty(notes = "특징 또는 부가정보", position = 4)
     private String etc;
 
-    @ApiModelProperty(example = "37.4875908", notes = "위도", position = 5)
+    @ApiModelProperty(notes = "위도 좌표", position = 5)
     private Float lat;
 
-    @ApiModelProperty(example = "126.9194145", notes = "경도", position = 6)
+    @ApiModelProperty(notes = "경도 좌표", position = 6)
     private Float lng;
 
-    @ApiModelProperty(position = 7)
+    @ApiModelProperty(notes = "(only병원)주소", position = 7)
+    private String address;
+
+    @ApiModelProperty(notes = "사진",position = 12)
     private MultipartFile photo;
 
     @ApiModelProperty(hidden = true)
     private String photoUrl;
 
-    @ApiModelProperty(example = "500", position = 8, dataType = "java.lang.integer")
+    @ApiModelProperty(notes = "(only길고양이)활동반경", position = 8)
     // 아래는 고양이 고유
     private Integer radius;
 
-    @ApiModelProperty(example = "0", notes = "0: 남, 1: 여", position = 9, dataType = "java.lang.integer")
+    @ApiModelProperty(notes = "(only길고양이)성별(0: 남, 1: 여)", position = 9)
     @Range(min = 0, max = 1)
     // 0: 남, 1: 여
     private Integer sex;
 
-    @ApiModelProperty(example = "7개월", notes = "추정 나이", position = 10)
+    @ApiModelProperty(notes = "(only길고양이)추정나이", position = 10)
     private String age;
 
-    @ApiModelProperty(example = "0", notes = "중성화 여부/0: 미완료, 1: 완료", position = 11, dataType = "java.lang.integer")
+    @ApiModelProperty(notes = "(only길고양이)중성화여부(0: 미완료, 1: 완료)", position = 11)
     @Range(min = 0, max = 1)
     // 0: 미완료, 1: 완료
     private Integer tnr;

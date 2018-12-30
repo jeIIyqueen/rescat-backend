@@ -1,9 +1,11 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
+import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +16,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-<<<<<<< HEAD
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Map;
-=======
-import javax.validation.constraints.Pattern;
->>>>>>> 2c81f27fa71269b85d698ea01b1779944e50c22a
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -93,9 +92,18 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 
-//    @GetMapping("/authentications/regions")
-//    public ResponseEntity<List<List<RegionDto>>> getAllRegionList(@RequestHeader(value = "Authorization") final String header){
-//
-//
-//    }
+    @ApiOperation(value = "전체 지역 목록 조회", notes = "유저가 인증할 수 있는 전체 지역 목록을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @Auth
+    @GetMapping("/authentications/regions")
+    public ResponseEntity<Map<String, Map<String, List<Region>>>> getAllRegionList(@RequestHeader(value = "Authorization") final String header){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllRegionList());
+    }
 }

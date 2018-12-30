@@ -18,8 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -89,17 +88,14 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
-    public List<List<RegionDto>> getAllRegionList(){
-        List<RegionDto> sdList  = regionRepository.findAllSd();
-        List<RegionDto> sggList = regionRepository.findAllSgg();
-        List<RegionDto> emdList = regionRepository.findAllEmd();
 
-        List<List<RegionDto>> allRegionList = new ArrayList<>();
-        allRegionList.add(sdList);
-        allRegionList.add(sggList);
-        allRegionList.add(emdList);
+    public Map<String, Map<String, List<Region>>> getAllRegionList(){
+        List<Region> allRegions = regionRepository.findAll();
+
+        Map<String, Map<String, List<Region>>> allRegionList =
+                allRegions.stream().collect(Collectors.groupingBy(Region::getSdName, Collectors.groupingBy(Region::getSggName, Collectors.toList())));
 
         return allRegionList;
-
     }
+
 }

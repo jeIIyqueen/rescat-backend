@@ -1,6 +1,7 @@
 package com.sopt.rescat.utils.auth;
 
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.service.JWTService;
@@ -44,32 +45,37 @@ public class AuthAspect {
     //항상 @annotation 패키지 이름을 실제 사용할 annotation 경로로 맞춰줘야 한다.
     @Around("@annotation(com.sopt.rescat.utils.auth.Auth)")
     public Object around(final ProceedingJoinPoint pjp) throws Throwable {
-
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
-
         //토큰 존재 여부 확인
-
         if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-
         //토큰 해독
-
         final JwtTokenVO token = jwtService.decode(jwt);
-
         //토큰 검사
-
         if (token == null) {
-
             throw new UnAuthenticationException();
-
         } else {
-
             final User user = userRepository.findByIdx(token.getIdx());
-
             //유효 사용자 검사
-
             if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-
             return pjp.proceed(pjp.getArgs());
         }
     }
 }
+//
+//    @Around("@annotation(com.sopt.rescat.utils.auth.CareTaker)")
+//    public Object around(final ProceedingJoinPoint pjp) throws Throwable {
+//        final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
+//        //토큰 존재 여부 확인
+//        if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+//        //토큰 해독
+//        final JwtTokenVO token = jwtService.decode(jwt);
+//        //토큰 검사
+//        if (token == null) {
+//            throw new UnAuthenticationException();
+//        } else {
+//            final User user = userRepository.findByIdx(token.getIdx());
+//            //유효 사용자 검사
+//            if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+//            if (user.getRole() != Role.CARETAKER)
+//            return pjp.proceed(pjp.getArgs());
+//    }

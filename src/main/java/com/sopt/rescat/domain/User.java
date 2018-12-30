@@ -53,9 +53,8 @@ public class User extends BaseTime {
     @OneToOne
     private Region subRegion2;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     @Column
-    @Enumerated(EnumType.STRING)
     @NonNull
     private Role role;
 

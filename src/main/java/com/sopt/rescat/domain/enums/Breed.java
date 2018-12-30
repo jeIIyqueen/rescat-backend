@@ -18,9 +18,9 @@ public enum Breed {
     ETC("기타"),
     UNKNOWN("모름");
 
-    private String korean;
+    private String value;
 
-    Breed(String korean) {
-        this.korean = korean;
+    Breed(String value) {
+        this.value = value;
     }
 }

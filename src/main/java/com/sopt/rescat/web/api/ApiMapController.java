@@ -58,7 +58,19 @@ public class ApiMapController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "registerType", value = "요청 유형(0: 등록, 1: 수정)", required = true, dataType = "integer", paramType = "body"),
+            @ApiImplicitParam(name = "requestType", value = "마커 유형(0: 배식소, 1: 병원, 2: 길고양이)", required = true, dataType = "integer", paramType = "body"),
+            @ApiImplicitParam(name = "name", value = "고양이 이름(10자이내) 또는 배식소, 병원 이름(50자이내)", required = true, dataType = "string", paramType = "body"),
+            @ApiImplicitParam(name = "etc", value = "특징 또는 부가정보", required = true, dataType = "string", paramType = "body"),
+            @ApiImplicitParam(name = "lat", value = "위도 좌표", required = true, dataType = "float", paramType = "body"),
+            @ApiImplicitParam(name = "lng", value = "경도 좌표", required = true, dataType = "float", paramType = "body"),
+            @ApiImplicitParam(name = "lng", value = "(only병원)주소", required = true, dataType = "float", paramType = "body"),
+            @ApiImplicitParam(name = "photo", value = "사진 파일", required = true, dataType = "MultipartFile", paramType = "body"),
+            @ApiImplicitParam(name = "radius", value = "(only길고양이)활동반경", required = true, dataType = "string", paramType = "body"),
+            @ApiImplicitParam(name = "sex", value = "(only길고양이)성별(0: 남, 1: 여)", required = true, dataType = "integer", paramType = "body"),
+            @ApiImplicitParam(name = "age", value = "(only길고양이)추정나이", required = true, dataType = "string", paramType = "body"),
+            @ApiImplicitParam(name = "tnr", value = "(only길고양이)중성화여부(0: 미완료, 1: 완료)", required = true, dataType = "string", paramType = "body")
     })
     @Auth
     @PostMapping
