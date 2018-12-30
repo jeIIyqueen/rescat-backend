@@ -119,6 +119,7 @@ public class UserService {
     @Transactional
     public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
         User tokenUser = userRepository.findByIdx(idx);
+
         if(careTakerRequestDto.hasAuthenticationPhoto())
             throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
 

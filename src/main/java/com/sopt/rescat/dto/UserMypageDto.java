@@ -17,12 +17,12 @@ public class UserMypageDto {
     private Role role;
     private List<RegionDto> regions;
 
-    @Builder
-    public UserMypageDto(String id, String nickname, Role role){
-        this.id = id;
-        this.nickname = nickname;
-        this.role = role;
-    }
+//    @Builder
+//    public UserMypageDto(String id, String nickname, Role role){
+//        this.id = id;
+//        this.nickname = nickname;
+//        this.role = role;
+//    }
 
     public UserMypageDto(User user) {
     }

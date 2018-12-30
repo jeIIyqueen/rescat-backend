@@ -118,7 +118,7 @@ public class ApiUserController {
         if(jwtService.decode(header).getIdx() == idx) {
             return ResponseEntity.status(HttpStatus.OK).body(getUser);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //맞는지 확인
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
@@ -139,7 +139,7 @@ public class ApiUserController {
     }
 
 
-    //마이페이지 첫화면(회원조회), (id,닉네임,프사,롤,지역3개)
+    //마이페이지 첫화면(회원조회), (id,닉네임,포토,롤,지역3개)
     @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공"),
@@ -156,18 +156,18 @@ public class ApiUserController {
     }
 
 
-    @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @Auth
-    @GetMapping("/mypage/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String header) {
-        final Long userIdx = jwtService.decode(header).getIdx();
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
-    }
+//    @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "조회 성공"),
+//            @ApiResponse(code = 401, message = "권한 없음"),
+//            @ApiResponse(code = 500, message = "서버 에러")
+//    })
+//    @Auth
+//    @GetMapping("/mypage/regions")
+//    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String header) {
+//        final Long userIdx = jwtService.decode(header).getIdx();
+//        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
+//    }
 
     //지역 수정
 //    @Auth
