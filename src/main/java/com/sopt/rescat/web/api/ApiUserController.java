@@ -57,8 +57,8 @@ public class ApiUserController {
             @ApiResponse(code = 409, message = "아이디 중복", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/duplicate/{id}")
-    public ResponseEntity<Boolean> checkIdDuplicate(@PathVariable String id) {
+    @PostMapping("/duplicate/id")
+    public ResponseEntity<Boolean> checkIdDuplication(@RequestParam String id) {
         return ResponseEntity.status(HttpStatus.OK).body(!userService.isExistingId(id));
     }
 
@@ -68,8 +68,8 @@ public class ApiUserController {
             @ApiResponse(code = 409, message = "닉네임 중복", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/duplicate/{nickname}")
-    public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
+    @PostMapping("/duplicate/nickname")
+    public ResponseEntity<Boolean> checkNicknameDuplication(@RequestParam String nickname) {
         return ResponseEntity.status(HttpStatus.OK).body(!userService.isExistingNickname(nickname));
     }
 
@@ -94,31 +94,13 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러"),
             @ApiResponse(code = 501, message = "문자보내기 실패")
     })
-    @PostMapping("/authentications/{phone}")
+    @PostMapping("/authentications/phone")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(
             @ApiParam(value = "01000000000 또는 010-0000-0000", required = true)
             @Valid
             @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 000-0000-0000 또는 00000000000 형식이어야 합니다.")
-            @PathVariable String phone) {
+            @RequestParam String phone) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
-    }
-
-
-    @ApiOperation(value = "토큰으로 유저 조회", notes = "토큰으로 해당 유저를 조회합니다. 성공시 해당 유저를 반환합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "요청 성공"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @Auth
-    @GetMapping("/authentications/{idx}")
-    public ResponseEntity<User> authenticateUserIdx(@RequestHeader("Authorization") final String header,
-                                                    @PathVariable("idx") final long idx) {
-        User getUser = userService.findByUserIdx(idx);
-        if(jwtService.decode(header).getIdx() == idx) {
-            return ResponseEntity.status(HttpStatus.OK).body(getUser);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //맞는지 확인
     }
 
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
@@ -128,19 +110,16 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-    @PostMapping("/caretaker")
+    @PostMapping("/authentications/caretaker")
     public ResponseEntity requestCareTaker(@RequestHeader(value = "Authorization") final String header,
                                            CareTakerRequestDto careTakerRequestDto) throws IOException {
         final Long userIdx = jwtService.decode(header).getIdx();
-
         userService.saveCareTakerRequest(userIdx, careTakerRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 
 
-    //마이페이지 첫화면(회원조회), (id,닉네임,포토,롤,지역3개)
-    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
+    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록(아이디, 닉네임, 롤, 지역)을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
@@ -150,9 +129,7 @@ public class ApiUserController {
     @GetMapping("/mypage")
     public ResponseEntity<UserMypageDto> getMypage(@RequestHeader("Authorization") final String header) {
         final Long userIdx = jwtService.decode(header).getIdx();
-        User user = userService.findByUserIdx(userIdx);
-        UserMypageDto userMypageDto = new UserMypageDto(user);
-        return ResponseEntity.status(HttpStatus.OK).body(userMypageDto);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(userIdx));
     }
 
 

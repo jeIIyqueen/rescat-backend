@@ -1,7 +1,5 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.AdvertisementBanner;
-import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.response.BannerDto;
 import com.sopt.rescat.service.AdvertisementBannerService;
 import io.swagger.annotations.Api;
@@ -30,7 +28,7 @@ public class AdvertisementBannerController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("")
-    public ResponseEntity<Iterable<AdvertisementBanner>> list() {
+    public ResponseEntity<Iterable<BannerDto>> list() {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.gets());
     }
 

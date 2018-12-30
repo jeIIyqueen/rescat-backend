@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,8 +32,7 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
-
-
+    private final MapService mapService;
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -45,13 +43,14 @@ public class UserService {
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService,
                        final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
-                       final RegionRepository regionRepository) {
+                       final RegionRepository regionRepository, final MapService mapService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
+        this.mapService = mapService;
     }
 
     public Boolean isExistingId(String id) {
@@ -107,15 +106,6 @@ public class UserService {
     }
 
 
-    public User findByUserIdx(Long idx) {
-        User user = userRepository.findByIdx(idx);
-
-        if(user == null){
-            throw new NotMatchException("해당 IDX를 가진 사용자가 존재하지 않습니다.");
-        }
-        return user;
-    }
-
     @Transactional
     public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
         User tokenUser = userRepository.findByIdx(idx);
@@ -125,23 +115,18 @@ public class UserService {
 
         String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
 
-        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode()).orElseThrow(() -> new NotFoundException("emdcode", "지역을 찾을 수 없습니다."));
+        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode())
+                .orElseThrow(() -> new NotFoundException("emdcode", "해당 지역을 찾을 수 없습니다."));
 
         careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(tokenUser, mainRegion, authenticationPhotoUrl));
     }
 
-    public List<RegionDto> getRegionList(User user) {
-
-        List<Region> regions = new ArrayList<>();
-        regions.add(user.getMainRegion());
-        regions.add(user.getSubRegion1());
-        regions.add(user.getSubRegion2());
-
-        return regions.stream().filter(Objects::nonNull)
-                .map(region -> region.toRegionDto())
-                .collect(Collectors.toList());
+    public UserMypageDto getUserMypage(Long idx){
+        User user = userRepository.findByIdx(idx);
+        List<RegionDto> regions = mapService.getRegionList(user);
+        UserMypageDto userMypageDto = new UserMypageDto(user, regions);
+        return userMypageDto;
     }
-
 
 
 }
