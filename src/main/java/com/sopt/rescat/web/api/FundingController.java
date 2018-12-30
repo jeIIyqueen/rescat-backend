@@ -8,7 +8,6 @@ import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.service.FundingService;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.utils.auth.AdminAuth;
-import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;

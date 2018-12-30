@@ -1,11 +1,12 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.service.JWTService;
+import com.sopt.rescat.service.MapService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.Auth;
+import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
-import javax.validation.constraints.Pattern;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -29,10 +31,12 @@ public class ApiUserController {
     private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
     private final UserService userService;
     private final JWTService jwtService;
+    private final MapService mapService;
 
-    public ApiUserController(final UserService userService, final JWTService jwtService) {
+    public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.mapService = mapService;
     }
 
 
@@ -111,62 +115,45 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/authentications/caretaker")
-    public ResponseEntity requestCareTaker(@RequestHeader(value = "Authorization") final String header,
+    public ResponseEntity requestCareTaker(@RequestHeader(value = "Authorization") final String token, HttpServletRequest httpServletRequest,
                                            CareTakerRequestDto careTakerRequestDto) throws IOException {
-        final Long userIdx = jwtService.decode(header).getIdx();
-
-        userService.saveCareTakerRequest(userIdx, careTakerRequestDto);
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveCareTakerRequest(loginUser, careTakerRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @ApiOperation(value = "토큰으로 유저 조회", notes = "토큰으로 해당 유저를 조회합니다. 성공시 해당 유저를 반환합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "요청 성공"),
-            @ApiResponse(code = 401, message = "권한 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @Auth
-    @GetMapping("/authentications/{idx}")
-    public ResponseEntity<User> authenticateUserIdx(@RequestHeader("Authorization") final String header,
-                                                    @PathVariable("idx") final long idx) {
-        User getUser = userService.findByUserIdx(idx);
-        if(jwtService.decode(header).getIdx() == idx) {
-            return ResponseEntity.status(HttpStatus.OK).body(getUser);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //맞는지 확인
-    }
-
-    //마이페이지 첫화면(회원조회), (id,닉네임,프사,롤,지역3개)
-    @ApiOperation(value = "유저의 마이페이지", notes = "유저의 마이페이지 목록을 반환합니다.")
+    @ApiOperation(value = "유저의 마이페이지 조회", notes = "유저의 마이페이지 목록(아이디, 닉네임, 롤, 지역)을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-    @PostMapping("/mypage")
-    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader("Authorization") final String header) {
-        final Long userIdx = jwtService.decode(header).getIdx();
-        User user = userService.findByUserIdx(userIdx);
-        UserMypageDto userMypageDto = new UserMypageDto(user);
-        return ResponseEntity.status(HttpStatus.OK).body(userMypageDto);
+    @GetMapping("/mypage")
+    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
+                                                   HttpServletRequest httpServletRequest){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }
 
-
-    @ApiOperation(value = "유저의 지역 목록 조회", notes = "유저가 인증한 지역 목록을 반환합니다.")
+    @ApiOperation(value = "케어테이커 유저의 지역 목록 조회", notes = "케어테이커 유저가 인증한 지역 목록을 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-    @PostMapping("/mypage/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String header) {
-        final Long userIdx = jwtService.decode(header).getIdx();
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
+    @GetMapping("/mypage/regions")
+    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String token,
+                                                         HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.getRegionList(loginUser));
     }
 
-    //지역 수정
+
+
+
+    //지역 추가 및 수정 요청
 //    @Auth
 //    @PutMapping("/mypage/regions/edit")
 //    public ResponseEntity<List<RegionDto>> updateRegionList(@RequestHeader(value = "Authorization") final String header) {
@@ -174,13 +161,33 @@ public class ApiUserController {
 ////        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(userService.findByUserIdx(userIdx)));
 //    }
 
-    //회원 정보 수정 //일반회원,,
+//    @ApiOperation(value = "유저의 회원정보 조회", notes = "유저의 회원정보 목록(아이디, 닉네임, 롤, 핸드폰)을 반환합니다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "조회 성공"),
+//            @ApiResponse(code = 401, message = "권한 없음"),
+//            @ApiResponse(code = 500, message = "서버 에러")
+//    })
+//    @Auth
+//    @GetMapping("/mypage/edit")
+//    public ResponseEntity<UserMypageDto> editUser(@RequestHeader(value = "Authorization") final String token,
+//                                                  HttpServletRequest httpServletRequest){
+//        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+//        return ResponseEntity.status(HttpStatus.OK).body(userService.getEditUserMypage(loginUser));
+//    }
+
+//    //닉네임 수정, 핸드폰 번호 수정(케어테이커일 경우에만)
+//    @ApiOperation(value = "유저의 회원정보 수정", notes = "유저의 회원정보 목록(아이디, 닉네임, 롤, 핸드폰)을 반환합니다.")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "수정 성공"),
+//            @ApiResponse(code = 401, message = "권한 없음"),
+//            @ApiResponse(code = 500, message = "서버 에러")
+//    })
 //    @Auth
 //    @PutMapping("/mypage/edit")
-//    public ResponseEntity<Void> updateUser(@RequestHeader(value = "Authorization") final String header,
-//                                           @RequestBody @Valid UserJoinDto userJoinDto) {
-//        userService.create(userJoinDto);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    public ResponseEntity<UserMypageDto> editMypage(HttpServletRequest httpServletRequest, @RequestParam String nickname){
+//        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+//        userService.editUserMypage(loginUser, nickname);
+//        return ResponseEntity.status(HttpStatus.OK).build();
 //    }
 
 

@@ -9,21 +9,27 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserMypageDto {
     private String id;
     private String nickname;
-    private String photoUrl;
     private Role role;
     private List<RegionDto> regions;
+    private String phone;
 
-    @Builder
-    public UserMypageDto(String id, String nickname, Role role){
-        this.id = id;
-        this.nickname = nickname;
-        this.role = role;
+    public UserMypageDto(User user, List<RegionDto> regions){
+        this.id = user.getId();
+        this.nickname = user.getNickname();
+        this.role = user.getRole();
+        this.regions = regions;
     }
 
-    public UserMypageDto(User user) {
-    }
+//    public UserMypageDto(User user){
+//        this.id = user.getId();
+//        this.nickname = user.getNickname();
+//        this.role = user.getRole();
+//        this.phone = user.getPhone();
+//    }
+
 }

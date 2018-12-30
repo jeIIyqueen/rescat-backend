@@ -6,9 +6,7 @@ import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @ToString
 @Getter

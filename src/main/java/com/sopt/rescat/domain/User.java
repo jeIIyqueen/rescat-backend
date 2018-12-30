@@ -5,16 +5,15 @@ import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
+
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class User extends BaseTime {
@@ -73,6 +72,11 @@ public class User extends BaseTime {
         this.password = password;
         this.nickname = nickname;
         this.role = Role.MEMBER;
+    }
+
+    @Builder
+    public User(String nickname){
+        this.nickname = nickname;
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
