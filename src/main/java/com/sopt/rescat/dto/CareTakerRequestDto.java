@@ -15,6 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 @Builder
 public class CareTakerRequestDto {
+
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER   = 0;
+    private final Integer REFUSE  = 2;
+
     private String name;
     private String phone;
     private Integer emdCode;
@@ -27,7 +32,7 @@ public class CareTakerRequestDto {
     public CareTakerRequest toCareTakerRequest(User user, Region mainRegion, String authenticationPhotoUrl) {
         return CareTakerRequest.builder()
                 .user(user)
-                .isConfirmed(false)
+                .isConfirmed(DEFER)
                 .name(name)
                 .phone(phone)
                 .mainRegion(mainRegion)

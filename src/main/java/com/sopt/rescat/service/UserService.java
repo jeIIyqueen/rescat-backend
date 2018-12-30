@@ -108,7 +108,6 @@ public class UserService {
 
     public User getUser(final Long userIdx){
         User tokenUser = userRepository.findByIdx(userIdx);
-        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
         if(!(tokenUser.getRole() == Role.CARETAKER)){
             throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
@@ -117,9 +116,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
-        User tokenUser = userRepository.findByIdx(idx);
-        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+    public void saveCareTakerRequest(User user, CareTakerRequestDto careTakerRequestDto) throws IOException {
 
         if(!careTakerRequestDto.hasAuthenticationPhoto())
             throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
@@ -129,19 +126,27 @@ public class UserService {
         Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode())
                 .orElseThrow(() -> new NotFoundException("emdcode", "해당 지역을 찾을 수 없습니다."));
 
-        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(tokenUser, mainRegion, authenticationPhotoUrl));
+        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, mainRegion, authenticationPhotoUrl));
     }
 
-    public UserMypageDto getUserMypage(Long idx){
-        User tokenUser = userRepository.findByIdx(idx);
-        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-
-        List<RegionDto> regions = mapService.getRegionList(tokenUser);
-
-        UserMypageDto userMypageDto = new UserMypageDto(tokenUser, regions);
-
+    public UserMypageDto getUserMypage(User user){
+        List<RegionDto> regions = mapService.getRegionList(user);
+        UserMypageDto userMypageDto = new UserMypageDto(user, regions);
         return userMypageDto;
     }
 
+//    public UserMypageDto getEditUserMypage(User user){
+//        UserMypageDto userMypageDto = new UserMypageDto(user);
+//        return userMypageDto;
+//    }
+//
+//    @Transactional
+//    public void editUserMypage(User user, String nickname){
+//        if(isExistingNickname(nickname)){
+//            user.setNickname(nickname);
+//        }
+//        userRepository.save(user);
+//
+//    }
 
 }
