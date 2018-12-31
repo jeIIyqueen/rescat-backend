@@ -2,6 +2,7 @@ package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,6 +31,7 @@ public class UserService {
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
     private final MapService mapService;
+
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -105,12 +104,22 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
+    public User getUser(final Long userIdx){
+        User tokenUser = userRepository.findByIdx(userIdx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+
+        if(!(tokenUser.getRole() == Role.CARETAKER)){
+            throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
+        }
+        return tokenUser;
+    }
 
     @Transactional
     public void saveCareTakerRequest(Long idx, CareTakerRequestDto careTakerRequestDto) throws IOException {
         User tokenUser = userRepository.findByIdx(idx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
 
-        if(careTakerRequestDto.hasAuthenticationPhoto())
+        if(!careTakerRequestDto.hasAuthenticationPhoto())
             throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
 
         String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
@@ -122,11 +131,25 @@ public class UserService {
     }
 
     public UserMypageDto getUserMypage(Long idx){
-        User user = userRepository.findByIdx(idx);
-        List<RegionDto> regions = mapService.getRegionList(user);
-        UserMypageDto userMypageDto = new UserMypageDto(user, regions);
+        User tokenUser = userRepository.findByIdx(idx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+
+        List<RegionDto> regions = mapService.getRegionList(tokenUser);
+
+        UserMypageDto userMypageDto = new UserMypageDto(tokenUser, regions);
         return userMypageDto;
     }
 
+    @Transactional
+    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
 
+        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
+            throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
+
+        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
+            throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
+
+        if(userPasswordDto.checkValidPassword())
+            user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
+    }
 }

@@ -46,11 +46,13 @@ public class MapService {
     }
 
     public User getUser(final Long userIdx){
-        User user = userRepository.findByIdx(userIdx);
-        if(!(user.getRole() == Role.CARETAKER)){
+        User tokenUser = userRepository.findByIdx(userIdx);
+        if (tokenUser == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+
+        if(!(tokenUser.getRole() == Role.CARETAKER)){
             throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
         }
-        return user;
+        return tokenUser;
     }
 
     public MarkerListDto getMarkerListByRegion(final User user, final Optional<Integer> emdcode) {

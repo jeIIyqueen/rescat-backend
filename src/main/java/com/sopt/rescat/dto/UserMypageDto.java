@@ -11,22 +11,18 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserMypageDto {
     private String id;
     private String nickname;
-    private String photoUrl;
     private Role role;
     private List<RegionDto> regions;
 
-    public UserMypageDto (User user, List<RegionDto> regions) {
-        UserMypageDto.builder()
-                .id(user.getId())
-                .nickname(user.getNickname())
-                .photoUrl(user.getPhotoUrl())
-                .role(user.getRole())
-                .regions(regions)
-                .build();
+    public UserMypageDto(User user, List<RegionDto> regions){
+        this.id = user.getId();
+        this.nickname = user.getNickname();
+        this.role = user.getRole();
+        this.regions = regions;
     }
 }

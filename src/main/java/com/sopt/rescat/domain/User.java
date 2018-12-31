@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.NotMatchException;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -76,5 +73,9 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

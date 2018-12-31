@@ -10,4 +10,5 @@ import java.util.Optional;
 
 public interface RegionRepository extends CrudRepository<Region, Long> {
     Optional<Region> findByEmdCode(Integer emdCode);
+
 }

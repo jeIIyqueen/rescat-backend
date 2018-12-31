@@ -7,8 +7,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +21,7 @@ public class CareTakerRequestDto {
     private MultipartFile authenticationPhoto;
 
     public boolean hasAuthenticationPhoto() {
-        return authenticationPhoto == null;
+        return authenticationPhoto != null;
     }
 
     public CareTakerRequest toCareTakerRequest(User user, Region mainRegion, String authenticationPhotoUrl) {

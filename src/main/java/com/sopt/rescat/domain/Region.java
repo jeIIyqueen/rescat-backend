@@ -13,7 +13,6 @@ import javax.persistence.*;
 @Entity
 public class Region {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer emdCode;
 
     @JsonIgnore
@@ -36,7 +35,10 @@ public class Region {
     private String emdName;
 
     public RegionDto toRegionDto() {
-        return RegionDto.builder().code(this.emdCode).name(sdName + " " + sggName + " " + emdName).build();
+        return RegionDto.builder()
+                .code(this.emdCode)
+                .name(sdName + " " + sggName + " " + emdName)
+                .build();
     }
 
     public RegionDto toRegionDto(Integer code, String name){
