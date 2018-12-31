@@ -3,12 +3,14 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+
 
 @Getter
 @Entity
@@ -60,12 +62,20 @@ public class User extends BaseTime {
     @Column
     private String photoUrl;
 
+    @Column
+    private Long mileage;
+
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
         this.password = password;
         this.nickname = nickname;
         this.role = Role.MEMBER;
+    }
+
+    @Builder
+    public User(String nickname){
+        this.nickname = nickname;
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
@@ -77,5 +87,14 @@ public class User extends BaseTime {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    private void checkMileageMoreThan(Long mileage) {
+        if(this.mileage < mileage) throw new InvalidValueException("mileage", "사용자가 가진 마일리지보다 더 큽니다.");
+    }
+
+    public void updateMileage(Long mileage) {
+        checkMileageMoreThan(mileage);
+        this.mileage += mileage;
     }
 }

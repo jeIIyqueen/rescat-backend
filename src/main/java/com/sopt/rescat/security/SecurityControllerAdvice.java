@@ -1,11 +1,13 @@
 package com.sopt.rescat.security;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.error.ErrorResponse;
 import com.sopt.rescat.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -62,9 +64,9 @@ public class SecurityControllerAdvice {
     }
 
     @ExceptionHandler(NotExistException.class)
-    public ResponseEntity<ErrorResponse> notExist(Exception exception) {
+    public ResponseEntity<ExceptionDto> notExist(NotExistException exception) {
         log.debug("NotExistException is happened!");
-        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InvalidValueException.class)
@@ -77,6 +79,12 @@ public class SecurityControllerAdvice {
     public ResponseEntity<ExceptionDto> notFound(NotFoundException exception) {
         log.debug("NotFoundException is happened!");
         return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> httpMessageNotReadable(HttpMessageNotReadableException exception) {
+        log.debug("HttpMessageNotReadableException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     public ExceptionDto buildExceptionDto(String message, String field) {

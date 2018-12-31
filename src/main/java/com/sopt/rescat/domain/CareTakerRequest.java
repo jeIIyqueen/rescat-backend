@@ -32,10 +32,10 @@ public class CareTakerRequest extends BaseEntity {
     private String authenticationPhotoUrl;
 
     @Column
-    private Boolean isConfirmed;
+    private Integer isConfirmed;
 
     @Builder
-    public CareTakerRequest(User user, Boolean isConfirmed, String name, String phone, Region mainRegion, String authenticationPhotoUrl){
+    public CareTakerRequest(User user, Integer isConfirmed, String name, String phone, Region mainRegion, String authenticationPhotoUrl){
         super(user);
         this.isConfirmed = isConfirmed;
         this.name = name;

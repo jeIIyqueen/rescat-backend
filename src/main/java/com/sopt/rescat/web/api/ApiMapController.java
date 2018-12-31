@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -65,9 +67,9 @@ public class ApiMapController {
     })
     @Auth
     @PostMapping
-    public ResponseEntity requestMarkerRegisterOrEdit(
-            @RequestHeader(value = "Authorization") final String header,
-            MapRequestDto mapRequestDto) throws IOException {
+
+    public ResponseEntity requestMarkerRegisterOrEdit(@RequestHeader(value = "Authorization", required = true) final String header,
+                                                        MapRequestDto mapRequestDto) throws IOException {
         final Long userIdx = jwtService.decode(header).getIdx();
         log.info(mapRequestDto.toString());
 
