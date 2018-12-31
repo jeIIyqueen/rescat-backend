@@ -1,12 +1,11 @@
 package com.sopt.rescat.domain;
 
-import com.sopt.rescat.dto.CatDto;
+import com.sopt.rescat.dto.MarkerDto;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -21,11 +20,11 @@ public class Cat extends BaseEntity {
 
     @Column
     @NonNull
-    private Float lat;
+    private Double lat;
 
     @Column
     @NonNull
-    private Float lng;
+    private Double lng;
 
     @Column
     @NonNull
@@ -54,8 +53,9 @@ public class Cat extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
 
-    public CatDto toCatDto(){
-        return CatDto.builder()
+    public MarkerDto toMarkerDto() {
+        return MarkerDto.builder()
+                .category(2)
                 .age(age).etc(etc).idx(idx).lat(lat).lng(lng)
                 .name(name).photoUrl(photoUrl).radius(radius)
                 .region(region.toRegionDto()).sex(sex).tnr(tnr)

@@ -53,7 +53,7 @@ public class CarePostRequestDto {
                 .tnr(tnr)
                 .type(type)
                 .vaccination(vaccination)
-                .isConfirmed(false)
+                .isConfirmed(0)
                 .build();
     }
 

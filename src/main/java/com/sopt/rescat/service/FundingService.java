@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class FundingService {
-    private final static Boolean IS_CONFIRMED  = true;
-    private final static Boolean NOT_CONFIRMED = false;
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER   = 0;
+    private final Integer REFUSE  = 2;
 
     private FundingRepository fundingRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
@@ -38,13 +39,13 @@ public class FundingService {
     }
 
     public Iterable<FundingResponseDto> find4Fundings() {
-        return fundingRepository.findTop4ByOrderByFewDaysLeft().stream()
+        return fundingRepository.findTop4ByIsConfirmedOrderByFewDaysLeft(CONFIRM).stream()
                 .map(Funding::toFundingDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<FundingResponseDto> findAllBy(Integer category) {
-        return fundingRepository.findByCategoryOrderByFewDaysLeft(category).stream()
+        return fundingRepository.findByCategoryAndIsConfirmedOrderByFewDaysLeft(category, CONFIRM).stream()
                 .map(Funding::toFundingDto)
                 .collect(Collectors.toList());
     }
@@ -78,7 +79,7 @@ public class FundingService {
 
     @Transactional
     public void confirmFunding(Long idx) {
-        getFundingBy(idx).updateConfirmStatus(IS_CONFIRMED);
+        getFundingBy(idx).updateConfirmStatus(CONFIRM);
     }
 
     private Funding getFundingBy(Long idx) {

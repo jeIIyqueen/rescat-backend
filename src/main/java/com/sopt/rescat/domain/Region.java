@@ -6,7 +6,9 @@ import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @ToString
 @Getter
@@ -38,7 +40,7 @@ public class Region {
         return RegionDto.builder().code(this.emdCode).name(sdName + " " + sggName + " " + emdName).build();
     }
 
-    public RegionDto toRegionDto(Integer code, String name){
+    public RegionDto toRegionDto(Integer code, String name) {
         return RegionDto.builder().code(code).name(name).build();
     }
 

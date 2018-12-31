@@ -1,9 +1,13 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.*;
+import com.sopt.rescat.dto.RegionDto;
+import com.sopt.rescat.dto.UserJoinDto;
+import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.UserMypageDto;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
@@ -20,6 +24,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -27,9 +32,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER = 0;
+    private final Integer REFUSE = 2;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JWTService jwtService;
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
@@ -42,12 +50,11 @@ public class UserService {
     @Value("${GABIA.APIKEY}")
     private String apiKey;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService,
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
                        final RegionRepository regionRepository, final MapService mapService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
@@ -102,51 +109,42 @@ public class UserService {
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 
-    private int getRandomCode() {
-        return (int) Math.floor(Math.random() * 1000000);
+    public UserMypageDto getUserMypage(User user){
+        List<RegionDto> regions = getRegionList(user);
+        return new UserMypageDto(user, regions);
     }
 
-    public User getUser(final Long userIdx){
-        User tokenUser = userRepository.findByIdx(userIdx);
+    public Map<String, Map<String, List<Region>>> getAllRegionList() {
+        List<Region> allRegions = regionRepository.findAll();
 
-        if(!(tokenUser.getRole() == Role.CARETAKER)){
-            throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
-        }
-        return tokenUser;
+        Map<String, Map<String, List<Region>>> allRegionList =
+                allRegions.stream().collect(Collectors.groupingBy(Region::getSdName, Collectors.groupingBy(Region::getSggName, Collectors.toList())));
+
+        return allRegionList;
     }
 
     @Transactional
-    public void saveCareTakerRequest(User user, CareTakerRequestDto careTakerRequestDto) throws IOException {
+    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) throws IOException {
+        Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
 
-        if(!careTakerRequestDto.hasAuthenticationPhoto())
-            throw new InvalidValueException("authenticationPhoto","authenticationPhoto가 존재하지 않습니다.");
-
-        String authenticationPhotoUrl = s3FileService.upload(careTakerRequestDto.getAuthenticationPhoto());
-
-        Region mainRegion = regionRepository.findByEmdCode(careTakerRequestDto.getEmdCode())
-                .orElseThrow(() -> new NotFoundException("emdcode", "해당 지역을 찾을 수 없습니다."));
-
-        careTakerRequestRepository.save(careTakerRequestDto.toCareTakerRequest(user, mainRegion, authenticationPhotoUrl));
+        careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
+                .isConfirmed(DEFER).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
     }
 
-    public UserMypageDto getUserMypage(User user){
-        List<RegionDto> regions = mapService.getRegionList(user);
-        UserMypageDto userMypageDto = new UserMypageDto(user, regions);
-        return userMypageDto;
+    public List<RegionDto> getRegionList(final User user) {
+
+        List<Region> regions = new ArrayList<>();
+        regions.add(user.getMainRegion());
+        regions.add(user.getSubRegion1());
+        regions.add(user.getSubRegion2());
+
+        return regions.stream().filter(Objects::nonNull)
+                .map(region -> region.toRegionDto())
+                .collect(Collectors.toList());
     }
 
-//    public UserMypageDto getEditUserMypage(User user){
-//        UserMypageDto userMypageDto = new UserMypageDto(user);
-//        return userMypageDto;
-//    }
-//
-//    @Transactional
-//    public void editUserMypage(User user, String nickname){
-//        if(isExistingNickname(nickname)){
-//            user.setNickname(nickname);
-//        }
-//        userRepository.save(user);
-//
-//    }
-
+    private int getRandomCode() {
+        return (int) Math.floor(Math.random() * 1000000);
+    }
 }

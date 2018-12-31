@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -96,5 +97,11 @@ public class User extends BaseTime {
     public void updateMileage(Long mileage) {
         checkMileageMoreThan(mileage);
         this.mileage += mileage;
+    }
+
+    public boolean isAuthenticatedRegion(Integer emdCode) {
+        if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+            return true;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 }
