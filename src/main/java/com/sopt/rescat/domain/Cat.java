@@ -51,6 +51,7 @@ public class Cat extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
 
     public CatDto toCatDto(){

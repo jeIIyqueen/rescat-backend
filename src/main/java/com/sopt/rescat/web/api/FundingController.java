@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import java.util.Map;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
 @RestController
 @RequestMapping("/api/fundings")
 public class FundingController {
     private FundingService fundingService;
-    private JWTService jwtService;
 
-    public FundingController(final FundingService fundingService, JWTService jwtService) {
+    public FundingController(final FundingService fundingService) {
         this.fundingService = fundingService;
-        this.jwtService = jwtService;
     }
 
     @ApiOperation(value = "치료비 모금/ 프로젝트 모금 리스트 조회", notes = "category에 따라 펀딩 글 리스트를 반환합니다.")
@@ -102,19 +102,20 @@ public class FundingController {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.findCommentsBy(idx));
     }
 
-    @ApiOperation(value = "마일리지 결제", notes = "펀딩 반환합니다.")
+    @ApiOperation(value = "마일리지 결제", notes = "idx에 해당하는 펀딩 글에 마일리지로 결제합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "마일리지 결제 성공"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-    @GetMapping("/{idx}/pay/mileage")
+    @PostMapping("/{idx}/pay")
     public ResponseEntity<Void> payForMileage(
+            @RequestHeader(value = "Authorization") final String token,
             @PathVariable Long idx,
-            Long mileage,
+            @RequestBody Map<String,Object> body,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        fundingService.payForMileage(idx, mileage, loginUser);
+        fundingService.payForMileage(idx, (long) (int) body.get("mileage"), loginUser);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

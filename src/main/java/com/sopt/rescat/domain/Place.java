@@ -52,6 +52,7 @@ public class Place extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_place_region_idx"))
     private Region region;
 
     public PlaceDto toPlaceDto(){

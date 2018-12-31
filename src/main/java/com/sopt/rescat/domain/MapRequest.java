@@ -38,6 +38,7 @@ public class MapRequest extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_map_request_region_idx"))
     private Region region;
 
     @Column
