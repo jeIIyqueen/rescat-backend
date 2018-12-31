@@ -6,6 +6,8 @@ import com.sopt.rescat.exception.NotExistException;
 import com.sopt.rescat.repository.AdvertisementBannerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.stream.Collectors;
+
 @Service
 public class AdvertisementBannerService {
     private AdvertisementBannerRepository advertisementBannerRepository;
@@ -14,8 +16,10 @@ public class AdvertisementBannerService {
         this.advertisementBannerRepository = advertisementBannerRepository;
     }
 
-    public Iterable<AdvertisementBanner> gets() {
-        return advertisementBannerRepository.findAll();
+    public Iterable<BannerDto> gets() {
+        return advertisementBannerRepository.findAll().stream()
+                .map(AdvertisementBanner::toBannerDto)
+                .collect(Collectors.toList());
     }
 
     public BannerDto getByRandomIdx() {

@@ -1,13 +1,13 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.FailureException;
-import com.sopt.rescat.exception.UnAuthenticationException;
+import com.sopt.rescat.exception.*;
+import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
@@ -18,17 +18,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService {
+    private final String ID_REGEX = "^[a-z]+[a-z0-9]{5,19}$";
+    private final String NICKNAME_REGEX = "^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,20}$";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final RegionRepository regionRepository;
+    private final CareTakerRequestRepository careTakerRequestRepository;
+    private final S3FileService s3FileService;
 
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER = 0;
+    private final Integer REFUSE = 2;
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -37,22 +50,42 @@ public class UserService {
     @Value("${GABIA.APIKEY}")
     private String apiKey;
 
-    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService, final RegionRepository regionRepository) {
+
+    public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder, final JWTService jwtService,
+                       final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
+                       final RegionRepository regionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.careTakerRequestRepository = careTakerRequestRepository;
+        this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
     }
 
     public Boolean isExistingId(String id) {
+        if(!id.matches(ID_REGEX))
+            throw new InvalidValueException("id", "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
+
         if (userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
+            throw new AlreadyExistsException("id", "이미 사용중인 아이디입니다.");
         }
         return Boolean.FALSE;
     }
 
+    public Boolean isExistingNickname(String nickname) {
+        if(!nickname.matches(NICKNAME_REGEX))
+            throw new InvalidValueException("nickname", "닉네임은 특수문자 제외 2~20자이어야 합니다.");
+
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new AlreadyExistsException("nickname", "이미 사용중인 닉네임입니다.");
+        }
+        return Boolean.FALSE;
+    }
+
+    @Transactional
     public User create(UserJoinDto userJoinDto) {
         isExistingId(userJoinDto.getId());
+        isExistingNickname(userJoinDto.getNickname());
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
@@ -88,9 +121,35 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
-//    public List<List<RegionDto>> getAllRegionList(){
-//        List<Region> allRegions = regionRepository.findAll();
-//        List<RegionDto> sidoList = allRegions.stream().map(region -> new RegionDto(region.getSdcode(), region.getSdname())).distinct().collect(Collectors.toList());
-//
-//    }
+
+    public Map<String, Map<String, List<Region>>> getAllRegionList() {
+        List<Region> allRegions = regionRepository.findAll();
+
+        Map<String, Map<String, List<Region>>> allRegionList =
+                allRegions.stream().collect(Collectors.groupingBy(Region::getSdName, Collectors.groupingBy(Region::getSggName, Collectors.toList())));
+
+        return allRegionList;
+    }
+
+    @Transactional
+    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) throws IOException {
+        Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
+                .isConfirmed(DEFER).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
+    }
+
+    public List<RegionDto> getRegionList(final User user) {
+
+        List<Region> regions = new ArrayList<>();
+        regions.add(user.getMainRegion());
+        regions.add(user.getSubRegion1());
+        regions.add(user.getSubRegion2());
+
+        return regions.stream().filter(Objects::nonNull)
+                .map(region -> region.toRegionDto())
+                .collect(Collectors.toList());
+    }
+
 }

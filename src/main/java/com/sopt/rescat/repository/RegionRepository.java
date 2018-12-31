@@ -1,16 +1,17 @@
 package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.Region;
-import com.sopt.rescat.dto.RegionDto;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface RegionRepository extends CrudRepository<Region, Long> {
-    Optional<Region> findByemdCode(Integer emdCode);
+public interface RegionRepository extends JpaRepository<Region, Long> {
 
-//    @Query("select new RegionDto(sdcode, sdname) from region")
-//    List<RegionDto> findAll();
+    List<Region> findAll();
+
+    Optional<Region> findByEmdCode(Integer emdCode);
+
+    Optional<Region> findBySdNameAndSggNameAndEmdName(String sdName, String sggName, String emdName);
+
 }

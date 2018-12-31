@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,30 +14,37 @@ import javax.persistence.Id;
 @Getter
 @Entity
 public class Region {
-    @Column
-    private Integer sdcode;
-
-    @Column
-    private String sdname;
-
-    @Column
-    private Integer sggcode;
-
-    @Column
-    private String sggname;
-
-    @Column
     @Id
     private Integer emdCode;
 
+    @JsonIgnore
     @Column
-    private String emdname;
+    private Integer sdCode;
+
+    @JsonIgnore
+    @Column
+    private String sdName;
+
+    @JsonIgnore
+    @Column
+    private Integer sggCode;
+
+    @JsonIgnore
+    @Column
+    private String sggName;
+
+    @Column
+    private String emdName;
 
     public RegionDto toRegionDto() {
-        return RegionDto.builder().code(this.emdCode).name(sdname + " " + sggname + " " + emdname).build();
+        return RegionDto.builder().code(this.emdCode).name(sdName + " " + sggName + " " + emdName).build();
+    }
+
+    public RegionDto toRegionDto(Integer code, String name) {
+        return RegionDto.builder().code(code).name(name).build();
     }
 
     public boolean equals(Region region) {
-        return this.emdname == region.emdname;
+        return this.emdName.equals(region.emdName);
     }
 }
