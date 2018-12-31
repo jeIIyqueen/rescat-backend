@@ -105,6 +105,7 @@ public class FundingController {
     @ApiOperation(value = "마일리지 결제", notes = "idx에 해당하는 펀딩 글에 마일리지로 결제합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "마일리지 결제 성공"),
+            @ApiResponse(code = 400, message = "idx 에 해당하는 글 없음 / 마일리지가 부족함"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
