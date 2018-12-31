@@ -47,12 +47,15 @@ public class User extends BaseTime {
     private String password;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
     private Region mainRegion;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
     private Region subRegion1;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
     private Region subRegion2;
 
     @Column
@@ -87,7 +90,7 @@ public class User extends BaseTime {
     }
 
     private void checkMileageMoreThan(Long mileage) {
-        if(this.mileage < mileage) throw new InvalidValueException("mileage", "사용자가 가진 마일리지보다 더 큽니다.");
+        if(this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
     }
 
     public void updateMileage(Long mileage) {

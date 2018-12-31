@@ -25,6 +25,7 @@ public class CareTakerRequest extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_care_taker_request_region_idx"))
     private Region mainRegion;
 
     @Column
