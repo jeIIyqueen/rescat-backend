@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value = "FundingBannerController", description = "펀딩 후기 배너 api")
+@Api(value = "ApiFundingBannerController", description = "펀딩 후기 배너 api")
 @RestController
 @RequestMapping("/api/funding-banners")
 public class FundingBannerController {

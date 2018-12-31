@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,6 +31,7 @@ public class UserService {
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
     private final MapService mapService;
+
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -149,4 +147,15 @@ public class UserService {
 //
 //    }
 
+    @Transactional
+    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
+
+        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
+            throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
+
+        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
+            throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
+        if(userPasswordDto.checkValidPassword())
+            user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
+    }
 }

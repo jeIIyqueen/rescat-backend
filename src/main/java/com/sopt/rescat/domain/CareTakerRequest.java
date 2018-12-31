@@ -43,5 +43,4 @@ public class CareTakerRequest extends BaseEntity {
         this.mainRegion = mainRegion;
         this.authenticationPhotoUrl = authenticationPhotoUrl;
     }
-
 }

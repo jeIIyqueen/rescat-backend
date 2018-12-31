@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class CarePostDto {
+public class CarePostResponseDto {
     private Long idx;
     private String name;
     private String contents;

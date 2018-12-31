@@ -3,6 +3,7 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -12,7 +13,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class User extends BaseTime {
@@ -62,6 +62,9 @@ public class User extends BaseTime {
     @Column
     private String photoUrl;
 
+    @Column
+    private Long mileage;
+
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
@@ -80,5 +83,18 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
+    private void checkMileageMoreThan(Long mileage) {
+        if(this.mileage < mileage) throw new InvalidValueException("mileage", "사용자가 가진 마일리지보다 더 큽니다.");
+    }
+
+    public void updateMileage(Long mileage) {
+        checkMileageMoreThan(mileage);
+        this.mileage += mileage;
     }
 }

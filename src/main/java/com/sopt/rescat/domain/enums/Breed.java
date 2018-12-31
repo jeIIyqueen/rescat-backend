@@ -1,5 +1,7 @@
 package com.sopt.rescat.domain.enums;
 
+import java.util.Arrays;
+
 public enum Breed {
     KOREANSHORTHAIR("코리안숏헤어"),
     PERSIAN("페르시안"),
@@ -16,11 +18,18 @@ public enum Breed {
     SCOTTISHSTRAIGHT("스코티쉬 스트레이트"),
     RAGDOLL("랙돌"),
     ETC("기타"),
+    MIX("믹스"),
     UNKNOWN("모름");
 
     private String value;
 
     Breed(String value) {
         this.value = value;
+    }
+
+    public boolean isExist(String key) {
+        return Arrays.stream(Breed.values())
+                .anyMatch((breed) -> breed.name()
+                        .equals(value));
     }
 }

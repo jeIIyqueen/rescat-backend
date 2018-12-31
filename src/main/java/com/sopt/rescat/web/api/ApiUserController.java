@@ -1,6 +1,5 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.service.JWTService;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
-import javax.validation.constraints.Pattern;
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
@@ -33,6 +32,7 @@ public class ApiUserController {
     private final UserService userService;
     private final JWTService jwtService;
     private final MapService mapService;
+
 
     public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService) {
         this.userService = userService;
@@ -191,5 +191,21 @@ public class ApiUserController {
 //        return ResponseEntity.status(HttpStatus.OK).build();
 //    }
 
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),
+            @ApiResponse(code = 400, message = "유효성 검사 에러",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/edit/password")
+    public ResponseEntity editUserPassword(@RequestHeader(value = "Authorization") final String token,
+                                           @RequestBody @Valid UserPasswordDto userPasswordDto, HttpServletRequest httpServletRequest) {
 
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPassword(loginUser, userPasswordDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
