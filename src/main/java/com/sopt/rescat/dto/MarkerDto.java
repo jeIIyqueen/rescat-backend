@@ -1,16 +1,24 @@
 package com.sopt.rescat.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Builder
 public class MarkerDto {
     private Long idx;
 
     private String name;
 
-    private Float lat;
+    private Double lat;
 
-    private Float lng;
+    private Double lng;
 
     private Integer radius;
 

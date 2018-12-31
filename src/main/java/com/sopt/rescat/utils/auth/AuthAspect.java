@@ -8,30 +8,36 @@ import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.vo.JwtTokenVO;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Component
+@Aspect
 public class AuthAspect {
+    public final static String USER_KEY = "rescat-user";
     private final static String AUTHORIZATION = "Authorization";
-
-    /**
-     * 실패 시 기본 반환 Response
-     */
-
     private final HttpServletRequest httpServletRequest;
-
     private final JWTService jwtService;
-
     private final UserRepository userRepository;
-
-    /**
-     * Repository 의존성 주입
-     */
 
     public AuthAspect(final HttpServletRequest httpServletRequest, final JWTService jwtService, final UserRepository userRepository) {
         this.httpServletRequest = httpServletRequest;
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+    }
+
+    private User checkAuth(final String jwtToken) {
+        if (jwtToken == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+
+        final JwtTokenVO token = jwtService.decode(jwtToken);
+        if (token == null || token.getIdx() == -1) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
+
+        final User user = userRepository.findByIdx(token.getIdx());
+        if (user == null) throw new UnAuthenticationException("idx", "해당하는 유저가 존재하지 않습니다.");
+
+        return user;
     }
 
     /**
@@ -41,41 +47,35 @@ public class AuthAspect {
      * @return
      * @throws Throwable
      */
-
     //항상 @annotation 패키지 이름을 실제 사용할 annotation 경로로 맞춰줘야 한다.
     @Around("@annotation(com.sopt.rescat.utils.auth.Auth)")
-    public Object around(final ProceedingJoinPoint pjp) throws Throwable {
+    public Object aroundMember(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
-        //토큰 존재 여부 확인
-        if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-        //토큰 해독
-        final JwtTokenVO token = jwtService.decode(jwt);
-        //토큰 검사
-        if (token == null) {
-            throw new UnAuthenticationException();
-        } else {
-            final User user = userRepository.findByIdx(token.getIdx());
-            //유효 사용자 검사
-            if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-            return pjp.proceed(pjp.getArgs());
-        }
+        httpServletRequest.setAttribute(USER_KEY, checkAuth(jwt));
+        return pjp.proceed(pjp.getArgs());
+    }
+
+    // 케어테이커 인증
+    @Around("@annotation(com.sopt.rescat.utils.auth.CareTakerAuth)")
+    public Object aroundCareTaker(final ProceedingJoinPoint pjp) throws Throwable {
+        final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
+        User user = checkAuth(jwt);
+        if (user.getRole() != Role.CARETAKER)
+            throw new UnAuthenticationException("user", "케어테이커 인증을 받지 않은 사용자입니다.");
+
+        httpServletRequest.setAttribute(USER_KEY, user);
+        return pjp.proceed(pjp.getArgs());
+    }
+
+    // 어드민 인증
+    @Around("@annotation(com.sopt.rescat.utils.auth.AdminAuth)")
+    public Object aroundAdmin(final ProceedingJoinPoint pjp) throws Throwable {
+        final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
+        User user = checkAuth(jwt);
+        if (user.getRole() != Role.ADMIN)
+            throw new UnAuthenticationException("user", "어드민 인증을 받지 않은 사용자입니다.");
+
+        httpServletRequest.setAttribute(USER_KEY, user);
+        return pjp.proceed(pjp.getArgs());
     }
 }
-//
-//    @Around("@annotation(com.sopt.rescat.utils.auth.CareTaker)")
-//    public Object around(final ProceedingJoinPoint pjp) throws Throwable {
-//        final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
-//        //토큰 존재 여부 확인
-//        if (jwt == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-//        //토큰 해독
-//        final JwtTokenVO token = jwtService.decode(jwt);
-//        //토큰 검사
-//        if (token == null) {
-//            throw new UnAuthenticationException();
-//        } else {
-//            final User user = userRepository.findByIdx(token.getIdx());
-//            //유효 사용자 검사
-//            if (user == null) throw new UnAuthenticationException("token", "유효하지 않은 토큰입니다.");
-//            if (user.getRole() != Role.CARETAKER)
-//            return pjp.proceed(pjp.getArgs());
-//    }

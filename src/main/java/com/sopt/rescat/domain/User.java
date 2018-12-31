@@ -1,8 +1,10 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +44,7 @@ public class User extends BaseTime {
     @Column
     @NonNull
     @Length(max = 300)
+    @JsonIgnore
     private String password;
 
     @OneToOne
@@ -58,9 +61,6 @@ public class User extends BaseTime {
     @NonNull
     private Role role;
 
-    @Column
-    private String photoUrl;
-
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
@@ -74,5 +74,11 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public boolean isAuthenticatedRegion(Integer emdCode) {
+        if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+            return true;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 }

@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain.photo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.CarePost;
@@ -26,6 +27,7 @@ public class CarePostPhoto extends BaseTime {
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_care_post_photo_care_post_restaurant"))
+    @JsonIgnore
     private CarePost carePost;
 
     public CarePostPhoto(@NonNull String url) {
