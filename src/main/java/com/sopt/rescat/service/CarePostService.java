@@ -82,4 +82,7 @@ public class CarePostService {
     }
 
 
+    public Iterable<CarePost> findAllByUser(User user) {
+        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, CONFIRM);
+    }
 }

@@ -146,6 +146,41 @@ public class UserService {
         return (int) Math.floor(Math.random() * 1000000);
     }
 
+    public List<Funding> getSupportingFundings(User user) {
+        List<ProjectFundingLog> projectFundingLogs = projectFundingLogRepository.findBySponsorOrderByCreatedAtDesc(user);
+        return getFundingsByLogs(projectFundingLogs);
+    }
+
+    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs){
+        return projectFundingLogs.stream()
+                .map(ProjectFundingLog::getFunding)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public UserMypageDto getEditUser(User user){
+        UserMypageDto userMypageDto = new UserMypageDto(user);
+        return userMypageDto;
+    }
+
+    @Transactional
+    public UserMypageDto editUser(User user, UserEditDto userEditDto){
+        User tokenUser = userRepository.findByIdx(user.getIdx());
+        String editNickname = userEditDto.getNickname();
+
+        if(tokenUser.getRole() == Role.MEMBER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(editNickname, null);
+            }
+        }
+        else if(tokenUser.getRole() == Role.CARETAKER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
+            }
+        }
+        return new UserMypageDto(user);
+    }
+
     @Transactional
     public void editUserPassword(User user, UserPasswordDto userPasswordDto){
 
@@ -158,17 +193,4 @@ public class UserService {
             user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
     }
 
-    public List<Funding> getSupportingFundings(User user) {
-
-        List<ProjectFundingLog> projectFundingLogs = projectFundingLogRepository.findBySponsorOrderByCreatedAtDesc(user);
-
-        return getFundingsByLogs(projectFundingLogs);
-    }
-
-    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs){
-        return projectFundingLogs.stream()
-                .map(ProjectFundingLog::getFunding)
-                .distinct()
-                .collect(Collectors.toList());
-    }
 }

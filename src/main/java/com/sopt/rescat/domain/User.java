@@ -107,4 +107,10 @@ public class User extends BaseTime {
             return true;
         throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
+
+    public void updateUser(String nickname, String phone){
+        this.nickname = nickname;
+        this.phone = phone;
+    }
+
 }
