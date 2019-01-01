@@ -19,18 +19,20 @@ import java.util.UUID;
 @Service
 public class S3FileService {
 
+    private final AmazonS3Client amazonS3Client;
     //버킷 이름 동적 할당
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     //버킷 주소 동적 할당
     @Value("${cloud.aws.s3.bucket.url}")
     private String defaultUrl;
 
-    private final AmazonS3Client amazonS3Client;
-
     public S3FileService(final AmazonS3Client amazonS3Client) {
         this.amazonS3Client = amazonS3Client;
+    }
+
+    private static String getUuid() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     public String upload(MultipartFile uploadFile) throws IOException {
@@ -51,15 +53,11 @@ public class S3FileService {
             url = defaultUrl + saveFileName;
             //파일 삭제
             file.delete();
-        }catch (StringIndexOutOfBoundsException e) {
+        } catch (StringIndexOutOfBoundsException e) {
             //파일이 없을 경우 예외 처리
             url = null;
         }
         return url;
-    }
-
-    private static String getUuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     //S3에 파일을 업로드한다.

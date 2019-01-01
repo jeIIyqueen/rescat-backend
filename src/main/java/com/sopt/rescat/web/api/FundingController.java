@@ -6,7 +6,6 @@ import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.util.Map;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
@@ -112,7 +110,7 @@ public class FundingController {
     public ResponseEntity<Void> payForMileage(
             @RequestHeader(value = "Authorization") final String token,
             @PathVariable Long idx,
-            @RequestBody Map<String,Object> body,
+            @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         fundingService.payForMileage(idx, (long) (int) body.get("mileage"), loginUser);

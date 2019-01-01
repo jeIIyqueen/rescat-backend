@@ -86,7 +86,7 @@ public class Funding extends BaseEntity {
     }
 
     public FundingResponseDto toFundingDto() {
-        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
         return FundingResponseDto.builder()
                 .idx(idx)

@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class FundingService {
     private final Integer CONFIRM = 1;
-    private final Integer DEFER   = 0;
-    private final Integer REFUSE  = 2;
+    private final Integer DEFER = 0;
+    private final Integer REFUSE = 2;
 
     private FundingRepository fundingRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;

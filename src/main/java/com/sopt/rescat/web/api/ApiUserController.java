@@ -11,7 +11,6 @@ import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -132,7 +131,7 @@ public class ApiUserController {
     @Auth
     @GetMapping("/mypage")
     public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
-                                                   HttpServletRequest httpServletRequest){
+                                                   HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }

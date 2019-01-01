@@ -9,6 +9,9 @@ import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Slf4j
 @ToString
@@ -25,21 +28,21 @@ public class MapRequest extends BaseEntity {
     @Column
     @NonNull
     @Range(min = 0, max = 1)
-    @ApiModelProperty(notes = "요청 유형(0: 등록, 1: 수정)", position = 1)
+    @ApiModelProperty(notes = "요청 유형(0: 등록, 1: 수정)", position = 1, required = true)
     // 0: 등록, 1: 수정
     private Integer requestType;
 
     @Column
     @NonNull
     @Range(min = 0, max = 2)
-    @ApiModelProperty(notes = "마커 유형(0: 배식소, 1: 병원, 2: 길고양이)", position = 2)
+    @ApiModelProperty(notes = "마커 유형(0: 배식소, 1: 병원, 2: 길고양이)", position = 2, required = true)
     // 0: 고양이, 1: 배식소, 2: 병원
     private Integer registerType;
 
     @Column
     @NonNull
     @Length(max = 50)
-    @ApiModelProperty(notes = "고양이 이름 또는 배식소, 병원 이름(50자이내)", position = 3)
+    @ApiModelProperty(notes = "고양이 이름 또는 배식소, 병원 이름(50자이내)", position = 3, required = true)
     private String name;
 
     @Column
@@ -48,16 +51,13 @@ public class MapRequest extends BaseEntity {
 
     @NonNull
     @Column
-    @ApiModelProperty(notes = "위도 좌표", position = 5)
+    @ApiModelProperty(notes = "위도 좌표", position = 5, required = true)
     private Double lat;
 
     @NonNull
     @Column
-    @ApiModelProperty(notes = "경도 좌표", position = 6)
+    @ApiModelProperty(notes = "경도 좌표", position = 6, required = true)
     private Double lng;
-
-    @ApiModelProperty(notes = "(only병원)주소", position = 7)
-    private String address;
 
     @ApiModelProperty(hidden = true)
     @OneToOne
@@ -67,7 +67,18 @@ public class MapRequest extends BaseEntity {
 
     @URL
     @Column
+    @ApiModelProperty(notes = "사진", position = 13)
     private String photoUrl;
+
+    @Column
+    @ApiModelProperty(notes = "(only병원)주소", position = 7)
+    private String address;
+
+    @Column
+    @Length(max = 13)
+    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
+    @ApiModelProperty(notes = "(only병원)전화번호", position = 7)
+    private String phone;
 
     @Column
     @ApiModelProperty(notes = "(only길고양이)활동반경", position = 8)
@@ -92,19 +103,33 @@ public class MapRequest extends BaseEntity {
     private Integer tnr;
 
     @Column
+    @ApiModelProperty(notes = "(수정요청시 필수)마커의 idx", position = 12)
+    private Long markerIdx;
+
+    @Column
     @ApiModelProperty(hidden = true)
     @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Transient
+    @ApiModelProperty(notes = "지역 전체 이름", position = 14, required = true)
     private String regionFullName;
 
-    @Column
-    @ApiModelProperty(notes = "(수정요청시)마커의 idx", position = 12)
-    private Long markerIdx;
+    @Transient
+    private String writerName;
+
+    public MapRequest setWriterName() {
+        this.writerName = getWriter().getName();
+        return this;
+    }
+
+    public MapRequest setIsConfirmed(Integer isConfirmed) {
+        this.isConfirmed = isConfirmed;
+        return this;
+    }
 
     @Builder
-    public MapRequest(User writer, @NonNull @Range(min = 0, max = 1) Integer requestType, @NonNull @Range(min = 0, max = 2) Integer registerType, @NonNull @Length(max = 50) String name, String etc, @NonNull Double lat, @NonNull Double lng, String address, @NonNull Region region, @URL String photoUrl, Integer radius, @Range(min = 0, max = 1) Integer sex, @Length(max = 5) String age, @Range(min = 0, max = 1) Integer tnr, @Range(min = 0, max = 2) Integer isConfirmed, Long markerIdx) {
+    public MapRequest(User writer, @NonNull @Range(min = 0, max = 1) Integer requestType, @NonNull @Range(min = 0, max = 2) Integer registerType, @NonNull @Length(max = 50) String name, String etc, @NonNull Double lat, @NonNull Double lng, String address, @NonNull Region region, @URL String photoUrl, Integer radius, @Range(min = 0, max = 1) Integer sex, @Length(max = 5) String age, @Range(min = 0, max = 1) Integer tnr, @Range(min = 0, max = 2) Integer isConfirmed, Long markerIdx, @Length(max = 13) String phone) {
         super(writer);
         this.requestType = requestType;
         this.registerType = registerType;
@@ -121,13 +146,28 @@ public class MapRequest extends BaseEntity {
         this.tnr = tnr;
         this.isConfirmed = isConfirmed;
         this.markerIdx = markerIdx;
+        this.phone = phone;
     }
 
-    public boolean hasMarkerIdx(){
+    @ApiModelProperty(hidden = true)
+    public boolean hasMarkerIdx() {
         return this.markerIdx != null;
     }
 
-    public boolean isEditCategory(){
+    @ApiModelProperty(hidden = true)
+    public boolean isEditCategory() {
         return this.requestType == 1;
+    }
+
+    @ApiModelProperty(hidden = true)
+    public Place toPlace() {
+        return Place.builder().address(this.address).category(this.registerType).etc(this.etc).lat(this.lat)
+                .lng(this.lng).name(this.name).phone(this.phone).photoUrl(this.photoUrl).region(region).build();
+    }
+
+    @ApiModelProperty(hidden = true)
+    public Cat toCat() {
+        return Cat.builder().age(this.age).etc(this.etc).lat(this.lat).lng(this.lng).name(this.name)
+                .photoUrl(this.photoUrl).radius(this.radius).region(this.region).sex(this.sex).tnr(this.tnr).build();
     }
 }

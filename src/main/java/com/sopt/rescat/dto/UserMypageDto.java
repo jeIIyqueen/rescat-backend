@@ -18,7 +18,7 @@ public class UserMypageDto {
     private List<RegionDto> regions;
     private String phone;
 
-    public UserMypageDto(User user, List<RegionDto> regions){
+    public UserMypageDto(User user, List<RegionDto> regions) {
         this.id = user.getId();
         this.nickname = user.getNickname();
         this.role = user.getRole();

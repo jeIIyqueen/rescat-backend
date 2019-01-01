@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

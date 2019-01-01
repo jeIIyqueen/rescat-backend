@@ -16,9 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 public class AuthAspect {
-    private final static String AUTHORIZATION = "Authorization";
     public final static String USER_KEY = "rescat-user";
-
+    private final static String AUTHORIZATION = "Authorization";
     private final HttpServletRequest httpServletRequest;
     private final JWTService jwtService;
     private final UserRepository userRepository;

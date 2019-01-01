@@ -3,12 +3,14 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.UserMypageDto;
-import com.sopt.rescat.exception.*;
+import com.sopt.rescat.exception.AlreadyExistsException;
+import com.sopt.rescat.exception.FailureException;
+import com.sopt.rescat.exception.NotFoundException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
@@ -109,7 +111,7 @@ public class UserService {
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 
-    public UserMypageDto getUserMypage(User user){
+    public UserMypageDto getUserMypage(User user) {
         List<RegionDto> regions = getRegionList(user);
         return new UserMypageDto(user, regions);
     }

@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class CarePostService {
     private final Integer CONFIRM = 1;
-    private final Integer DEFER   = 0;
-    private final Integer REFUSE  = 2;
+    private final Integer DEFER = 0;
+    private final Integer REFUSE = 2;
 
     private CarePostRepository carePostRepository;
     private CarePostPhotoRepository carePostPhotoRepository;
