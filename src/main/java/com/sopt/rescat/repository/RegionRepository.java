@@ -12,4 +12,5 @@ public interface RegionRepository extends CrudRepository<Region, Long> {
     Optional<Region> findByEmdCode(Integer emdCode);
 
     Optional<Region> findBySdNameAndSggNameAndEmdName(String sdName, String sggName, String emdName);
+
 }

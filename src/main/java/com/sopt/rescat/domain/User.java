@@ -14,7 +14,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class User extends BaseTime {
@@ -88,6 +87,10 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 
     private void checkMileageMoreThan(Long mileage) {

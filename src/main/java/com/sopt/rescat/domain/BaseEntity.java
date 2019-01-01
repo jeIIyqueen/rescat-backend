@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity extends BaseTime {
     @OneToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
+    @ApiModelProperty(hidden = true)
     private User writer;
 
     protected void initWriter(User writer) {
