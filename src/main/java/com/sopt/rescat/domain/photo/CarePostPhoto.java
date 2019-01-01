@@ -33,4 +33,9 @@ public class CarePostPhoto extends BaseTime {
     public CarePostPhoto(@NonNull String url) {
         this.url = url;
     }
+
+    public CarePostPhoto initCarePost(CarePost carePost) {
+        this.carePost = carePost;
+        return this;
+    }
 }

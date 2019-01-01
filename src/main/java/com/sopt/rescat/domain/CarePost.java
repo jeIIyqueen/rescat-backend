@@ -1,11 +1,12 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
-import com.sopt.rescat.dto.response.CarePostDto;
-import lombok.Getter;
-import lombok.NonNull;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.NotExistException;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -13,7 +14,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarePost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +32,7 @@ public class CarePost extends BaseEntity {
     private List<CarePostPhoto> photos;
 
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<CarePostComment> comments;
 
     @Column
@@ -74,9 +79,23 @@ public class CarePost extends BaseEntity {
     @Column
     private LocalDateTime endProtectionPeriod;
 
-    public CarePostDto toCarePostDto() {
+    @Column
+    @NonNull
+    private Integer isConfirmed;
+
+    @Transient
+    private String nickname;
+
+    public CarePost setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
+    }
+
+    public CarePostResponseDto toCarePostDto() {
         Integer MAIN_PHOTO_INDEX = 0;
-        return CarePostDto.builder()
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+
+        return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
                 .contents(contents)
@@ -84,5 +103,19 @@ public class CarePost extends BaseEntity {
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
                 .build();
+    }
+
+    public CarePost initPhotos(List<CarePostPhoto> carePostPhotos) {
+        this.photos = carePostPhotos;
+        return this;
+    }
+
+    public CarePost setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public void updateConfirmStatus(Integer isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }

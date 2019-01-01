@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.MapService;
+import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;
@@ -41,7 +42,7 @@ public class ApiMapController {
     })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
-            @ApiImplicitParam(name = "emdCode", value = "읍면동 지역코드", required = false, dataType = "integer")
+            @ApiImplicitParam(name = "emdCode", value = "읍면동 지역코드", dataType = "integer")
     })
     @CareTakerAuth
     @GetMapping
@@ -66,7 +67,9 @@ public class ApiMapController {
     @CareTakerAuth
     @PostMapping
     public ResponseEntity requestMarkerRegisterOrEdit(
-            @RequestBody @Valid MapRequest mapRequest, HttpServletRequest httpServletRequest) throws IOException {
+            @RequestHeader(value = "Authorization") final String token,
+            @RequestBody @Valid MapRequest mapRequest,
+            HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         log.info(mapRequest.toString());
 
@@ -74,34 +77,61 @@ public class ApiMapController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    //관리자용
-    //요청조회
-//    @GetMapping("/request")
-//    public ResponseEntity getRequestList(@RequestHeader(value = "Authorization", required = false) final String header){
-//        final Long userIdx = jwtService.decode(header).getIdx();
-//
-//        // 보류, 승인, 거절
-//
-//        return
-//    }
-//
-//    //요청저장
-//    @PostMapping("/request/{mapRequestIdx}")
-//    public ResponseEntity createMarker(
-//            @RequestHeader(value = "Authorization", required = false) final String header,
-//            @PathVariable final Long mapRequestIdx){
-//
-//    }
-//
-//    //수정
-//    @PutMapping("request/{mapRequestIdx}")
-//    public ResponseEntity editMarker(
-//            @RequestHeader(value = "Authorization", required = false) final String header,
-//            @PathVariable final Long mapRequestIdx){
-//
-//    }
-//
-//    //삭제
+
+    @ApiOperation(value = "맵 마커 수정/등록 리스트 전체 조회", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정 요청을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = MapRequest.class),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @AdminAuth
+    @GetMapping("/request")
+    public ResponseEntity<List<MapRequest>> getAll(
+            @RequestHeader(value = "Authorization") final String token,
+            HttpServletRequest httpServletRequest) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.getAllMapRequest());
+    }
 
 
+    @ApiOperation(value = "맵 마커 수정/등록 요청 승인", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정 요청을 승인하고 저장합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "승인 성공"),
+            @ApiResponse(code = 400, message = "유효성 검사 에러"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 404, message = "요청 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @AdminAuth
+    @PostMapping("/request/{mapRequestIdx}/approval")
+    public ResponseEntity approveMapRequest(
+            @RequestHeader(value = "Authorization") final String token,
+            @PathVariable final Long mapRequestIdx){
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.approveMapRequest(mapRequestIdx));
+    }
+
+    @ApiOperation(value = "맵 마커 수정/등록 요청 거절", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정 요청을 거절합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "거절 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 404, message = "요청 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @AdminAuth
+    @PostMapping("/request/{mapRequestIdx}/refusal")
+    public ResponseEntity refuseMapRequest(
+            @RequestHeader(value = "Authorization") final String token,
+            @PathVariable final Long mapRequestIdx) {
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.refuseMapRequest(mapRequestIdx));
+    }
 }
+

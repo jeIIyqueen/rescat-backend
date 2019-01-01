@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,13 +27,13 @@ public class SecurityControllerAdvice {
     @ExceptionHandler(NotMatchException.class)
     public ResponseEntity<ExceptionDto> notMatch(NotMatchException exception) {
         log.debug("NotMatchException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnAuthenticationException.class)
     public ResponseEntity<ExceptionDto> unAuthentication(UnAuthenticationException exception) {
         log.debug("UnAuthenticationException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(FailureException.class)
@@ -43,7 +45,7 @@ public class SecurityControllerAdvice {
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ExceptionDto> alreadyExists(AlreadyExistsException exception) {
         log.debug("AlreadyExistsException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -54,7 +56,7 @@ public class SecurityControllerAdvice {
         exception.getBindingResult().getAllErrors()
                 .forEach(validError -> exceptionDtos.add(ExceptionDto.toExceptionDto(validError)));
 
-        return new ResponseEntity(exceptionDtos, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionDtos, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
@@ -73,31 +75,37 @@ public class SecurityControllerAdvice {
         exception.getConstraintViolations()
                 .forEach(constraintViolation -> exceptionDtos.add(buildExceptionDto(constraintViolation.getMessage(), constraintViolation.getInvalidValue().toString())));
 
-        return new ResponseEntity(exceptionDtos, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionDtos, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotExistException.class)
-    public ResponseEntity<ErrorResponse> notExist(Exception exception) {
+    public ResponseEntity<ExceptionDto> notExist(NotExistException exception) {
         log.debug("NotExistException is happened!");
-        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<ExceptionDto> invalidValue(InvalidValueException exception) {
         log.debug("InvalidValueException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionDto> notFound(NotFoundException exception) {
         log.debug("NotFoundException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(exception.getField(), exception.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> httpMessageNotReadable(HttpMessageNotReadableException exception) {
+        log.debug("HttpMessageNotReadableException is happened!");
+        return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({MultipartException.class, FileUploadBase.FileSizeLimitExceededException.class, java.lang.IllegalStateException.class})
     public ResponseEntity<ExceptionDto> sizeExceeded(MultipartException exception) {
         log.debug("FileSizeLimitExceededException is happened!");
-        return new ResponseEntity(ExceptionDto.toExceptionDto("photo", "업로드 가능한 이미지 최대 크기는 10MB입니다."), HttpStatus.PAYLOAD_TOO_LARGE);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto("photo", "업로드 가능한 이미지 최대 크기는 10MB입니다."), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     public ExceptionDto buildExceptionDto(String message, String field) {

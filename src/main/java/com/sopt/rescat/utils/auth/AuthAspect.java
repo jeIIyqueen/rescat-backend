@@ -41,13 +41,12 @@ public class AuthAspect {
     }
 
     /**
-     * 토큰 유효성 검사
+     * 비회원 제외한 권한 인증
      *
      * @param pjp
      * @return
      * @throws Throwable
      */
-    //항상 @annotation 패키지 이름을 실제 사용할 annotation 경로로 맞춰줘야 한다.
     @Around("@annotation(com.sopt.rescat.utils.auth.Auth)")
     public Object aroundMember(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
@@ -55,7 +54,13 @@ public class AuthAspect {
         return pjp.proceed(pjp.getArgs());
     }
 
-    // 케어테이커 인증
+    /**
+     * 케어테이커 권한 인증
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.sopt.rescat.utils.auth.CareTakerAuth)")
     public Object aroundCareTaker(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);
@@ -67,7 +72,14 @@ public class AuthAspect {
         return pjp.proceed(pjp.getArgs());
     }
 
-    // 어드민 인증
+
+    /**
+     * 관리자 권한 인증
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.sopt.rescat.utils.auth.AdminAuth)")
     public Object aroundAdmin(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);

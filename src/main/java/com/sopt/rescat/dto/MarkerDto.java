@@ -41,6 +41,6 @@ public class MarkerDto {
 
     private String address;
 
-    private Integer phone;
-
+    private String phone;
 }
+

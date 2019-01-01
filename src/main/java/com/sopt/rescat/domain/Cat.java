@@ -1,12 +1,14 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
 import javax.persistence.*;
 
+@Builder
 @Getter
 @ToString
 @Entity
@@ -50,6 +52,7 @@ public class Cat extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
 
     public MarkerDto toMarkerDto() {
