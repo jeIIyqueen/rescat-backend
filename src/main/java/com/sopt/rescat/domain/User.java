@@ -14,7 +14,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class User extends BaseTime {
@@ -48,15 +47,15 @@ public class User extends BaseTime {
     private String password;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
     @Column
@@ -88,6 +87,10 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 
     private void checkMileageMoreThan(Long mileage) {

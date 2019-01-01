@@ -150,4 +150,38 @@ public class ApiUserController {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }
+
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),
+            @ApiResponse(code = 400, message = "유효성 검사 에러",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/edit/password")
+    public ResponseEntity editUserPassword(@RequestHeader(value = "Authorization") final String token,
+                                           @RequestBody @Valid UserPasswordDto userPasswordDto, HttpServletRequest httpServletRequest) {
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPassword(loginUser, userPasswordDto);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "후원 클라우드펀딩 조회", notes = "마이페이지에서 유저가 후원 중인 클라우드 펀딩을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/fundings")
+    public ResponseEntity getSupportingFundings(@RequestHeader(value = "Authorization") final String token,
+                                                HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getSupportingFundings(loginUser));
+    }
 }
