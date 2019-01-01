@@ -152,7 +152,6 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }
 
-
     @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),

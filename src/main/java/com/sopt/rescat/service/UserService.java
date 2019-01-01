@@ -4,10 +4,8 @@ import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
-import com.sopt.rescat.repository.CareTakerRequestRepository;
-import com.sopt.rescat.repository.ProjectFundingLogRepository;
-import com.sopt.rescat.repository.RegionRepository;
-import com.sopt.rescat.repository.UserRepository;
+import com.sopt.rescat.repository.*;
+
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
@@ -18,11 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class UserService {
@@ -39,6 +35,7 @@ public class UserService {
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
     private final MapService mapService;
+    private final FundingRepository fundingRepository;
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -50,7 +47,8 @@ public class UserService {
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
                        final RegionRepository regionRepository, final MapService mapService,
-                       final ProjectFundingLogRepository projectFundingLogRepository) {
+                       final ProjectFundingLogRepository projectFundingLogRepository,final FundingRepository fundingRepository) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
@@ -58,6 +56,7 @@ public class UserService {
         this.regionRepository = regionRepository;
         this.mapService = mapService;
         this.projectFundingLogRepository = projectFundingLogRepository;
+        this.fundingRepository = fundingRepository;
     }
 
     public Boolean isExistingId(String id) {
