@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTime {
 
-    @CreatedDate
     @ApiModelProperty(hidden = true)
+    @CreatedDate
     private LocalDateTime createdAt;
 }

@@ -1,14 +1,16 @@
 package com.sopt.rescat.service;
 
+
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.exception.InvalidValueException;
-import com.sopt.rescat.exception.NotExistException;
+import com.sopt.rescat.domain.MapRequest;
+import com.sopt.rescat.domain.Region;
+import com.sopt.rescat.domain.User;
+
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.DynAnyPackage.Invalid;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +86,7 @@ public class MapService {
         return mapRequestRepository.findAllByOrderByCreatedAtDesc().stream().map(MapRequest::setWriterName).collect(Collectors.toList());
     }
 
+    @Transactional
     public MapRequest approveMapRequest(Long mapRequestIdx) {
         MapRequest mapRequest = mapRequestRepository.findById(mapRequestIdx).orElseThrow(() -> new NotFoundException("mapRequestIdx", "존재하지 않는 등록/수정 요청입니다."));
 

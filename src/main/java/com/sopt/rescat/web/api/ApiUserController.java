@@ -1,6 +1,7 @@
 package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.CareTakerRequest;
+import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.service.JWTService;
@@ -13,7 +14,6 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +22,14 @@ import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
 
+
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
-@Validated
 public class ApiUserController {
     private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
+
     private final UserService userService;
     private final JWTService jwtService;
     private final MapService mapService;
@@ -101,6 +102,8 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 
+
+
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "요청 성공"),
@@ -131,7 +134,7 @@ public class ApiUserController {
     @Auth
     @GetMapping("/mypage")
     public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
-                                                   HttpServletRequest httpServletRequest) {
+                                                   HttpServletRequest httpServletRequest){
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }

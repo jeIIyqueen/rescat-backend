@@ -134,3 +134,4 @@ public class ApiMapController {
         return ResponseEntity.status(HttpStatus.OK).body(mapService.refuseMapRequest(mapRequestIdx));
     }
 }
+

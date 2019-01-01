@@ -25,11 +25,4 @@ public class UserMypageDto {
         this.regions = regions;
     }
 
-//    public UserMypageDto(User user){
-//        this.id = user.getId();
-//        this.nickname = user.getNickname();
-//        this.role = user.getRole();
-//        this.phone = user.getPhone();
-//    }
-
 }

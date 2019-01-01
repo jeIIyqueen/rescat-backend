@@ -8,6 +8,10 @@ import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -61,8 +65,8 @@ public class User extends BaseTime {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
+    @Enumerated(value = EnumType.STRING)
     @Column
-    @Enumerated(EnumType.STRING)
     @NonNull
     private Role role;
 
@@ -101,9 +105,9 @@ public class User extends BaseTime {
         this.mileage += mileage;
     }
 
-    public boolean isAuthenticatedRegion(int emdCode) {
+    public boolean isAuthenticatedRegion(Integer emdCode) {
         try {
-            if (this.mainRegion.getEmdCode().intValue() == emdCode || this.subRegion1.getEmdCode().intValue() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+            if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
                 return true;
         } catch (NullPointerException e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
