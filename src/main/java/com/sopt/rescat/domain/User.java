@@ -48,15 +48,15 @@ public class User extends BaseTime {
     private String password;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
     @Column
