@@ -18,8 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarePostService {
-    private final static Boolean IS_CONFIRMED  = true;
-    private final static Boolean NOT_CONFIRMED = false;
+    private final Integer CONFIRM = 1;
+    private final Integer DEFER   = 0;
+    private final Integer REFUSE  = 2;
 
     private CarePostRepository carePostRepository;
     private CarePostPhotoRepository carePostPhotoRepository;
@@ -38,17 +39,17 @@ public class CarePostService {
     }
 
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
-        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, IS_CONFIRMED).stream()
+        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, CONFIRM).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(IS_CONFIRMED);
+        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(CONFIRM);
     }
 
     public Iterable<CarePostResponseDto> find5Post() {
-        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(IS_CONFIRMED).stream()
+        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(CONFIRM).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
@@ -68,7 +69,7 @@ public class CarePostService {
 
     @Transactional
     public void confirmPost(Long idx) {
-        findCarePostBy(idx).updateConfirmStatus(IS_CONFIRMED);
+        findCarePostBy(idx).updateConfirmStatus(CONFIRM);
     }
 
     private CarePost getCarePostBy(Long idx) {

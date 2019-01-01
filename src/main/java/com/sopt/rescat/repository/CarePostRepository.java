@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface CarePostRepository extends CrudRepository<CarePost, Long> {
-    List<CarePost> findByTypeAndIsConfirmedOrderByCreatedAtDesc(Integer type, Boolean isConfirmed);
+    List<CarePost> findByTypeAndIsConfirmedOrderByCreatedAtDesc(Integer type, Integer isConfirmed);
 
-    Iterable<CarePost> findByIsConfirmedOrderByCreatedAtDesc(Boolean isConfirmed);
+    Iterable<CarePost> findByIsConfirmedOrderByCreatedAtDesc(Integer isConfirmed);
 
-    List<CarePost> findTop5ByIsConfirmedOrderByCreatedAtDesc(Boolean isConfirmed);
+    List<CarePost> findTop5ByIsConfirmedOrderByCreatedAtDesc(Integer isConfirmed);
 }

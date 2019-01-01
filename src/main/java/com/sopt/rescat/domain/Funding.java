@@ -75,7 +75,7 @@ public class Funding extends BaseEntity {
     private Date limitAt;
 
     @Column
-    private Boolean isConfirmed;
+    private Integer isConfirmed;
 
     @Transient
     private String nickname;
@@ -119,7 +119,7 @@ public class Funding extends BaseEntity {
         return this;
     }
 
-    public void updateConfirmStatus(Boolean isConfirmed) {
+    public void updateConfirmStatus(Integer isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
 }

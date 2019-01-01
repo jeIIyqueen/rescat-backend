@@ -81,7 +81,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    private Boolean isConfirmed;
+    private Integer isConfirmed;
 
     @Transient
     private String nickname;
@@ -115,7 +115,7 @@ public class CarePost extends BaseEntity {
         return this;
     }
 
-    public void updateConfirmStatus(Boolean isConfirmed) {
+    public void updateConfirmStatus(Integer isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
 }

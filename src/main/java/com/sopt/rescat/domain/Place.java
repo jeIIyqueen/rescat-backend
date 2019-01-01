@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.dto.PlaceDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,11 +31,11 @@ public class Place extends BaseEntity {
 
     @Column
     @NonNull
-    private Float lat;
+    private Double lat;
 
     @Column
     @NonNull
-    private Float lng;
+    private Double lng;
 
     @Column
     private String etc;
@@ -52,10 +53,11 @@ public class Place extends BaseEntity {
 
     @OneToOne
     @NonNull
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_place_region_idx"))
     private Region region;
 
-    public PlaceDto toPlaceDto(){
-        return PlaceDto.builder()
+    public MarkerDto toMarkerDto() {
+        return MarkerDto.builder()
                 .address(address).category(category)
                 .etc(etc).idx(idx).lat(lat).lng(lng)
                 .name(name).phone(phone).photoUrl(photoUrl)

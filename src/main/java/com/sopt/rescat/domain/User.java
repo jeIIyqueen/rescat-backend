@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,12 +47,15 @@ public class User extends BaseTime {
     private String password;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
     @OneToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
     @Column
@@ -90,11 +94,17 @@ public class User extends BaseTime {
     }
 
     private void checkMileageMoreThan(Long mileage) {
-        if(this.mileage < mileage) throw new InvalidValueException("mileage", "사용자가 가진 마일리지보다 더 큽니다.");
+        if(this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
     }
 
     public void updateMileage(Long mileage) {
         checkMileageMoreThan(mileage);
         this.mileage += mileage;
+    }
+
+    public boolean isAuthenticatedRegion(Integer emdCode) {
+        if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+            return true;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 }
