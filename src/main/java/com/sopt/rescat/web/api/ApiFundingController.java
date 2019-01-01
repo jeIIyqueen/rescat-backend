@@ -25,10 +25,10 @@ import java.util.Map;
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
 @RestController
 @RequestMapping("/api/fundings")
-public class FundingController {
+public class ApiFundingController {
     private FundingService fundingService;
 
-    public FundingController(final FundingService fundingService) {
+    public ApiFundingController(final FundingService fundingService) {
         this.fundingService = fundingService;
     }
 

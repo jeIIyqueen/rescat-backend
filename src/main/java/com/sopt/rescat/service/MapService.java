@@ -59,9 +59,9 @@ public class MapService {
 
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequest mapRequest) throws IOException {
-        if(mapRequest.isEditCategory() || mapRequest.hasMarkerIdx()){
-            if(!(mapRequest.isEditCategory() && mapRequest.hasMarkerIdx()))
-                throw new InvalidValueException("category or markerIdx","값이 입력되지 않았습니다.");
+        if (mapRequest.isEditCategory() || mapRequest.hasMarkerIdx()) {
+            if (!(mapRequest.isEditCategory() && mapRequest.hasMarkerIdx()))
+                throw new InvalidValueException("category or markerIdx", "값이 입력되지 않았습니다.");
         }
 
         String[] fullName = mapRequest.getRegionFullName().split(" ");

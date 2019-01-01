@@ -1,11 +1,12 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CareTakerRequest;
+import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
-import com.sopt.rescat.service.JWTService;
-import com.sopt.rescat.service.MapService;
-import com.sopt.rescat.service.UserService;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
@@ -32,11 +33,17 @@ public class ApiUserController {
     private final UserService userService;
     private final JWTService jwtService;
     private final MapService mapService;
+    private final CarePostService carePostService;
+    private final FundingService fundingService;
 
-    public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService) {
+
+    public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService,
+                             final CarePostService carePostService, final FundingService fundingService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.mapService = mapService;
+        this.carePostService = carePostService;
+        this.fundingService = fundingService;
     }
 
     @ApiOperation(value = "일반 유저 생성", notes = "일반 유저를 생성합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
@@ -149,4 +156,93 @@ public class ApiUserController {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }
+
+    @ApiOperation(value = "유저의 회원정보 조회", notes = "유저의 회원정보 목록(아이디, 닉네임, 롤, 핸드폰)을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/edit")
+    public ResponseEntity<UserMypageDto> getEditUser(@RequestHeader(value = "Authorization") final String token,
+                                                     HttpServletRequest httpServletRequest){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getEditUser(loginUser));
+    }
+
+    @ApiOperation(value = "유저의 회원정보 수정", notes = "유저의 회원정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/edit")
+    public ResponseEntity editUser(@RequestHeader(value = "Authorization") final String token,
+                                   HttpServletRequest httpServletRequest, UserEditDto userEditDto){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUser(loginUser, userEditDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "유저가 후원한 펀딩 목록 조회", notes = "유저가 후원한 펀딩 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/supporting")
+    public ResponseEntity<List<Funding>> getUserSupportingFundings(@RequestHeader(value = "Authorization") final String token,
+                                                    HttpServletRequest httpServletRequest){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getSupportingFundings(loginUser));
+    }
+
+    @ApiOperation(value = "유저가 작성한 입양/임시보호 글 리스트 조회", notes = "유저가 작성한 입양/임시보호 글 리스트를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/care-posts")
+    public ResponseEntity<Iterable<CarePost>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
+                                                                   HttpServletRequest httpServletRequest){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllByUser(loginUser));
+    }
+
+    @ApiOperation(value = "유저가 작성한 펀딩 글 리스트 조회", notes = "유저가 작성한 펀딩 글 리스트를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/fundings")
+    public ResponseEntity<Iterable<Funding>> getUserFundingsList(@RequestHeader(value = "Authorization") final String token,
+                                                                 HttpServletRequest httpServletRequest){
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllByUser(loginUser));
+    }
+
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),
+            @ApiResponse(code = 400, message = "유효성 검사 에러",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/edit/password")
+    public ResponseEntity editUserPassword(@RequestHeader(value = "Authorization") final String token,
+                                           @RequestBody @Valid UserPasswordDto userPasswordDto, HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPassword(loginUser, userPasswordDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
+

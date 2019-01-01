@@ -21,11 +21,9 @@ import java.util.stream.Collectors;
 public class CarePostService {
 
     private CarePostRepository carePostRepository;
-    private CarePostPhotoRepository carePostPhotoRepository;
 
-    public CarePostService(final CarePostRepository carePostRepository, CarePostPhotoRepository carePostPhotoRepository) {
+    public CarePostService(final CarePostRepository carePostRepository) {
         this.carePostRepository = carePostRepository;
-        this.carePostPhotoRepository = carePostPhotoRepository;
     }
 
     @Transactional
@@ -80,4 +78,7 @@ public class CarePostService {
     }
 
 
+    public Iterable<CarePost> findAllByUser(User user) {
+        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
 }

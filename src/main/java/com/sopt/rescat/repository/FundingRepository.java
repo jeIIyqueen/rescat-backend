@@ -1,6 +1,7 @@
 package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.Funding;
+import com.sopt.rescat.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -12,4 +13,7 @@ public interface FundingRepository extends CrudRepository<Funding, Long> {
 
     @Query(value = "SELECT * FROM rescat.funding WHERE category = ? and is_confirmed = ? ORDER BY now() - limit_at", nativeQuery = true)
     List<Funding> findByCategoryAndIsConfirmedOrderByFewDaysLeft(Integer category, Integer isConfirmed);
+
+    List<Funding> findByWriterAndIsConfirmedOrderByCreatedAtDesc(User writer, Integer isConfirmed);
+
 }

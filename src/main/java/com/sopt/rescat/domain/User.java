@@ -15,7 +15,6 @@ import javax.validation.constraints.Pattern;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class User extends BaseTime {
@@ -49,15 +48,15 @@ public class User extends BaseTime {
     private String password;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
     @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
     @Column
@@ -87,6 +86,10 @@ public class User extends BaseTime {
         return true;
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
     private void checkMileageMoreThan(Long mileage) {
         if(this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
     }
@@ -106,5 +109,9 @@ public class User extends BaseTime {
         this.role = Role.CARETAKER;
         this.phone = phone;
         this.name = name;
+    }
+    public void updateUser(String nickname, String phone){
+        this.nickname = nickname;
+        this.phone = phone;
     }
 }
