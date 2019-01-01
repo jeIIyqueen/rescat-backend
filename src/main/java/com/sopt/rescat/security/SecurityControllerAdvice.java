@@ -87,7 +87,7 @@ public class SecurityControllerAdvice {
         return new ResponseEntity<>(ErrorResponse.ofString(exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    public ExceptionDto buildExceptionDto(String message, String field) {
+    private ExceptionDto buildExceptionDto(String message, String field) {
         return ExceptionDto.builder()
                 .message(message)
                 .field(field)

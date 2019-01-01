@@ -1,14 +1,17 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.ApprovalLog;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.domain.enums.RequestStatus;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.UserMypageDto;
 import com.sopt.rescat.exception.*;
+import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
@@ -21,10 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -32,16 +33,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private final Integer CONFIRM = 1;
-    private final Integer DEFER = 0;
-    private final Integer REFUSE = 2;
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CareTakerRequestRepository careTakerRequestRepository;
-    private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
-    private final MapService mapService;
+    private final ApprovalLogRepository approvalLogRepository;
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -51,26 +47,25 @@ public class UserService {
     private String apiKey;
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
-                       final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
-                       final RegionRepository regionRepository, final MapService mapService) {
+                       final CareTakerRequestRepository careTakerRequestRepository,
+                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
-        this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
-        this.mapService = mapService;
+        this.approvalLogRepository = approvalLogRepository;
     }
 
     public Boolean isExistingId(String id) {
         if (userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
+            throw new AlreadyExistsException("id", "이미 사용중인 ID 입니다.");
         }
         return Boolean.FALSE;
     }
 
     public Boolean isExistingNickname(String nickname) {
         if (userRepository.findByNickname(nickname).isPresent()) {
-            throw new AlreadyExistsException("nickname", "이미 사용중인 Nickname입니다.");
+            throw new AlreadyExistsException("nickname", "이미 사용중인 Nickname 입니다.");
         }
         return Boolean.FALSE;
     }
@@ -114,22 +109,13 @@ public class UserService {
         return new UserMypageDto(user, regions);
     }
 
-    public Map<String, Map<String, List<Region>>> getAllRegionList() {
-        List<Region> allRegions = regionRepository.findAll();
-
-        Map<String, Map<String, List<Region>>> allRegionList =
-                allRegions.stream().collect(Collectors.groupingBy(Region::getSdName, Collectors.groupingBy(Region::getSggName, Collectors.toList())));
-
-        return allRegionList;
-    }
-
     @Transactional
-    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) throws IOException {
+    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
         Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
 
         careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
-                .isConfirmed(DEFER).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
+                .isConfirmed(RequestStatus.CONFIRM.getValue()).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
     }
 
     public List<RegionDto> getRegionList(final User user) {
@@ -140,8 +126,50 @@ public class UserService {
         regions.add(user.getSubRegion2());
 
         return regions.stream().filter(Objects::nonNull)
-                .map(region -> region.toRegionDto())
+                .map(Region::toRegionDto)
                 .collect(Collectors.toList());
+    }
+
+    public Iterable<CareTakerRequest> getCareTakerRequest() {
+        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
+                .stream().peek(CareTakerRequest::fillUserNickname)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void approveCareTaker(Long idx, Integer status, User approver) {
+        CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
+
+        // 거절일 경우
+        if(status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseCareTakerRequest(careTakerRequest, approver);
+            return;
+        }
+
+        // 승인일 경우
+        approveCareTakerRequest(careTakerRequest, approver);
+    }
+
+    private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.CARETAKER)
+                .requestIdx(careTakerRequest.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        careTakerRequest.refuse();
+    }
+
+    private void approveCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
+        careTakerRequest.approve();
+        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName());
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(careTakerRequest.getIdx())
+                .requestType(RequestType.CARETAKER)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
     }
 
     private int getRandomCode() {

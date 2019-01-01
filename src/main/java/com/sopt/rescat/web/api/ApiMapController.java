@@ -45,9 +45,9 @@ public class ApiMapController {
     })
     @CareTakerAuth
     @GetMapping
-    public ResponseEntity<List<MarkerDto>> getMarkerList(@RequestHeader(value = "Authorization") final String token,
-                                                         @RequestParam final Optional<Integer> emdCode,
-                                                         HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<MarkerDto>> getMarkerList(
+            @RequestParam final Optional<Integer> emdCode,
+            HttpServletRequest httpServletRequest) {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
 
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMarkerListByRegion(user, emdCode));

@@ -11,7 +11,6 @@ import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -129,10 +128,10 @@ public class ApiUserController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage")
-    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
-                                                   HttpServletRequest httpServletRequest){
+    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest){
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }
@@ -143,10 +142,10 @@ public class ApiUserController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String token,
-                                                         HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<RegionDto>> getRegionList(HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }

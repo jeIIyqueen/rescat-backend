@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 
 @Getter
@@ -76,11 +77,7 @@ public class User extends BaseTime {
         this.password = password;
         this.nickname = nickname;
         this.role = Role.MEMBER;
-    }
-
-    @Builder
-    public User(String nickname){
-        this.nickname = nickname;
+        this.mileage = 0L;
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
@@ -103,5 +100,11 @@ public class User extends BaseTime {
         if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
             return true;
         throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+    }
+
+    public void grantCareTakerAuth(String phone, String name) {
+        this.role = Role.CARETAKER;
+        this.phone = phone;
+        this.name = name;
     }
 }

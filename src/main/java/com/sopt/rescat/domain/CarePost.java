@@ -8,6 +8,7 @@ import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -81,6 +82,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
+    @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Transient

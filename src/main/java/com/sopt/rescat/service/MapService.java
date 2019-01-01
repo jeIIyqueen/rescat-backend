@@ -1,9 +1,7 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.Cat;
-import com.sopt.rescat.domain.MapRequest;
-import com.sopt.rescat.domain.Region;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.exception.InvalidValueException;
@@ -23,9 +21,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MapService {
-    private final Integer CONFIRM = 1;
-    private final Integer DEFER = 0;
-    private final Integer REFUSE = 2;
 
     private final CatRepository catRepository;
     private final PlaceRepository placeRepository;
@@ -57,7 +52,7 @@ public class MapService {
                 .map(Cat::toMarkerDto)
                 .collect(Collectors.toList()));
         markerList.addAll(placeRepository.findByRegion(selectedRegion).stream()
-                .map(cat -> cat.toMarkerDto())
+                .map(Place::toMarkerDto)
                 .collect(Collectors.toList()));
         return markerList;
     }
@@ -74,7 +69,7 @@ public class MapService {
                 .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
 
         mapRequestRepository.save(MapRequest.builder().age(mapRequest.getAge()).etc(mapRequest.getEtc())
-                .isConfirmed(DEFER).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl()).radius(mapRequest.getRadius())
+                .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl()).radius(mapRequest.getRadius())
                 .registerType(mapRequest.getRegisterType()).requestType(mapRequest.getRequestType()).sex(mapRequest.getSex()).tnr(mapRequest.getTnr()).region(region)
                 .address(mapRequest.getAddress()).writer(user).markerIdx(mapRequest.getMarkerIdx()).build());
     }
