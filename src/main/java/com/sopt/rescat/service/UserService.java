@@ -4,10 +4,7 @@ import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.RegionDto;
-import com.sopt.rescat.dto.UserJoinDto;
-import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.dto.UserMypageDto;
+import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
@@ -27,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class UserService {
@@ -38,6 +34,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
@@ -146,5 +143,17 @@ public class UserService {
 
     private int getRandomCode() {
         return (int) Math.floor(Math.random() * 1000000);
+    }
+
+    @Transactional
+    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
+
+        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
+            throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
+
+        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
+            throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
+        if(userPasswordDto.checkValidPassword())
+            user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
     }
 }

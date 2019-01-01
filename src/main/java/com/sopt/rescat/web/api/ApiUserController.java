@@ -34,6 +34,7 @@ public class ApiUserController {
     private final JWTService jwtService;
     private final MapService mapService;
 
+
     public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService) {
         this.userService = userService;
         this.jwtService = jwtService;
@@ -151,3 +152,4 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }
 }
+
