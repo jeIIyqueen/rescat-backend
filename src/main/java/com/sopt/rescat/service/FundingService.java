@@ -51,8 +51,7 @@ public class FundingService {
     }
 
     public Funding findByIdx(Long idx) {
-        return getFundingBy(idx)
-                .setWriterNickname();
+        return getFundingBy(idx).setWriterNickname();
     }
 
     public List<FundingComment> findCommentsBy(Long idx) {
@@ -86,4 +85,9 @@ public class FundingService {
         return fundingRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
+
+    public Iterable<Funding> findAllByUser(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, CONFIRM);
+    }
+
 }

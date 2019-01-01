@@ -4,10 +4,7 @@ import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Role;
-import com.sopt.rescat.dto.RegionDto;
-import com.sopt.rescat.dto.UserJoinDto;
-import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.dto.UserMypageDto;
+import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
@@ -147,4 +144,28 @@ public class UserService {
     private int getRandomCode() {
         return (int) Math.floor(Math.random() * 1000000);
     }
+
+    public UserMypageDto getEditUser(User user){
+        UserMypageDto userMypageDto = new UserMypageDto(user);
+        return userMypageDto;
+    }
+
+    @Transactional
+    public UserMypageDto editUser(User user, UserEditDto userEditDto){
+        User tokenUser = userRepository.findByIdx(user.getIdx());
+        String editNickname = userEditDto.getNickname();
+
+        if(tokenUser.getRole() == Role.MEMBER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(editNickname, null);
+            }
+        }
+        else if(tokenUser.getRole() == Role.CARETAKER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
+            }
+        }
+        return new UserMypageDto(user);
+    }
+
 }
