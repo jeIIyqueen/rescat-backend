@@ -1,12 +1,14 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
 import javax.persistence.*;
 
+@Builder
 @Getter
 @ToString
 @Entity

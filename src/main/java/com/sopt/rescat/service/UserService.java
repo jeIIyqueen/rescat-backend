@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserService {
+    private final String ID_REGEX = "^[a-z]+[a-z0-9]{5,19}$";
+    private final String NICKNAME_REGEX = "^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,20}$";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -31,6 +33,7 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
+
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -51,6 +54,9 @@ public class UserService {
     }
 
     public Boolean isExistingId(String id) {
+        if(!id.matches(ID_REGEX))
+            throw new InvalidValueException("id", "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
+
         if (userRepository.findById(id).isPresent()) {
             throw new AlreadyExistsException("id", "이미 사용중인 ID 입니다.");
         }
@@ -58,12 +64,16 @@ public class UserService {
     }
 
     public Boolean isExistingNickname(String nickname) {
+        if(!nickname.matches(NICKNAME_REGEX))
+            throw new InvalidValueException("nickname", "닉네임은 특수문자 제외 2~20자이어야 합니다.");
+
         if (userRepository.findByNickname(nickname).isPresent()) {
             throw new AlreadyExistsException("nickname", "이미 사용중인 Nickname 입니다.");
         }
         return Boolean.FALSE;
     }
 
+    @Transactional
     public User create(UserJoinDto userJoinDto) {
         isExistingId(userJoinDto.getId());
         isExistingNickname(userJoinDto.getNickname());
@@ -98,9 +108,12 @@ public class UserService {
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 
-    public UserMypageDto getUserMypage(User user){
+    public UserMypageDto getUserMypage(User user) {
         List<RegionDto> regions = getRegionList(user);
-        return new UserMypageDto(user, regions);
+        return UserMypageDto.builder()
+                .regions(regions)
+                .id(user.getId())
+                .build();
     }
 
     @Transactional
@@ -128,6 +141,56 @@ public class UserService {
         return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
                 .stream().peek(CareTakerRequest::fillUserNickname)
                 .collect(Collectors.toList());
+    }
+
+    public List<Funding> getSupportingFundings(User user) {
+        List<ProjectFundingLog> projectFundingLogs = projectFundingLogRepository.findBySponsorOrderByCreatedAtDesc(user);
+        return getFundingsByLogs(projectFundingLogs);
+    }
+
+    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs){
+        return projectFundingLogs.stream()
+                .map(ProjectFundingLog::getFunding)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public UserMypageDto getEditUser(User user){
+        return UserMypageDto.builder()
+                .id(user.getId())
+                .build();
+    }
+
+    @Transactional
+    public UserMypageDto editUser(User user, UserEditDto userEditDto){
+        User tokenUser = userRepository.findByIdx(user.getIdx());
+        String editNickname = userEditDto.getNickname();
+
+        if(tokenUser.getRole() == Role.MEMBER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(editNickname, null);
+            }
+        }
+        else if(tokenUser.getRole() == Role.CARETAKER){
+            if(!isExistingNickname(editNickname)){
+                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
+            }
+        }
+        return UserMypageDto.builder()
+                .id(user.getId())
+                .build();
+    }
+
+    @Transactional
+    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
+
+        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
+            throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
+
+        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
+            throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
+        if(userPasswordDto.checkValidPassword())
+            user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
     }
 
     @Transactional
@@ -169,51 +232,4 @@ public class UserService {
     private int getRandomCode() {
         return (int) Math.floor(Math.random() * 1000000);
     }
-
-    public List<Funding> getSupportingFundings(User user) {
-        List<ProjectFundingLog> projectFundingLogs = projectFundingLogRepository.findBySponsorOrderByCreatedAtDesc(user);
-        return getFundingsByLogs(projectFundingLogs);
-    }
-
-    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs){
-        return projectFundingLogs.stream()
-                .map(ProjectFundingLog::getFunding)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    public UserMypageDto getEditUser(User user){
-        return new UserMypageDto(user);
-    }
-
-    @Transactional
-    public UserMypageDto editUser(User user, UserEditDto userEditDto){
-        User tokenUser = userRepository.findByIdx(user.getIdx());
-        String editNickname = userEditDto.getNickname();
-
-        if(tokenUser.getRole() == Role.MEMBER){
-            if(!isExistingNickname(editNickname)){
-                user.updateUser(editNickname, null);
-            }
-        }
-        else if(tokenUser.getRole() == Role.CARETAKER){
-            if(!isExistingNickname(editNickname)){
-                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
-            }
-        }
-        return new UserMypageDto(user);
-    }
-
-    @Transactional
-    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
-
-        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
-            throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
-
-        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
-            throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
-        if(userPasswordDto.checkValidPassword())
-            user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
-    }
-
 }

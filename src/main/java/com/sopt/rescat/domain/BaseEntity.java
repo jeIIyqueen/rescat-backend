@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class BaseEntity extends BaseTime {
     @OneToOne(cascade = CascadeType.ALL)
-    @ApiModelProperty(hidden = true)
+    @JsonIgnore
     private User writer;
 
     protected void initWriter(User writer) {
