@@ -5,11 +5,9 @@ import com.sopt.rescat.domain.enums.MarkerType;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.MarkerDto;
-import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.exception.InvalidValueException;
 
 import com.sopt.rescat.exception.NotFoundException;
-import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +44,7 @@ public class MapService {
     public List<MarkerDto> getMarkerListByRegion(final User user, final Optional<Integer> emdCode) {
         Region selectedRegion = user.getMainRegion();
         if (emdCode.isPresent() && user.isAuthenticatedRegion(emdCode.get())) {
-                selectedRegion = regionRepository.findByEmdCode(emdCode.get())
+            selectedRegion = regionRepository.findByEmdCode(emdCode.get())
                         .orElseThrow(() -> new InvalidValueException("emdCode", "지역을 찾을 수 없습니다."));
         }
 
@@ -114,7 +112,7 @@ public class MapService {
             if(!isAmendable(mapRequest)){
                 throw new NotFoundException("markerIdx", "존재하지 않는 마커입니다.");
             }
-            save(mapRequest);
+            modify(mapRequest);
         }
     }
 
@@ -128,6 +126,24 @@ public class MapService {
         if(mapRequest.getRegisterType().equals(MarkerType.Cat.getValue())) {
             mapRequest.approve();
             catRepository.save(mapRequest.toCat());
+            return;
+        }
+
+        throw new InvalidValueException("registerType", "유효하지 않은 값을 선택하였습니다.");
+    }
+
+    private void modify(MapRequest mapRequest){
+        if(mapRequest.getRegisterType().equals(MarkerType.CAFETERIA.getValue())
+                || mapRequest.getRegisterType().equals(MarkerType.HOSPITAL.getValue())) {
+            Place place = placeRepository.findById(mapRequest.getMarkerIdx()).orElseThrow(() -> new NotFoundException("markerIdx", "존재하지 않는 마커입니다."));
+            place.update(mapRequest);
+            return;
+        }
+
+        if(mapRequest.getRegisterType().equals(MarkerType.Cat.getValue())) {
+            mapRequest.approve();
+            Cat cat = catRepository.findById(mapRequest.getMarkerIdx()).orElseThrow(() -> new NotFoundException("markerIdx", "존재하지 않는 마커입니다."));
+            cat.update(mapRequest);
             return;
         }
 

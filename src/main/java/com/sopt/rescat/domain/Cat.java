@@ -75,4 +75,18 @@ public class Cat extends BaseEntity {
         this.photoUrl = photoUrl;
         this.region = region;
     }
+
+    public void update(MapRequest mapRequest){
+        this.age = mapRequest.getAge();
+        this.etc = mapRequest.getEtc();
+        this.lat = mapRequest.getLat();
+        this.lng = mapRequest.getLng();
+        this.name = mapRequest.getName();
+        this.photoUrl = mapRequest.getPhotoUrl();
+        this.radius = mapRequest.getRadius();
+        this.region = mapRequest.getRegion();
+        this.sex = mapRequest.getSex();
+        this.tnr = mapRequest.getTnr();
+        initWriter(mapRequest.getWriter());
+    }
 }

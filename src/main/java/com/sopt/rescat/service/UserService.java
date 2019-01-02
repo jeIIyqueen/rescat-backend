@@ -23,6 +23,7 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -210,7 +211,7 @@ public class UserService {
     }
 
     @Transactional
-    public void approveCareTaker(Long idx, Integer status, User approver) {
+    public void approveCareTaker(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
 

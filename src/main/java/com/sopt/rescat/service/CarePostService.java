@@ -1,12 +1,13 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.ApprovalLog;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
 import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
-import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
@@ -16,9 +17,14 @@ import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.UserRepository;
+import com.sopt.rescat.repository.ApprovalLogRepository;
+import com.sopt.rescat.repository.CarePostPhotoRepository;
+import com.sopt.rescat.repository.CarePostRepository;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,13 +36,18 @@ public class CarePostService {
     private CarePostRepository carePostRepository;
     private CareApplicationRepository careApplicationRepository;
     private UserRepository userRepository;
+    private ApprovalLogRepository approvalLogRepository;
+
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CareApplicationRepository careApplicationRepository,
-                           final UserRepository userRepository) {
+                           final UserRepository userRepository,
+                           final ApprovalLogRepository approvalLogRepository
+                           ) {
         this.carePostRepository = carePostRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.userRepository = userRepository;
+        this.approvalLogRepository = approvalLogRepository;
     }
 
     @Transactional
@@ -73,11 +84,6 @@ public class CarePostService {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
                 }).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void confirmPost(Long idx) {
-        findCarePostBy(idx).updateConfirmStatus(RequestStatus.CONFIRM.getValue());
     }
 
     private CarePost getCarePostBy(Long idx) {
@@ -117,4 +123,43 @@ public class CarePostService {
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();
     }
+
+    public Iterable<CarePost> getCarePostRequests(){
+        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+    }
+
+    @Transactional
+    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+        CarePost carePost = getCarePostBy(idx);
+
+        // 거절일 경우
+        if(status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseCarePostRequest(carePost, approver);
+            return;
+        }
+
+        // 승인일 경우
+        approveCarePostRequest(carePost, approver);
+    }
+
+    private void refuseCarePostRequest(CarePost carePost, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.CAREPOST)
+                .requestIdx(carePost.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        carePost.updateConfirmStatus(RequestStatus.REFUSE.getValue());
+    }
+
+    private void approveCarePostRequest(CarePost carePost, User approver) {
+        carePost.updateConfirmStatus(RequestStatus.CONFIRM.getValue());
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(carePost.getIdx())
+                .requestType(RequestType.CAREPOST)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
+    }
 }
+

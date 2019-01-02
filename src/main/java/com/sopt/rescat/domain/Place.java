@@ -77,4 +77,16 @@ public class Place extends BaseEntity {
         this.photoUrl = photoUrl;
         this.region = region;
     }
+
+    public void update(MapRequest mapRequest){
+        this.address = mapRequest.getAddress();
+        this.etc = mapRequest.getEtc();
+        this.lat = mapRequest.getLat();
+        this.lng = mapRequest.getLng();
+        this.name = mapRequest.getName();
+        this.phone = mapRequest.getPhone();
+        this.photoUrl = mapRequest.getPhotoUrl();
+        this.region = mapRequest.getRegion();
+        this.initWriter(mapRequest.getWriter());
+    }
 }

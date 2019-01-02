@@ -105,7 +105,9 @@ public class User extends BaseTime {
 
     public boolean isAuthenticatedRegion(Integer emdCode) {
         try {
-            if (this.mainRegion.getEmdCode().equals(emdCode) || this.subRegion1.getEmdCode().equals(emdCode) || this.subRegion2.getEmdCode().equals(emdCode))
+            if (this.mainRegion.getEmdCode().equals(emdCode)
+                    || this.subRegion1.getEmdCode().equals(emdCode)
+                    || this.subRegion2.getEmdCode().equals(emdCode))
                 return true;
         } catch (Exception e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
@@ -119,6 +121,7 @@ public class User extends BaseTime {
         this.name = name;
         this.mainRegion = mainRegion;
     }
+
     public void updateUser(String nickname, String phone){
         this.nickname = nickname;
         this.phone = phone;
