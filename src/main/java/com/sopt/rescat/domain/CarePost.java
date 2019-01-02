@@ -83,6 +83,10 @@ public class CarePost extends BaseEntity {
     @NonNull
     private Integer isConfirmed;
 
+    @Column
+    @NonNull
+    private Boolean isFinished;
+
     @Transient
     private String nickname;
 

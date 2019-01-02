@@ -54,6 +54,7 @@ public class CarePostRequestDto {
                 .type(type)
                 .vaccination(vaccination)
                 .isConfirmed(0)
+                .isFinished(false)
                 .build();
     }
 

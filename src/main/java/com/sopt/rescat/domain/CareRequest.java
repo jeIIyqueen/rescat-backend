@@ -58,4 +58,6 @@ public class CareRequest extends BaseEntity {
 
     @Column
     private String finalWord;
+
+
 }

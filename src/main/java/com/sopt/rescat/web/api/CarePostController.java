@@ -2,6 +2,7 @@ package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
+import com.sopt.rescat.domain.CareRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
@@ -117,5 +118,17 @@ public class CarePostController {
     @GetMapping("/breeds")
     public ResponseEntity<Iterable<Breed>> getBreeds() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getBreeds());
+    }
+
+    // 입양 신청
+    @PostMapping("/request")
+    public ResponseEntity<Void> createRequest() {
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 입양 승낙
+    @PutMapping("/request")
+    public ResponseEntity<CareRequest> acceptRequest() {
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

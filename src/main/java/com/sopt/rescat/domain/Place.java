@@ -2,11 +2,6 @@ package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
 import lombok.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.ToString;
-
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;

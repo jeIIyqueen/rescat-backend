@@ -8,10 +8,6 @@ import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -107,7 +103,7 @@ public class User extends BaseTime {
 
     public boolean isAuthenticatedRegion(Integer emdCode) {
         try {
-            if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+            if (this.mainRegion.getEmdCode().equals(emdCode) || this.subRegion1.getEmdCode().equals(emdCode) || this.subRegion2.getEmdCode().equals(emdCode))
                 return true;
         } catch (NullPointerException e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");

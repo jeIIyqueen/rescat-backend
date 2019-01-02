@@ -6,15 +6,8 @@ import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
-
 import com.sopt.rescat.dto.UserMypageDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.FailureException;
-import com.sopt.rescat.exception.NotFoundException;
-import com.sopt.rescat.exception.UnAuthenticationException;
-
 import com.sopt.rescat.exception.*;
-
 import com.sopt.rescat.repository.CareTakerRequestRepository;
 import com.sopt.rescat.repository.RegionRepository;
 import com.sopt.rescat.repository.UserRepository;
@@ -71,7 +64,7 @@ public class UserService {
     }
 
     public Boolean isExistingId(String id) {
-        if(!id.matches(ID_REGEX))
+        if (!id.matches(ID_REGEX))
             throw new InvalidValueException("id", "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
 
         if (userRepository.findById(id).isPresent()) {
@@ -81,7 +74,7 @@ public class UserService {
     }
 
     public Boolean isExistingNickname(String nickname) {
-        if(!nickname.matches(NICKNAME_REGEX))
+        if (!nickname.matches(NICKNAME_REGEX))
             throw new InvalidValueException("nickname", "닉네임은 특수문자 제외 2~20자이어야 합니다.");
 
         if (userRepository.findByNickname(nickname).isPresent()) {

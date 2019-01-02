@@ -1,7 +1,6 @@
 package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.service.JWTService;
@@ -103,7 +102,6 @@ public class ApiUserController {
     }
 
 
-
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "요청 성공"),
@@ -134,7 +132,7 @@ public class ApiUserController {
     @Auth
     @GetMapping("/mypage")
     public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
-                                                   HttpServletRequest httpServletRequest){
+                                                   HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }

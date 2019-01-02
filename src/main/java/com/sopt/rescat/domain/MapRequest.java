@@ -9,9 +9,7 @@ import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Slf4j
 @ToString
@@ -118,16 +116,6 @@ public class MapRequest extends BaseEntity {
     @Transient
     private String writerName;
 
-    public MapRequest setWriterName() {
-        this.writerName = getWriter().getName();
-        return this;
-    }
-
-    public MapRequest setIsConfirmed(Integer isConfirmed) {
-        this.isConfirmed = isConfirmed;
-        return this;
-    }
-
     @Builder
     public MapRequest(User writer, @NonNull @Range(min = 0, max = 1) Integer requestType, @NonNull @Range(min = 0, max = 2) Integer registerType, @NonNull @Length(max = 50) String name, String etc, @NonNull Double lat, @NonNull Double lng, String address, @NonNull Region region, @URL String photoUrl, Integer radius, @Range(min = 0, max = 1) Integer sex, @Length(max = 5) String age, @Range(min = 0, max = 1) Integer tnr, @Range(min = 0, max = 2) Integer isConfirmed, Long markerIdx, @Length(max = 13) String phone) {
         super(writer);
@@ -147,6 +135,16 @@ public class MapRequest extends BaseEntity {
         this.isConfirmed = isConfirmed;
         this.markerIdx = markerIdx;
         this.phone = phone;
+    }
+
+    public MapRequest setWriterName() {
+        this.writerName = getWriter().getName();
+        return this;
+    }
+
+    public MapRequest setIsConfirmed(Integer isConfirmed) {
+        this.isConfirmed = isConfirmed;
+        return this;
     }
 
     @ApiModelProperty(hidden = true)

@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
+import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
@@ -15,6 +16,8 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.Boolean.FALSE;
 
 @Service
 public class CarePostService {
@@ -39,17 +42,17 @@ public class CarePostService {
     }
 
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
-        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, CONFIRM).stream()
-                .map(CarePost::toCarePostDto)
-                .collect(Collectors.toList());
+            return carePostRepository.findByTypeAndIsConfirmedAndIsFinishedOrderByCreatedAtDesc(type, CONFIRM, FALSE).stream()
+                    .map(CarePost::toCarePostDto)
+                    .collect(Collectors.toList());
     }
 
     public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(CONFIRM);
+        return carePostRepository.findByIsConfirmedAndOrderByCreatedAtDesc(CONFIRM);
     }
 
     public Iterable<CarePostResponseDto> find5Post() {
-        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(CONFIRM).stream()
+        return carePostRepository.findTop5ByIsConfirmedAndIsFinishedOrderByCreatedAtDesc(CONFIRM, FALSE).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }

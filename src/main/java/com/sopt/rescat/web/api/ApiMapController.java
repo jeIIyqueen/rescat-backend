@@ -112,8 +112,8 @@ public class ApiMapController {
     @PostMapping("/request/{mapRequestIdx}/approval")
     public ResponseEntity approveMapRequest(
             @RequestHeader(value = "Authorization") final String token,
-            @PathVariable final Long mapRequestIdx){
-        return ResponseEntity.status(HttpStatus.OK).body(mapService.approveMapRequest(mapRequestIdx));
+            @PathVariable final Long mapRequestIdx) {
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.approveMapRequestBy(mapRequestIdx));
     }
 
     @ApiOperation(value = "맵 마커 수정/등록 요청 거절", notes = "고양이, 배식소, 병원 마커의 등록 또는 수정 요청을 거절합니다.")
@@ -131,7 +131,7 @@ public class ApiMapController {
     public ResponseEntity refuseMapRequest(
             @RequestHeader(value = "Authorization") final String token,
             @PathVariable final Long mapRequestIdx) {
-        return ResponseEntity.status(HttpStatus.OK).body(mapService.refuseMapRequest(mapRequestIdx));
+        return ResponseEntity.status(HttpStatus.OK).body(mapService.refuseMapRequestBy(mapRequestIdx));
     }
 }
 

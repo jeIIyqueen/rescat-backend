@@ -17,4 +17,5 @@ public class CarePostResponseDto {
     private Integer type;
     private int viewCount;
     private LocalDateTime createdAt;
+    private Boolean isFinished;
 }
