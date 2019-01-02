@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -108,7 +107,7 @@ public class SecurityControllerAdvice {
         return new ResponseEntity<>(ExceptionDto.toExceptionDto("photo", "업로드 가능한 이미지 최대 크기는 10MB입니다."), HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
-    public ExceptionDto buildExceptionDto(String message, String field) {
+    private ExceptionDto buildExceptionDto(String message, String field) {
         return ExceptionDto.builder()
                 .message(message)
                 .field(field)

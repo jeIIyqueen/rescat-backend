@@ -3,14 +3,10 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
-
-import lombok.Getter;
-import lombok.NonNull;
-
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -81,6 +77,7 @@ public class Funding extends BaseEntity {
     private Date limitAt;
 
     @Column
+    @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Transient

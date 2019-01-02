@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "ApiFundingBannerController", description = "펀딩 후기 배너 api")
 @RestController
 @RequestMapping("/api/funding-banners")
-public class FundingBannerController {
+public class ApiFundingBannerController {
     private FundingBannerService fundingBannerService;
 
-    public FundingBannerController(final FundingBannerService fundingBannerService) {
+    public ApiFundingBannerController(final FundingBannerService fundingBannerService) {
         this.fundingBannerService = fundingBannerService;
     }
 

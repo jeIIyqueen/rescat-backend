@@ -2793,10 +2793,3 @@
 2018-12-28 20:50:20.279 INFO  42736 --- [ Thread-50 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 20:50:20.285 INFO  42742 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2018-12-28 20:50:20.293 INFO  42750 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-<<<<<<< HEAD
-=======
->>>>>>> 141e27f27ab3713d5706e2efbea0c9f3a770fee3
->>>>>>> feature/map
-=======
->>>>>>> 2c81f27fa71269b85d698ea01b1779944e50c22a
->>>>>>> e23564bc0cbd79879659157bc17872b75d3c1efa

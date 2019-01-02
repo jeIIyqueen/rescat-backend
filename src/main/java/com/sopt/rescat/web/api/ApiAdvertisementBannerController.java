@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Api(value = "AdvertisementBannerController", description = "광고 배너 api")
 @Controller
 @RequestMapping("/api/banners/advertisement-banners")
-public class AdvertisementBannerController {
+public class ApiAdvertisementBannerController {
     private AdvertisementBannerService advertisementBannerService;
 
-    public AdvertisementBannerController(final AdvertisementBannerService advertisementBannerService) {
+    public ApiAdvertisementBannerController(final AdvertisementBannerService advertisementBannerService) {
         this.advertisementBannerService = advertisementBannerService;
     }
 

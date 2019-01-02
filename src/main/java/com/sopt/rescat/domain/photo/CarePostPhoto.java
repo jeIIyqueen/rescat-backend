@@ -26,7 +26,7 @@ public class CarePostPhoto extends BaseTime {
     private String url;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_care_post_photo_care_post_restaurant"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_care_post_photo_care_post_idx"))
     @JsonIgnore
     private CarePost carePost;
 
