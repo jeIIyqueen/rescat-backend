@@ -4,7 +4,6 @@ import com.sopt.rescat.domain.photo.CarePostPhoto;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.Transient;
 import java.time.LocalDateTime;
 
 @Data

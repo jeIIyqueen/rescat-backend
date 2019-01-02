@@ -105,13 +105,13 @@ public class CareApplication extends BaseEntity {
         this.isAccepted = isAccepted;
     }
 
-    public void accept(User loginUser){
+    public void accept(User loginUser) {
         if (!loginUser.equals(this.getCarePost().getWriter()))
-            throw new NotMatchException("user","타인의 글에 대한 신청을 승낙할 수 없습니다.");
+            throw new NotMatchException("user", "타인의 글에 대한 신청을 승낙할 수 없습니다.");
         this.isAccepted = true;
     }
 
-    public boolean isMyApplication(User loginUser){
+    public boolean isMyApplication(User loginUser) {
         return this.getWriter().equals(loginUser);
     }
 }

@@ -1,25 +1,17 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.ApprovalLog;
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.CareApplication;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.UserRepository;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.CarePostPhotoRepository;
-import com.sopt.rescat.repository.CarePostRepository;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +34,7 @@ public class CarePostService {
                            final CareApplicationRepository careApplicationRepository,
                            final UserRepository userRepository,
                            final ApprovalLogRepository approvalLogRepository
-                           ) {
+    ) {
         this.carePostRepository = carePostRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.userRepository = userRepository;
@@ -109,14 +100,14 @@ public class CarePostService {
 
         careApplicationRepository.save(
                 CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
-                .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
-                .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
-                .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
-                .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
+                        .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
+                        .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
+                        .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
+                        .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
     }
 
     @Transactional
-    public void acceptCareApplication(Long careApplicationIdx, User loginUser){
+    public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
         careApplication.getCarePost().isFinished();
 
@@ -124,7 +115,7 @@ public class CarePostService {
         careApplication.getCarePost().finish();
     }
 
-    public Iterable<CarePost> getCarePostRequests(){
+    public Iterable<CarePost> getCarePostRequests() {
         return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
     }
 
@@ -133,7 +124,7 @@ public class CarePostService {
         CarePost carePost = getCarePostBy(idx);
 
         // 거절일 경우
-        if(status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
             return;
         }

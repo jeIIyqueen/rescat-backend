@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Builder
@@ -133,22 +132,22 @@ public class CarePost extends BaseEntity {
         this.isConfirmed = isConfirmed;
     }
 
-    public void isFinished(){
-        if(this.isFinished)
+    public void isFinished() {
+        if (this.isFinished)
             throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
     }
 
-    public void finish(){
+    public void finish() {
         this.isFinished = true;
     }
 
-    public void isSubmitted(User loginUser){
-        if(careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser)))
+    public void isSubmitted(User loginUser) {
+        if (careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser)))
             throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
     }
 
-    public void equalsWriter(User loginUser){
-        if(this.getWriter().equals(loginUser))
+    public void equalsWriter(User loginUser) {
+        if (this.getWriter().equals(loginUser))
             throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
     }
 }

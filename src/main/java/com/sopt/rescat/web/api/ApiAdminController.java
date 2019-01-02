@@ -11,13 +11,11 @@ import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import io.swagger.annotations.*;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.Map;
 
 @Api(value = "ApiAdminController", description = "관리자페이지 관련 api")
@@ -66,10 +64,10 @@ public class ApiAdminController {
     @PostMapping("/care-taker-requests/{idx}")
     public ResponseEntity<Void> approveCareTaker(
             @PathVariable Long idx,
-            @ApiParam(value = "{'status': 1}", example = "1: 승인, 2: 거절")
+            @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
-        if(!body.containsKey("status"))
+        if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -86,7 +84,7 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @GetMapping("/funding-requests")
-    public ResponseEntity showFundingRequest(){
+    public ResponseEntity showFundingRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getFundingRequests());
     }
 
@@ -102,10 +100,10 @@ public class ApiAdminController {
     @PutMapping("/funding-requests/{idx}")
     public ResponseEntity<Void> confirmFundingPost(
             @PathVariable Long idx,
-            @ApiParam(value = "{'status':1}", example = "1: 승인, 2: 거절")
+            @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
-        if(!body.containsKey("status"))
+        if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -123,7 +121,7 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @GetMapping("/care-post-requests")
-    public ResponseEntity showCarePostRequest(){
+    public ResponseEntity showCarePostRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
     }
 
@@ -139,10 +137,10 @@ public class ApiAdminController {
     @PutMapping("/care-post-requests/{idx}")
     public ResponseEntity<Void> confirmCarePost(
             @PathVariable Long idx,
-            @ApiParam(value = "{'status': 1}", example = "1: 승인, 2: 거절")
+            @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
-        if(!body.containsKey("status"))
+        if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -183,8 +181,8 @@ public class ApiAdminController {
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest){
-        if(!body.containsKey("status"))
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);

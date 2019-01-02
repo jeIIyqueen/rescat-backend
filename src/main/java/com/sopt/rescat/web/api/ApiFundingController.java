@@ -7,7 +7,6 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -97,7 +96,7 @@ public class ApiFundingController {
             @PathVariable Long idx,
             @RequestBody Long mileage,
             HttpServletRequest httpServletRequest) {
-        if(mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
+        if (mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         fundingService.payForMileage(idx, mileage, loginUser);

@@ -1,8 +1,8 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
@@ -10,7 +10,6 @@ import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.service.CarePostService;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Api(value = "ApiCarePostController", description = "입양/임시보호 글 관련 api")
 @RestController

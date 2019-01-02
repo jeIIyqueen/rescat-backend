@@ -1,6 +1,5 @@
 package com.sopt.rescat.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.exception.NotMatchException;
 import io.swagger.annotations.ApiModelProperty;
