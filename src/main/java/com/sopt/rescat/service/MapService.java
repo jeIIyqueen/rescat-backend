@@ -40,11 +40,9 @@ public class MapService {
 
     public List<MarkerDto> getMarkerListByRegion(final User user, final Optional<Integer> emdCode) {
         Region selectedRegion = user.getMainRegion();
-        if (emdCode.isPresent()) {
-            if (user.isAuthenticatedRegion(emdCode.get())) {
-                selectedRegion = regionRepository.findByEmdCode(emdCode.get())
-                        .orElseThrow(() -> new InvalidValueException("emdCode", "지역을 찾을 수 없습니다."));
-            }
+        if (emdCode.isPresent() && user.isAuthenticatedRegion(emdCode.get())) {
+            selectedRegion = regionRepository.findByEmdCode(emdCode.get())
+                    .orElseThrow(() -> new InvalidValueException("emdCode", "지역을 찾을 수 없습니다."));
         }
 
         List<MarkerDto> markerList = new ArrayList<>();
@@ -71,6 +69,8 @@ public class MapService {
             throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
         Region region = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
                 .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+
+        user.isAuthenticatedRegion(region.getEmdCode());
 
         mapRequestRepository.save(MapRequest.builder().age(mapRequest.getAge()).etc(mapRequest.getEtc())
                 .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl()).radius(mapRequest.getRadius())

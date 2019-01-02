@@ -9,6 +9,7 @@ import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -85,7 +86,7 @@ public class FundingService {
     }
 
     @Transactional
-    public void confirmFunding(Long idx, Integer status, User approver) {
+    public void confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
         // 거절일 경우
