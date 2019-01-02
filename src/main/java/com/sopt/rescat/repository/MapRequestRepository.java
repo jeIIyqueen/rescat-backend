@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface MapRequestRepository extends CrudRepository<MapRequest, Long> {
-    List<MapRequest> findAllByOrderByCreatedAtDesc();
+    List<MapRequest> findByIsConfirmedOrderByCreatedAtDesc(Integer isConfirmed);
 }

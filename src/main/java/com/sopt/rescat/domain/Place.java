@@ -12,7 +12,6 @@ import javax.validation.constraints.Pattern;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,5 +62,19 @@ public class Place extends BaseEntity {
                 .name(name).phone(phone).photoUrl(photoUrl)
                 .region(region.toRegionDto())
                 .build();
+    }
+
+    @Builder
+    public Place(User writer, @NonNull Integer category, @NonNull @Length(max = 50) String name, @NonNull Double lat, @NonNull Double lng, String etc, @NonNull String address, @Length(max = 13) @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$") String phone, String photoUrl, @NonNull Region region) {
+        super(writer);
+        this.category = category;
+        this.name = name;
+        this.lat = lat;
+        this.lng = lng;
+        this.etc = etc;
+        this.address = address;
+        this.phone = phone;
+        this.photoUrl = photoUrl;
+        this.region = region;
     }
 }

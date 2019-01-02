@@ -5,13 +5,17 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.AlreadyExistsException;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -81,11 +85,16 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
+    @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Column
     @NonNull
     private Boolean isFinished;
+
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CareApplication> careApplications;
 
     @Transient
     private String nickname;
@@ -106,6 +115,7 @@ public class CarePost extends BaseEntity {
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
+                .isFinished(isFinished)
                 .build();
     }
 
@@ -121,5 +131,24 @@ public class CarePost extends BaseEntity {
 
     public void updateConfirmStatus(Integer isConfirmed) {
         this.isConfirmed = isConfirmed;
+    }
+
+    public void isFinished(){
+        if(this.isFinished)
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
+    }
+
+    public void finish(){
+        this.isFinished = true;
+    }
+
+    public void isSubmitted(User loginUser){
+        if(careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser)))
+            throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
+    }
+
+    public void equalsWriter(User loginUser){
+        if(this.getWriter().equals(loginUser))
+            throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
     }
 }

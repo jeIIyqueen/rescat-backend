@@ -16,10 +16,10 @@ import java.io.IOException;
 @Api(value = "PhotoController", description = "사진 api")
 @RestController
 @RequestMapping("/api/photo")
-public class PhotoController {
+public class ApiPhotoController {
     private final S3FileService s3FileService;
 
-    public PhotoController(final S3FileService s3FileService) {
+    public ApiPhotoController(final S3FileService s3FileService) {
         this.s3FileService = s3FileService;
     }
 

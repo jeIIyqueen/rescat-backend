@@ -6,7 +6,10 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +18,6 @@ import javax.persistence.*;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Slf4j
@@ -78,11 +80,7 @@ public class User extends BaseTime {
         this.password = password;
         this.nickname = nickname;
         this.role = Role.MEMBER;
-    }
-
-    @Builder
-    public User(String nickname) {
-        this.nickname = nickname;
+        this.mileage = 0L;
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
@@ -90,6 +88,10 @@ public class User extends BaseTime {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
         }
         return true;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 
     private void checkMileageMoreThan(Long mileage) {
@@ -105,9 +107,20 @@ public class User extends BaseTime {
         try {
             if (this.mainRegion.getEmdCode().equals(emdCode) || this.subRegion1.getEmdCode().equals(emdCode) || this.subRegion2.getEmdCode().equals(emdCode))
                 return true;
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
         }
-        return false;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+    }
+
+    public void grantCareTakerAuth(String phone, String name, Region mainRegion) {
+        this.role = Role.CARETAKER;
+        this.phone = phone;
+        this.name = name;
+        this.mainRegion = mainRegion;
+    }
+    public void updateUser(String nickname, String phone){
+        this.nickname = nickname;
+        this.phone = phone;
     }
 }

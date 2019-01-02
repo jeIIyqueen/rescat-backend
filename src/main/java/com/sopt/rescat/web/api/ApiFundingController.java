@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.FundingComment;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
@@ -17,15 +18,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Map;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
 @RestController
 @RequestMapping("/api/fundings")
-public class FundingController {
+public class ApiFundingController {
     private FundingService fundingService;
 
-    public FundingController(final FundingService fundingService) {
+    public ApiFundingController(final FundingService fundingService) {
         this.fundingService = fundingService;
     }
 
@@ -110,10 +110,12 @@ public class FundingController {
     public ResponseEntity<Void> payForMileage(
             @RequestHeader(value = "Authorization") final String token,
             @PathVariable Long idx,
-            @RequestBody Map<String, Object> body,
+            @RequestBody Long mileage,
             HttpServletRequest httpServletRequest) {
+        if(mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
+
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        fundingService.payForMileage(idx, (long) (int) body.get("mileage"), loginUser);
+        fundingService.payForMileage(idx, mileage, loginUser);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

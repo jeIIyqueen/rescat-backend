@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopt.rescat.domain.enums.RequestStatus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import javax.validation.constraints.Pattern;
 public class MapRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
     @Column
@@ -73,8 +74,7 @@ public class MapRequest extends BaseEntity {
     private String address;
 
     @Column
-    @Length(max = 13)
-    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
+    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$")
     @ApiModelProperty(notes = "(only병원)전화번호", position = 7)
     private String phone;
 
@@ -105,7 +105,7 @@ public class MapRequest extends BaseEntity {
     private Long markerIdx;
 
     @Column
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(readOnly = true)
     @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
@@ -113,6 +113,7 @@ public class MapRequest extends BaseEntity {
     @ApiModelProperty(notes = "지역 전체 이름", position = 14, required = true)
     private String regionFullName;
 
+    @ApiModelProperty(hidden = true)
     @Transient
     private String writerName;
 
@@ -142,8 +143,13 @@ public class MapRequest extends BaseEntity {
         return this;
     }
 
-    public MapRequest setIsConfirmed(Integer isConfirmed) {
-        this.isConfirmed = isConfirmed;
+    public MapRequest approve() {
+        this.isConfirmed = RequestStatus.CONFIRM.getValue();
+        return this;
+    }
+
+    public MapRequest refuse() {
+        this.isConfirmed = RequestStatus.REFUSE.getValue();
         return this;
     }
 
@@ -160,12 +166,12 @@ public class MapRequest extends BaseEntity {
     @ApiModelProperty(hidden = true)
     public Place toPlace() {
         return Place.builder().address(this.address).category(this.registerType).etc(this.etc).lat(this.lat)
-                .lng(this.lng).name(this.name).phone(this.phone).photoUrl(this.photoUrl).region(region).build();
+                .lng(this.lng).name(this.name).phone(this.phone).photoUrl(this.photoUrl).region(region).writer(this.getWriter()).build();
     }
 
     @ApiModelProperty(hidden = true)
     public Cat toCat() {
         return Cat.builder().age(this.age).etc(this.etc).lat(this.lat).lng(this.lng).name(this.name)
-                .photoUrl(this.photoUrl).radius(this.radius).region(this.region).sex(this.sex).tnr(this.tnr).build();
+                .photoUrl(this.photoUrl).radius(this.radius).region(this.region).sex(this.sex).tnr(this.tnr).writer(this.getWriter()).build();
     }
 }
