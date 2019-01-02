@@ -71,21 +71,6 @@ public class ApiCarePostController {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx));
     }
 
-    @ApiOperation(value = "입양/임시보호 글 승인", notes = "idx 에 따른 입양/임시보호 글을 승인합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "입양/임시보호 글 승인 성공"),
-            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @AdminAuth
-    @PutMapping("/{idx}")
-    public ResponseEntity<Void> confirmPost(
-            @RequestHeader(value = "Authorization") final String token,
-            @PathVariable Long idx) {
-        carePostService.confirmPost(idx);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @ApiOperation(value = "입양/임시보호 글의 댓글 조회", notes = "idx에 해당하는 입양/임시보호 글의 댓글 리스트를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "idx에 해당하는 입양/임시보호 글의 댓글 리스트 반환 성공"),

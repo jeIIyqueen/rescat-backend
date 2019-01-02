@@ -122,7 +122,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
 
         careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
-                .isConfirmed(RequestStatus.CONFIRM.getValue()).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
+                .isConfirmed(RequestStatus.DEFER.getValue()).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
     }
 
     public List<RegionDto> getRegionList(final User user) {
@@ -220,7 +220,7 @@ public class UserService {
 
     private void approveCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
         careTakerRequest.approve();
-        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName());
+        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName(), careTakerRequest.getMainRegion());
         approvalLogRepository.save(ApprovalLog.builder()
                 .requestIdx(careTakerRequest.getIdx())
                 .requestType(RequestType.CARETAKER)

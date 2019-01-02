@@ -115,10 +115,11 @@ public class User extends BaseTime {
         return false;
     }
 
-    public void grantCareTakerAuth(String phone, String name) {
+    public void grantCareTakerAuth(String phone, String name, Region mainRegion) {
         this.role = Role.CARETAKER;
         this.phone = phone;
         this.name = name;
+        this.mainRegion = mainRegion;
     }
     public void updateUser(String nickname, String phone){
         this.nickname = nickname;

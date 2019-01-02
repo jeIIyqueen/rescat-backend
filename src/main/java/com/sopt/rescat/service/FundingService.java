@@ -1,18 +1,18 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.FundingComment;
-import com.sopt.rescat.domain.ProjectFundingLog;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,10 +21,14 @@ public class FundingService {
 
     private FundingRepository fundingRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
+    private ApprovalLogRepository approvalLogRepository;
 
-    public FundingService(final FundingRepository fundingRepository, ProjectFundingLogRepository projectFundingLogRepository) {
+    public FundingService(final FundingRepository fundingRepository,
+                          final ProjectFundingLogRepository projectFundingLogRepository,
+                          final ApprovalLogRepository approvalLogRepository) {
         this.fundingRepository = fundingRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
+        this.approvalLogRepository = approvalLogRepository;
     }
 
     @Transactional
@@ -74,9 +78,44 @@ public class FundingService {
         funding.updateCurrentAmount(mileage);
     }
 
+
+    public Iterable<Funding> getFundingRequests() {
+        return new ArrayList<>(fundingRepository
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+    }
+
     @Transactional
-    public void confirmFunding(Long idx) {
-        getFundingBy(idx).updateConfirmStatus(RequestStatus.CONFIRM.getValue());
+    public void confirmFunding(Long idx, Integer status, User approver) {
+        Funding funding = getFundingBy(idx);
+
+        // 거절일 경우
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseFundingRequest(funding, approver);
+            return;
+        }
+
+        // 승인일 경우
+        approveFundingRequest(funding, approver);
+    }
+
+    private void refuseFundingRequest(Funding funding, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.FUNDING)
+                .requestIdx(funding.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        funding.updateConfirmStatus(RequestStatus.REFUSE.getValue());
+    }
+
+    private void approveFundingRequest(Funding funding, User approver) {
+        funding.updateConfirmStatus(RequestStatus.CONFIRM.getValue());
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(funding.getIdx())
+                .requestType(RequestType.FUNDING)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
     }
 
     private Funding getFundingBy(Long idx) {
