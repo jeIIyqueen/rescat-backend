@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.domain.FundingComment;
 import com.sopt.rescat.domain.ProjectFundingLog;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
@@ -17,9 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class FundingService {
-    private final Integer CONFIRM = 1;
-    private final Integer DEFER   = 0;
-    private final Integer REFUSE  = 2;
 
     private FundingRepository fundingRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
@@ -39,13 +37,13 @@ public class FundingService {
     }
 
     public Iterable<FundingResponseDto> find4Fundings() {
-        return fundingRepository.findTop4ByIsConfirmedOrderByFewDaysLeft(CONFIRM).stream()
+        return fundingRepository.findTop4ByIsConfirmedOrderByFewDaysLeft(RequestStatus.CONFIRM.getValue()).stream()
                 .map(Funding::toFundingDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<FundingResponseDto> findAllBy(Integer category) {
-        return fundingRepository.findByCategoryAndIsConfirmedOrderByFewDaysLeft(category, CONFIRM).stream()
+        return fundingRepository.findByCategoryAndIsConfirmedOrderByFewDaysLeft(category, RequestStatus.CONFIRM.getValue()).stream()
                 .map(Funding::toFundingDto)
                 .collect(Collectors.toList());
     }
@@ -78,7 +76,7 @@ public class FundingService {
 
     @Transactional
     public void confirmFunding(Long idx) {
-        getFundingBy(idx).updateConfirmStatus(CONFIRM);
+        getFundingBy(idx).updateConfirmStatus(RequestStatus.CONFIRM.getValue());
     }
 
     private Funding getFundingBy(Long idx) {
@@ -87,7 +85,7 @@ public class FundingService {
     }
 
     public Iterable<Funding> findAllByUser(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, CONFIRM);
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 
 }

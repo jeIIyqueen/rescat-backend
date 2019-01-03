@@ -21,11 +21,11 @@ import javax.validation.Valid;
 @Api(value = "ApiCarePostController", description = "입양/임시보호 글 관련 api")
 @RestController
 @RequestMapping("/api/care-posts")
-public class CarePostController {
+public class ApiCarePostController {
 
     private CarePostService carePostService;
 
-    public CarePostController(CarePostService carePostService) {
+    public ApiCarePostController(CarePostService carePostService) {
         this.carePostService = carePostService;
     }
 

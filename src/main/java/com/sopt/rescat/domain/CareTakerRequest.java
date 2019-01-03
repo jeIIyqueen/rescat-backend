@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.enums.RequestStatus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -39,9 +40,13 @@ public class CareTakerRequest extends BaseEntity {
     @ApiModelProperty(hidden = true)
     private Region mainRegion;
 
-    @Transient
-    @ApiModelProperty(notes = "지역코드(읍면동)")
-    private Integer emdCode;
+    @OneToOne
+    @ApiModelProperty(hidden = true)
+    private Region subRegion1;
+
+    @OneToOne
+    @ApiModelProperty(hidden = true)
+    private Region subRegion2;
 
     @Column
     @NonNull
@@ -55,13 +60,36 @@ public class CareTakerRequest extends BaseEntity {
     @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
+    @Transient
+    @ApiModelProperty(notes = "지역코드(읍면동)")
+    private Integer emdCode;
+
+    @Transient
+    @ApiModelProperty(notes = "요청자 이름")
+    private String nickname;
+
     @Builder
-    public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone, @NonNull Region mainRegion, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed) {
+    public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone,
+                            Region mainRegion, Region subRegion1, Region subRegion2, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed) {
         super(writer);
         this.name = name;
         this.phone = phone;
         this.mainRegion = mainRegion;
+        this.subRegion1 = subRegion1;
+        this.subRegion2 = subRegion2;
         this.authenticationPhotoUrl = authenticationPhotoUrl;
         this.isConfirmed = isConfirmed;
+    }
+
+    public void fillUserNickname() {
+        this.nickname = getWriter().getNickname();
+    }
+
+    public void approve() {
+        this.isConfirmed = RequestStatus.CONFIRM.getValue();
+    }
+
+    public void refuse() {
+        this.isConfirmed = RequestStatus.REFUSE.getValue();
     }
 }

@@ -1,19 +1,23 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
-import com.sopt.rescat.dto.PlaceDto;
+import lombok.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
+
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @ToString
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,8 +49,9 @@ public class Place extends BaseEntity {
     private String address;
 
     @Column
-    @Length(max = 11)
-    private Integer phone;
+    @Length(max = 13)
+    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
+    private String phone;
 
     @Column
     private String photoUrl;

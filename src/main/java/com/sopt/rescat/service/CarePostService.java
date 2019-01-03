@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
+import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
@@ -18,16 +19,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarePostService {
-    private final Integer CONFIRM = 1;
-    private final Integer DEFER   = 0;
-    private final Integer REFUSE  = 2;
 
     private CarePostRepository carePostRepository;
-    private CarePostPhotoRepository carePostPhotoRepository;
 
-    public CarePostService(final CarePostRepository carePostRepository, CarePostPhotoRepository carePostPhotoRepository) {
+    public CarePostService(final CarePostRepository carePostRepository) {
         this.carePostRepository = carePostRepository;
-        this.carePostPhotoRepository = carePostPhotoRepository;
     }
 
     @Transactional
@@ -39,17 +35,17 @@ public class CarePostService {
     }
 
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
-        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, CONFIRM).stream()
+        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(CONFIRM);
+        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue());
     }
 
     public Iterable<CarePostResponseDto> find5Post() {
-        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(CONFIRM).stream()
+        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
@@ -69,7 +65,7 @@ public class CarePostService {
 
     @Transactional
     public void confirmPost(Long idx) {
-        findCarePostBy(idx).updateConfirmStatus(CONFIRM);
+        findCarePostBy(idx).updateConfirmStatus(RequestStatus.CONFIRM.getValue());
     }
 
     private CarePost getCarePostBy(Long idx) {
@@ -83,6 +79,6 @@ public class CarePostService {
 
 
     public Iterable<CarePost> findAllByUser(User user) {
-        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, CONFIRM);
+        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 }

@@ -3,19 +3,19 @@ package com.sopt.rescat.web.api;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Funding;
+import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,26 +23,26 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 
 @Slf4j
 @Api(value = "UserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
-@Validated
 public class ApiUserController {
     private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
+
     private final UserService userService;
     private final JWTService jwtService;
-    private final MapService mapService;
     private final CarePostService carePostService;
     private final FundingService fundingService;
 
 
-    public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService,
+    public ApiUserController(final UserService userService, final JWTService jwtService,
                              final CarePostService carePostService, final FundingService fundingService) {
         this.userService = userService;
         this.jwtService = jwtService;
-        this.mapService = mapService;
         this.carePostService = carePostService;
         this.fundingService = fundingService;
     }
@@ -121,11 +121,9 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/authentications/caretaker")
-    public ResponseEntity requestCareTaker(
-            @RequestBody @Valid CareTakerRequest careTakerRequest,
-            HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity requestCareTaker(@RequestBody @Valid CareTakerRequest careTakerRequest,
+                                            HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-
         userService.saveCareTakerRequest(user, careTakerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -136,10 +134,10 @@ public class ApiUserController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage")
-    public ResponseEntity<UserMypageDto> getMypage(@RequestHeader(value = "Authorization") final String token,
-                                                   HttpServletRequest httpServletRequest){
+    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest){
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }
@@ -150,10 +148,10 @@ public class ApiUserController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(@RequestHeader(value = "Authorization") final String token,
-                                                         HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<RegionDto>> getRegionList(HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
     }
@@ -244,6 +242,45 @@ public class ApiUserController {
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @Auth
+    @DeleteMapping("/mypage/region")
+    public ResponseEntity deleteRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+        if(!body.containsKey("emdCode"))
+            throw new InvalidValueException("emdCode", "emdCode field 가 body에 존재하지 않습니다.");
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.deleteRegion(loginUser, Integer.parseInt(String.valueOf(body.get("emdCode"))));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 추가 요청", notes = "케어테이커 유저가 지역 추가를 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @Auth
+    @PostMapping("/mypage/region")
+    public ResponseEntity requestAddRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+        if(!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
+            throw new InvalidValueException("emdCode", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
+
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))), String.valueOf(body.get("authenticationPhotoUrl")));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 
 }
 

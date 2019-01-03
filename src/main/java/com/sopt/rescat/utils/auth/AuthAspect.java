@@ -16,9 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Aspect
 public class AuthAspect {
-    private final static String AUTHORIZATION = "Authorization";
     public final static String USER_KEY = "rescat-user";
-
+    private final static String AUTHORIZATION = "Authorization";
     private final HttpServletRequest httpServletRequest;
     private final JWTService jwtService;
     private final UserRepository userRepository;
@@ -68,7 +67,13 @@ public class AuthAspect {
         return pjp.proceed(pjp.getArgs());
     }
 
-    // 어드민 인증
+    /**
+     * 관리자 권한 인증
+     *
+     * @param pjp
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.sopt.rescat.utils.auth.AdminAuth)")
     public Object aroundAdmin(final ProceedingJoinPoint pjp) throws Throwable {
         final String jwt = httpServletRequest.getHeader(AUTHORIZATION);

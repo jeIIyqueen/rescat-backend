@@ -6,7 +6,11 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,6 +20,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
+@Slf4j
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,13 +63,10 @@ public class User extends BaseTime {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
+    @Enumerated(value = EnumType.STRING)
     @Column
-    @Enumerated(EnumType.STRING)
     @NonNull
     private Role role;
-
-    @Column
-    private String photoUrl;
 
     @Column
     private Long mileage;
@@ -75,11 +77,7 @@ public class User extends BaseTime {
         this.password = password;
         this.nickname = nickname;
         this.role = Role.MEMBER;
-    }
-
-    @Builder
-    public User(String nickname){
-        this.nickname = nickname;
+        this.mileage = 0L;
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
@@ -94,7 +92,7 @@ public class User extends BaseTime {
     }
 
     private void checkMileageMoreThan(Long mileage) {
-        if(this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
+        if (this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
     }
 
     public void updateMileage(Long mileage) {
@@ -103,14 +101,39 @@ public class User extends BaseTime {
     }
 
     public boolean isAuthenticatedRegion(Integer emdCode) {
-        if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
-            return true;
-        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+        try {
+            if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
+                return true;
+        } catch (NullPointerException e) {
+            throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+        }
+        return false;
+    }
+
+    public void grantCareTakerAuth(String phone, String name) {
+        this.role = Role.CARETAKER;
+        this.phone = phone;
+        this.name = name;
     }
 
     public void updateUser(String nickname, String phone){
         this.nickname = nickname;
         this.phone = phone;
+    }
+
+    public void deleteMainRegion(Region subRegion1, Region subRegion2){
+        this.mainRegion = subRegion1;
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion1(Region subRegion2){
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion2(){
+        this.subRegion2 = null;
     }
 
 }

@@ -1,11 +1,12 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.RequestStatus;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.*;
-
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
@@ -15,27 +16,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService {
-
-    private final Integer CONFIRM = 1;
-    private final Integer DEFER = 0;
-    private final Integer REFUSE = 2;
+    private final String ID_REGEX = "^[a-z]+[a-z0-9]{5,19}$";
+    private final String NICKNAME_REGEX = "^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,20}$";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final ProjectFundingLogRepository projectFundingLogRepository;
     private final CareTakerRequestRepository careTakerRequestRepository;
-    private final S3FileService s3FileService;
     private final RegionRepository regionRepository;
-    private final MapService mapService;
-    private final FundingRepository fundingRepository;
+    private final ApprovalLogRepository approvalLogRepository;
+
 
     @Value("${GABIA.SMSPHONENUMBER}")
     private String ADMIN_PHONE_NUMBER;
@@ -45,34 +43,37 @@ public class UserService {
     private String apiKey;
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
-                       final CareTakerRequestRepository careTakerRequestRepository, S3FileService s3FileService,
-                       final RegionRepository regionRepository, final MapService mapService,
-                       final ProjectFundingLogRepository projectFundingLogRepository,final FundingRepository fundingRepository) {
-
+                       final CareTakerRequestRepository careTakerRequestRepository, final ProjectFundingLogRepository projectFundingLogRepository,
+                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
-        this.s3FileService = s3FileService;
         this.regionRepository = regionRepository;
-        this.mapService = mapService;
+        this.approvalLogRepository = approvalLogRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
-        this.fundingRepository = fundingRepository;
     }
 
     public Boolean isExistingId(String id) {
+        if(!id.matches(ID_REGEX))
+            throw new InvalidValueException("id", "아이디는 영문자로 시작하는 6~20자 영문자 또는 숫자이어야 합니다.");
+
         if (userRepository.findById(id).isPresent()) {
-            throw new AlreadyExistsException("id", "이미 사용중인 ID입니다.");
+            throw new AlreadyExistsException("id", "이미 사용중인 ID 입니다.");
         }
         return Boolean.FALSE;
     }
 
     public Boolean isExistingNickname(String nickname) {
+        if(!nickname.matches(NICKNAME_REGEX))
+            throw new InvalidValueException("nickname", "닉네임은 특수문자 제외 2~20자이어야 합니다.");
+
         if (userRepository.findByNickname(nickname).isPresent()) {
-            throw new AlreadyExistsException("nickname", "이미 사용중인 Nickname입니다.");
+            throw new AlreadyExistsException("nickname", "이미 사용중인 Nickname 입니다.");
         }
         return Boolean.FALSE;
     }
 
+    @Transactional
     public User create(UserJoinDto userJoinDto) {
         isExistingId(userJoinDto.getId());
         isExistingNickname(userJoinDto.getNickname());
@@ -107,27 +108,22 @@ public class UserService {
         throw new FailureException("문자 발송을 실패했습니다.");
     }
 
-    public UserMypageDto getUserMypage(User user){
+    public UserMypageDto getUserMypage(User user) {
         List<RegionDto> regions = getRegionList(user);
-        return new UserMypageDto(user, regions);
-    }
-
-    public Map<String, Map<String, List<Region>>> getAllRegionList() {
-        List<Region> allRegions = regionRepository.findAll();
-
-        Map<String, Map<String, List<Region>>> allRegionList =
-                allRegions.stream().collect(Collectors.groupingBy(Region::getSdName, Collectors.groupingBy(Region::getSggName, Collectors.toList())));
-
-        return allRegionList;
+        return UserMypageDto.builder()
+                .regions(regions)
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .build();
     }
 
     @Transactional
-    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) throws IOException {
+    public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
         Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
 
         careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
-                .isConfirmed(DEFER).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
+                .isConfirmed(RequestStatus.DEFER.getValue()).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
     }
 
     public List<RegionDto> getRegionList(final User user) {
@@ -138,12 +134,14 @@ public class UserService {
         regions.add(user.getSubRegion2());
 
         return regions.stream().filter(Objects::nonNull)
-                .map(region -> region.toRegionDto())
+                .map(Region::toRegionDto)
                 .collect(Collectors.toList());
     }
 
-    private int getRandomCode() {
-        return (int) Math.floor(Math.random() * 1000000);
+    public Iterable<CareTakerRequest> getCareTakerRequest() {
+        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
+                .stream().peek(CareTakerRequest::fillUserNickname)
+                .collect(Collectors.toList());
     }
 
     public List<Funding> getSupportingFundings(User user) {
@@ -159,26 +157,34 @@ public class UserService {
     }
 
     public UserMypageDto getEditUser(User user){
-        UserMypageDto userMypageDto = new UserMypageDto(user);
-        return userMypageDto;
+        return UserMypageDto.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
+                .build();
     }
 
     @Transactional
     public UserMypageDto editUser(User user, UserEditDto userEditDto){
-        User tokenUser = userRepository.findByIdx(user.getIdx());
-        String editNickname = userEditDto.getNickname();
 
-        if(tokenUser.getRole() == Role.MEMBER){
+        String editNickname = userEditDto.getNickname();
+        String editPhone = userEditDto.getPhone();
+
+        if(user.getRole() == Role.MEMBER){
             if(!isExistingNickname(editNickname)){
                 user.updateUser(editNickname, null);
             }
         }
-        else if(tokenUser.getRole() == Role.CARETAKER){
+        else if(user.getRole() == Role.CARETAKER){
             if(!isExistingNickname(editNickname)){
-                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
+                user.updateUser(editNickname, editPhone);
             }
         }
-        return new UserMypageDto(user);
+        return UserMypageDto.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
+                .build();
     }
 
     @Transactional
@@ -193,4 +199,90 @@ public class UserService {
             user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
     }
 
+    @Transactional
+    public void approveCareTaker(Long idx, Integer status, User approver) {
+        CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
+
+        // 거절일 경우
+        if(status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseCareTakerRequest(careTakerRequest, approver);
+            return;
+        }
+
+        // 승인일 경우
+        approveCareTakerRequest(careTakerRequest, approver);
+    }
+
+    private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.CARETAKER)
+                .requestIdx(careTakerRequest.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        careTakerRequest.refuse();
+    }
+
+    private void approveCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
+        careTakerRequest.approve();
+        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName());
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(careTakerRequest.getIdx())
+                .requestType(RequestType.CARETAKER)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
+    }
+
+    @Transactional
+    public void deleteRegion(User user, Integer emdCode){
+
+        Region deleteRegion = regionRepository.findByEmdCode(emdCode)
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        if(deleteRegion.equals(user.getMainRegion()))
+            user.deleteMainRegion(user.getSubRegion1(), user.getSubRegion2());
+
+        else if(deleteRegion.equals(user.getSubRegion1()))
+            user.deleteSubRegion1(user.getSubRegion2());
+
+        else if(deleteRegion.equals(user.getSubRegion2()))
+            user.deleteSubRegion2();
+
+        else
+            throw new NotMatchException("mainRegion or subRegion1 or subRegion2", "유저에게 존재하지 않는 지역코드입니다.");
+    }
+
+    @Transactional
+    public void saveAddRegionRequest(final User user, Integer emdCode, String authenticationPhotoUrl) {
+
+        Region region = regionRepository.findByEmdCode(emdCode)
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        if(user.getSubRegion1() == null){
+            careTakerRequestRepository.save(CareTakerRequest.builder()
+                    .authenticationPhotoUrl(authenticationPhotoUrl)
+                    .isConfirmed(RequestStatus.DEFER.getValue())
+                    .mainRegion(user.getMainRegion())
+                    .subRegion1(region)
+                    .name(user.getName())
+                    .phone(user.getPhone())
+                    .writer(user).build());
+        }
+        else if(user.getSubRegion1() != null){
+            careTakerRequestRepository.save(CareTakerRequest.builder()
+                    .authenticationPhotoUrl(authenticationPhotoUrl)
+                    .isConfirmed(RequestStatus.DEFER.getValue())
+                    .mainRegion(user.getMainRegion())
+                    .subRegion2(region)
+                    .name(user.getName())
+                    .phone(user.getPhone())
+                    .writer(user).build());
+        }
+    }
+
+    private int getRandomCode() {
+        return (int) Math.floor(Math.random() * 1000000);
+    }
 }

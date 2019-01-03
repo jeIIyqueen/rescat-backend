@@ -3,9 +3,15 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.FundingPhoto;
+
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
+
+import lombok.Getter;
+import lombok.NonNull;
+
 
 import javax.persistence.*;
 import java.util.Date;
@@ -60,6 +66,7 @@ public class Funding extends BaseEntity {
     @NonNull
     private String mainRegion;
 
+
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
     private List<FundingPhoto> certifications;
 
@@ -75,6 +82,7 @@ public class Funding extends BaseEntity {
     private Date limitAt;
 
     @Column
+    @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Transient
@@ -86,7 +94,7 @@ public class Funding extends BaseEntity {
     }
 
     public FundingResponseDto toFundingDto() {
-        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
         return FundingResponseDto.builder()
                 .idx(idx)

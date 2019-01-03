@@ -2,8 +2,6 @@ package com.sopt.rescat.dto;
 
 import lombok.Builder;
 
-import java.time.LocalDateTime;
-
 @Builder
 public class CatDto {
     private Long idx;

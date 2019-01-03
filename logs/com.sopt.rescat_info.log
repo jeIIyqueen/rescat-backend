@@ -2260,7 +2260,7 @@
 =======
 >>>>>>> 141e27f27ab3713d5706e2efbea0c9f3a770fee3
 =======
->>>>>>> a3831b092612d11187883a5cd3d363ffdd9be1e2
+>>>>>>> e23564bc0cbd79879659157bc17872b75d3c1efa
 2018-12-28 17:54:53.934 INFO  931  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 34496 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
 2018-12-28 17:54:53.946 INFO  943  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
 2018-12-28 17:54:54.008 INFO  1005 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
@@ -2793,10 +2793,3 @@
 2018-12-28 20:50:20.279 INFO  42736 --- [ Thread-50 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 20:50:20.285 INFO  42742 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2018-12-28 20:50:20.293 INFO  42750 --- [ Thread-50 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
-<<<<<<< HEAD
-=======
->>>>>>> 141e27f27ab3713d5706e2efbea0c9f3a770fee3
->>>>>>> feature/map
-=======
->>>>>>> 90986734cd1cde45dbcc01a19921100d2d8d87da
->>>>>>> a3831b092612d11187883a5cd3d363ffdd9be1e2

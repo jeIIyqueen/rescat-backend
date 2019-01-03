@@ -8,6 +8,7 @@ import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -81,6 +82,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
+    @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
     @Transient
@@ -93,7 +95,7 @@ public class CarePost extends BaseEntity {
 
     public CarePostResponseDto toCarePostDto() {
         Integer MAIN_PHOTO_INDEX = 0;
-        if(photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
         return CarePostResponseDto.builder()
                 .idx(idx)

@@ -7,7 +7,6 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -19,16 +18,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
-import java.util.Map;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
 @RestController
 @RequestMapping("/api/fundings")
-public class FundingController {
+public class ApiFundingController {
     private FundingService fundingService;
 
-    public FundingController(final FundingService fundingService) {
+    public ApiFundingController(final FundingService fundingService) {
         this.fundingService = fundingService;
     }
 
