@@ -222,11 +222,12 @@ public class ApiUserController {
     })
     @Auth
     @PutMapping("/mypage/care-posts/{idx}")
-    public ResponseEntity<Iterable<CarePost>> pullUpCarePost(@RequestHeader(value = "Authorization") final String token,
-                                                             @ApiParam(value = "글 번호") @PathVariable Long idx,
-                                                             HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Iterable<CarePost>> pullUpCarePost(
+            @RequestHeader(value = "Authorization") final String token,
+            @ApiParam(value = "글 번호") @PathVariable Long idx,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        carePostService.updateCarePostUpdateTime(idx, loginUser);
+        carePostService.updateCarePostToRecent(idx, loginUser);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -238,8 +239,9 @@ public class ApiUserController {
     })
     @Auth
     @GetMapping("/mypage/fundings")
-    public ResponseEntity<Iterable<Funding>> getUserFundingsList(@RequestHeader(value = "Authorization") final String token,
-                                                                 HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Iterable<Funding>> getUserFundingList(
+            @RequestHeader(value = "Authorization") final String token,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(loginUser));
     }
@@ -253,8 +255,10 @@ public class ApiUserController {
     })
     @Auth
     @PutMapping("/mypage/edit/password")
-    public ResponseEntity editUserPassword(@RequestHeader(value = "Authorization") final String token,
-                                           @RequestBody @Valid UserPasswordDto userPasswordDto, HttpServletRequest httpServletRequest) {
+    public ResponseEntity editUserPassword(
+            @RequestHeader(value = "Authorization") final String token,
+            @RequestBody @Valid UserPasswordDto userPasswordDto,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -269,7 +273,10 @@ public class ApiUserController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @DeleteMapping("/mypage/region")
-    public ResponseEntity deleteRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+    public ResponseEntity deleteRegion(
+            @ApiParam(value = "example -> {\"emdCode\": 1101055}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("emdCode"))
             throw new InvalidValueException("emdCode", "emdCode field 가 body에 존재하지 않습니다.");
 
@@ -289,7 +296,10 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/mypage/region")
-    public ResponseEntity requestAddRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+    public ResponseEntity requestAddRegion(
+            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url\n}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
             throw new InvalidValueException("emdCode", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
 

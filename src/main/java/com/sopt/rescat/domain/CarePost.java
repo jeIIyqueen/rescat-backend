@@ -26,10 +26,10 @@ import static java.time.LocalDateTime.now;
 @Getter
 @Builder
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class CarePost extends BaseEntity {
+    private static final Integer SECONDS_OF_3DAYS = 259200;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -179,9 +179,9 @@ public class CarePost extends BaseEntity {
     }
 
     public void updateUpdatedAt() {
-        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200) {
+        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < SECONDS_OF_3DAYS)
             throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
-        }
+
         this.updatedAt = now();
     }
 }

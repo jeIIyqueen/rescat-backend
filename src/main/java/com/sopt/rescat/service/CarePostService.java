@@ -178,7 +178,7 @@ public class CarePostService {
     }
 
     @Transactional
-    public void updateCarePostUpdateTime(Long carePostIdx, User loginUser) {
+    public void updateCarePostToRecent(Long carePostIdx, User loginUser) {
         CarePost carePost = getCarePostBy(carePostIdx);
         if (!carePost.equalsWriter(loginUser))
             throw new InvalidValueException("idx", "해당 글의 작성자가 아닙니다.");
