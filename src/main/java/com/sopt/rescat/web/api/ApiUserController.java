@@ -222,7 +222,7 @@ public class ApiUserController {
     public ResponseEntity<Iterable<Funding>> getUserFundingsList(@RequestHeader(value = "Authorization") final String token,
                                                                  HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllByUser(loginUser));
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(loginUser));
     }
 
     @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")

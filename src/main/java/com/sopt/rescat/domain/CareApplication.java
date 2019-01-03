@@ -77,6 +77,7 @@ public class CareApplication extends BaseEntity {
     @Column
     @NonNull
     @NotNull
+    @Enumerated
     @ApiModelProperty(notes = "신청자 자택 형태(0: 아파트, 1: 주택, 2: 다세대주택, 3: 원룸)", position = 7, required = true)
     private HouseType houseType;
 

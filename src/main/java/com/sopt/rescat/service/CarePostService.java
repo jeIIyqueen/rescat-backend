@@ -11,9 +11,7 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
-import netscape.javascript.JSObject;
 import org.hibernate.validator.constraints.Range;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -104,12 +102,10 @@ public class CarePostService {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
         if (!carePost.equalsType(careApplication.getType()))
             throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
-        if (carePost.isFinished())
+        if (carePost.getIsFinished())
             throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
-
         if (carePost.equalsWriter(loginUser))
             throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
-
         if (carePost.isSubmitted(loginUser))
             throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
@@ -124,7 +120,8 @@ public class CarePostService {
     @Transactional
     public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
-        careApplication.getCarePost().isFinished();
+        if(careApplication.getCarePost().getIsFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
 
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();

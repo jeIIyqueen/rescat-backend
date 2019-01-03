@@ -142,5 +142,4 @@ public class User extends BaseTime {
     public void deleteSubRegion2(){
         this.subRegion2 = null;
     }
-
 }

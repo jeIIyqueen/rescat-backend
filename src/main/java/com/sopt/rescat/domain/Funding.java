@@ -48,6 +48,7 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
+    @Builder.Default
     private Long currentAmount = 0L;
 
     @Column

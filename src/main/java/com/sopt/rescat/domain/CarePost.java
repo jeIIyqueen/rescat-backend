@@ -71,6 +71,7 @@ public class CarePost extends BaseEntity {
     private String etc;
 
     @Column
+    @Builder.Default
     private int viewCount = 0;
 
     @Column
@@ -137,11 +138,6 @@ public class CarePost extends BaseEntity {
     public CarePost addViewCount() {
         ++this.viewCount;
         return this;
-    }
-
-    @JsonIgnore
-    public boolean isFinished() {
-        return this.isFinished;
     }
 
     @JsonIgnore

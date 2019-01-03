@@ -57,6 +57,10 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
+    public Iterable<Funding> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
+
     public Funding findBy(Long idx) {
         return getFundingBy(idx).setWriterNickname();
     }
@@ -148,9 +152,5 @@ public class FundingService {
     private FundingComment getCommentBy(Long idx) {
         return fundingCommentRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
-    }
-
-    public Iterable<Funding> findAllByUser(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 }

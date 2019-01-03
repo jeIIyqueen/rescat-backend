@@ -15,7 +15,7 @@ public class CarePostComment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(length = 300)
+    @Column
     @NonNull
     private String contents;
 
