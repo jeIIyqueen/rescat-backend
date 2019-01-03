@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Api(value = "AdvertisementBannerController", description = "광고 배너 api")
+@Api(value = "ApiAdvertisementBannerController", description = "광고 배너 api")
 @Controller
 @RequestMapping("/api/banners/advertisement-banners")
 public class ApiAdvertisementBannerController {

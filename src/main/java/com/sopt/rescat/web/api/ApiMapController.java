@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Api(value = "MapController", description = "길냥이맵 관련 api")
+@Api(value = "ApiMapController", description = "길냥이맵 관련 api")
 @RestController
 @RequestMapping("/api/maps")
 public class ApiMapController {

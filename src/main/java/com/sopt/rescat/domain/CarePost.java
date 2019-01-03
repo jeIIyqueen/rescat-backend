@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +30,6 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    @Length(max = 500)
     private String contents;
 
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -77,6 +75,7 @@ public class CarePost extends BaseEntity {
     private String etc;
 
     @Column
+    @Builder.Default
     private int viewCount = 0;
 
     @Column
@@ -119,7 +118,6 @@ public class CarePost extends BaseEntity {
         return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
-                .contents(contents)
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
@@ -141,6 +139,10 @@ public class CarePost extends BaseEntity {
         this.isConfirmed = isConfirmed;
     }
 
+    public CarePost addViewCount() {
+        ++this.viewCount;
+        return this;
+    }
 
     @JsonIgnore
     public void finish() {
@@ -155,19 +157,20 @@ public class CarePost extends BaseEntity {
         return this.getWriter().equals(loginUser);
     }
 
-    public CarePost setSubmitStatus(User loginUser){
+    public CarePost setSubmitStatus(User loginUser) {
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
 
-    public boolean equalsType(Integer type){
+    public boolean equalsType(Integer type) {
         return this.type.equals(type);
     }
 
-    public void updateUpdatedAt(){
-        if(Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200){
-            throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");}
+    public void updateUpdatedAt() {
+        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200) {
+            throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
+        }
         initUpdatedAt();
     }
 }
