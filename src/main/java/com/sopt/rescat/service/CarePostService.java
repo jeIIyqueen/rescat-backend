@@ -6,6 +6,8 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.AlreadyExistsException;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
@@ -64,7 +66,9 @@ public class CarePostService {
                 .collect(Collectors.toList());
     }
 
-    public CarePost findCarePostBy(Long idx) {
+    public CarePost findCarePostBy(Long idx, User loginUser) {
+        if(loginUser != null)
+            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
         return getCarePostBy(idx).setWriterNickname();
     }
 
@@ -94,9 +98,14 @@ public class CarePostService {
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
-        carePost.isFinished();
-        carePost.equalsWriter(loginUser);
-        carePost.isSubmitted(loginUser);
+        if(carePost.isFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
+
+        if(carePost.equalsWriter(loginUser))
+            throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
+
+        if(carePost.isSubmitted(loginUser))
+            throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
         careApplicationRepository.save(
                 CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
@@ -128,7 +137,6 @@ public class CarePostService {
             refuseCarePostRequest(carePost, approver);
             return;
         }
-
         // 승인일 경우
         approveCarePostRequest(carePost, approver);
     }

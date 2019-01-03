@@ -154,11 +154,13 @@ public class MapRequest extends BaseEntity {
     }
 
     @ApiModelProperty(hidden = true)
+    @JsonIgnore
     public boolean hasMarkerIdx() {
         return this.markerIdx != null;
     }
 
     @ApiModelProperty(hidden = true)
+    @JsonIgnore
     public boolean isEditCategory() {
         return this.requestType == 1;
     }

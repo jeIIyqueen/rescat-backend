@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Api(value = "ApiCarePostController", description = "입양/임시보호 글 관련 api")
 @RestController
@@ -67,16 +68,24 @@ public class ApiCarePostController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation(value = "입양/임시보호 글 조회", notes = "idx 에 따른 입양/임시보호 글을 조회합니다.")
+    @ApiOperation(value = "입양/임시보호 글 조회", notes = "idx에 따른 입양/임시보호 글을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 반환 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
     @GetMapping("/{idx}")
     public ResponseEntity<CarePost> getPostByIdx(
+            @RequestHeader(value = "Authorization") final Optional<String> token,
             @ApiParam(value = "글 번호", required = true) @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx));
+        if(token.isPresent()){
+            User loginUser = userService.getUserBy(jwtService.decode(token.get()).getIdx());
+            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx, loginUser));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx, null));
     }
 
     @ApiOperation(value = "입양/임시보호 글의 댓글 조회", notes = "idx에 해당하는 입양/임시보호 글의 댓글 리스트를 조회합니다.")
