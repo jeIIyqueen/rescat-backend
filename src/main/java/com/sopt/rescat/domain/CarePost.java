@@ -2,12 +2,9 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Breed;
-import com.sopt.rescat.domain.enums.CarePostStatus;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -161,5 +158,9 @@ public class CarePost extends BaseEntity {
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;
+    }
+
+    public boolean equalsType(Integer type){
+        return this.type.equals(type);
     }
 }
