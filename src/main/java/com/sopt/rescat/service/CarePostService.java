@@ -11,10 +11,11 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CarePostPhotoRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.NotificationRepository;
-import org.springframework.http.HttpEntity;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,13 +88,11 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests(){
-        return carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream()
-                .collect(Collectors.toList());
+        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
     }
 
     @Transactional
-    public void confirmCarePost(Long idx, Integer status, User approver) {
+    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
         String category;
 

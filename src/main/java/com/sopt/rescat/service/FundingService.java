@@ -10,6 +10,7 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -85,16 +86,17 @@ public class FundingService {
         funding.updateCurrentAmount(mileage);
     }
 
-    public Iterable<Funding> getFundingRequests(){
-        return new ArrayList<>(fundingRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+    public Iterable<Funding> getFundingRequests() {
+        return new ArrayList<>(fundingRepository
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
     }
 
     @Transactional
-    public void confirmFunding(Long idx, Integer status, User approver) {
+    public void confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
         // 거절일 경우
-        if(status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
 
             Notification notification = new Notification(funding.getWriter(), "님의 후원글 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
