@@ -20,12 +20,4 @@ public abstract class BaseTime {
     @ApiModelProperty(readOnly = true)
     @CreatedDate
     private LocalDateTime createdAt;
-
-    @ApiModelProperty(readOnly = true)
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
-    protected void initUpdatedAt() {
-        this.updatedAt = now();
-    }
 }
