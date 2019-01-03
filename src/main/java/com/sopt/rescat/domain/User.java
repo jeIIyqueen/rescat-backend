@@ -113,10 +113,10 @@ public class User extends BaseTime {
                     || this.subRegion1.getEmdCode().equals(emdCode)
                     || this.subRegion2.getEmdCode().equals(emdCode))
                 return true;
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
         }
-        return false;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 
     public void grantCareTakerAuth(String phone, String name, Region mainRegion) {
@@ -125,7 +125,8 @@ public class User extends BaseTime {
         this.name = name;
         this.mainRegion = mainRegion;
     }
-    public void updateUser(String nickname, String phone){
+
+    public void updateUser(String nickname, String phone) {
         this.nickname = nickname;
         this.phone = phone;
     }

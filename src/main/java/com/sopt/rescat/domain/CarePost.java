@@ -85,8 +85,22 @@ public class CarePost extends BaseEntity {
     @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
+    @Column
+    @NonNull
+    private Boolean isFinished;
+
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<CareApplication> careApplications;
+
     @Transient
     private String nickname;
+
+    @Transient
+    private Boolean isSubmitted;
+
+    @Transient
+    private Boolean isWriter;
 
     public CarePost setWriterNickname() {
         this.nickname = getWriter().getNickname();
@@ -104,6 +118,7 @@ public class CarePost extends BaseEntity {
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
+                .isFinished(isFinished)
                 .build();
     }
 
@@ -124,5 +139,33 @@ public class CarePost extends BaseEntity {
     public CarePost addViewCount() {
         ++this.viewCount;
         return this;
+    }
+
+    @JsonIgnore
+    public boolean isFinished() {
+        return this.isFinished;
+    }
+
+    @JsonIgnore
+    public void finish() {
+        this.isFinished = true;
+    }
+
+    public boolean isSubmitted(User loginUser) {
+        return careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser));
+    }
+
+    public boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public CarePost setSubmitStatus(User loginUser){
+        this.isSubmitted = this.isSubmitted(loginUser);
+        this.isWriter = this.equalsWriter(loginUser);
+        return this;
+    }
+
+    public boolean equalsType(Integer type){
+        return this.type.equals(type);
     }
 }

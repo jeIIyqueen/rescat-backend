@@ -6,9 +6,9 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.NotMatchException;
-import com.sopt.rescat.exception.UnAuthenticationException;
+import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.ApprovalLogRepository;
+import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import org.hibernate.validator.constraints.Range;
@@ -25,19 +25,24 @@ public class CarePostService {
 
     private CarePostRepository carePostRepository;
     private CarePostCommentRepository carePostCommentRepository;
+    private CareApplicationRepository careApplicationRepository;
     private ApprovalLogRepository approvalLogRepository;
 
-    public CarePostService(final CarePostRepository carePostRepository, CarePostCommentRepository carePostCommentRepository, final ApprovalLogRepository approvalLogRepository) {
+
+    public CarePostService(final CarePostRepository carePostRepository,
+                           final CarePostCommentRepository carePostCommentRepository,
+                           final CareApplicationRepository careApplicationRepository,
+                           final ApprovalLogRepository approvalLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
+        this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
     }
 
     @Transactional
     public void create(CarePostRequestDto carePostRequestDto, User loginUser) {
-        CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost()
+        CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
-
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
@@ -63,8 +68,9 @@ public class CarePostService {
                 .collect(Collectors.toList());
     }
 
-    public CarePost findCarePostBy(Long idx) {
-
+    public CarePost findCarePostBy(Long idx, User loginUser) {
+        if(loginUser != null)
+            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
         return getCarePostBy(idx).setWriterNickname();
     }
 
@@ -86,7 +92,45 @@ public class CarePostService {
         return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 
-    public Iterable<CarePost> getCarePostRequests(){
+    @Transactional
+    public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
+        CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
+        if(!carePost.equalsType(careApplication.getType()))
+            throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
+        if(carePost.isFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
+
+        if(carePost.equalsWriter(loginUser))
+            throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
+
+        if(carePost.isSubmitted(loginUser))
+            throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
+
+        careApplicationRepository.save(
+                CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
+                        .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
+                        .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
+                        .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
+                        .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
+    }
+
+    @Transactional
+    public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
+        CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
+        careApplication.getCarePost().isFinished();
+
+        careApplication.accept(loginUser);
+        careApplication.getCarePost().finish();
+
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(careApplication.getIdx())
+                .requestType(RequestType.CAREAPPLICATION)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(loginUser));
+    }
+
+    public Iterable<CarePost> getCarePostRequests() {
         return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
     }
 
@@ -95,11 +139,10 @@ public class CarePostService {
         CarePost carePost = getCarePostBy(idx);
 
         // 거절일 경우
-        if(status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
             return;
         }
-
         // 승인일 경우
         approveCarePostRequest(carePost, approver);
     }
@@ -150,3 +193,4 @@ public class CarePostService {
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 }
+

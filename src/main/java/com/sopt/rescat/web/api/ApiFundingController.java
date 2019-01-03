@@ -137,7 +137,7 @@ public class ApiFundingController {
             @PathVariable Long idx,
             @RequestBody Long mileage,
             HttpServletRequest httpServletRequest) {
-        if(mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
+        if (mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         fundingService.payForMileage(idx, mileage, loginUser);

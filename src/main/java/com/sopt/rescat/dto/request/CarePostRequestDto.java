@@ -41,7 +41,7 @@ public class CarePostRequestDto {
     private LocalDateTime startProtectionPeriod;
     private LocalDateTime endProtectionPeriod;
 
-    public CarePost toCarePost() {
+    public CarePost toCarePost(Boolean isFinished) {
         return CarePost.builder()
                 .age(age)
                 .breed(breed)
@@ -54,6 +54,7 @@ public class CarePostRequestDto {
                 .type(type)
                 .vaccination(vaccination)
                 .isConfirmed(0)
+                .isFinished(isFinished)
                 .build();
     }
 
