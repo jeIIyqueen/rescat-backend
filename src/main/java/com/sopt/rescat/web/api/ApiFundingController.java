@@ -67,7 +67,7 @@ public class ApiFundingController {
     public ResponseEntity<Funding> getFundingByIdx(
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findByIdx(idx));
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(idx));
     }
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 조회", notes = "idx 에 따른 크라우드 펀딩 글의 댓글 리스트를 조회합니다.")

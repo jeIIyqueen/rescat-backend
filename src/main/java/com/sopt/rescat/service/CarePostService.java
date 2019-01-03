@@ -41,6 +41,12 @@ public class CarePostService {
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
+    public CarePost findBy(Long idx) {
+        return getCarePostBy(idx)
+                .setWriterNickname()
+                .addViewCount();
+    }
+
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
         return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
@@ -58,6 +64,7 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx) {
+
         return getCarePostBy(idx).setWriterNickname();
     }
 

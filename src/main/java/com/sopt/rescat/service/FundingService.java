@@ -57,7 +57,7 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Funding findByIdx(Long idx) {
+    public Funding findBy(Long idx) {
         return getFundingBy(idx).setWriterNickname();
     }
 

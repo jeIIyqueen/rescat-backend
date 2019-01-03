@@ -120,4 +120,9 @@ public class CarePost extends BaseEntity {
     public void updateConfirmStatus(Integer isConfirmed) {
         this.isConfirmed = isConfirmed;
     }
+
+    public CarePost addViewCount() {
+        ++this.viewCount;
+        return this;
+    }
 }

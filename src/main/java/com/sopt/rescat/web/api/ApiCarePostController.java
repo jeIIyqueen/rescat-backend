@@ -69,7 +69,7 @@ public class ApiCarePostController {
     public ResponseEntity<CarePost> getPostByIdx(
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx));
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findBy(idx));
     }
 
     @ApiOperation(value = "입양/임시보호 글의 댓글 조회", notes = "idx에 해당하는 입양/임시보호 글의 댓글 리스트를 조회합니다.")
