@@ -1,28 +1,18 @@
 package com.sopt.rescat.service;
 
 
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Region;
-import com.sopt.rescat.domain.User;
-import com.sopt.rescat.dto.RegionDto;
-import com.sopt.rescat.dto.UserJoinDto;
-import com.sopt.rescat.dto.UserLoginDto;
-import com.sopt.rescat.dto.UserMypageDto;
-import com.sopt.rescat.exception.*;
-import com.sopt.rescat.repository.CareTakerRequestRepository;
-import com.sopt.rescat.repository.RegionRepository;
-import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.*;
+import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.*;
-
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -65,7 +55,7 @@ public class UserService {
         this.projectFundingLogRepository = projectFundingLogRepository;
     }
 
-    public User getUserBy(Long userIdx){
+    public User getUserBy(Long userIdx) {
         return userRepository.findByIdx(userIdx);
     }
 
@@ -164,31 +154,30 @@ public class UserService {
         return getFundingsByLogs(projectFundingLogs);
     }
 
-    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs){
+    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs) {
         return projectFundingLogs.stream()
                 .map(ProjectFundingLog::getFunding)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    public UserMypageDto getEditUser(User user){
+    public UserMypageDto getEditUser(User user) {
         return UserMypageDto.builder()
                 .id(user.getId())
                 .build();
     }
 
     @Transactional
-    public UserMypageDto editUser(User user, UserEditDto userEditDto){
+    public UserMypageDto editUser(User user, UserEditDto userEditDto) {
         User tokenUser = userRepository.findByIdx(user.getIdx());
         String editNickname = userEditDto.getNickname();
 
-        if(tokenUser.getRole() == Role.MEMBER){
-            if(!isExistingNickname(editNickname)){
+        if (tokenUser.getRole() == Role.MEMBER) {
+            if (!isExistingNickname(editNickname)) {
                 user.updateUser(editNickname, null);
             }
-        }
-        else if(tokenUser.getRole() == Role.CARETAKER){
-            if(!isExistingNickname(editNickname)){
+        } else if (tokenUser.getRole() == Role.CARETAKER) {
+            if (!isExistingNickname(editNickname)) {
                 user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
             }
         }
@@ -198,24 +187,24 @@ public class UserService {
     }
 
     @Transactional
-    public void editUserPassword(User user, UserPasswordDto userPasswordDto){
+    public void editUserPassword(User user, UserPasswordDto userPasswordDto) {
 
-        if(!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(userPasswordDto.getPassword(), user.getPassword()))
             throw new NotMatchException("password", "비밀번호가 틀렸습니다.");
 
-        if(userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
+        if (userPasswordDto.getPassword().equals(userPasswordDto.getNewPassword()))
             throw new AlreadyExistsException("newPassword", "현재 사용중인 PASSWORD입니다.");
-        if(userPasswordDto.checkValidPassword())
+        if (userPasswordDto.checkValidPassword())
             user.updatePassword(passwordEncoder.encode(userPasswordDto.getNewPassword()));
     }
 
     @Transactional
-    public void approveCareTaker(Long idx, Integer status, User approver) {
+    public void approveCareTaker(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
 
         // 거절일 경우
-        if(status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCareTakerRequest(careTakerRequest, approver);
             return;
         }

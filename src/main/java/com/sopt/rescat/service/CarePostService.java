@@ -1,27 +1,26 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.CareApplication;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
-import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.UserRepository;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,13 +29,18 @@ public class CarePostService {
     private CarePostRepository carePostRepository;
     private CareApplicationRepository careApplicationRepository;
     private UserRepository userRepository;
+    private ApprovalLogRepository approvalLogRepository;
+
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CareApplicationRepository careApplicationRepository,
-                           final UserRepository userRepository) {
+                           final UserRepository userRepository,
+                           final ApprovalLogRepository approvalLogRepository
+    ) {
         this.carePostRepository = carePostRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.userRepository = userRepository;
+        this.approvalLogRepository = approvalLogRepository;
     }
 
     @Transactional
@@ -62,7 +66,9 @@ public class CarePostService {
                 .collect(Collectors.toList());
     }
 
-    public CarePost findCarePostBy(Long idx) {
+    public CarePost findCarePostBy(Long idx, User loginUser) {
+        if(loginUser != null)
+            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
         return getCarePostBy(idx).setWriterNickname();
     }
 
@@ -73,11 +79,6 @@ public class CarePostService {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
                 }).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public void confirmPost(Long idx) {
-        findCarePostBy(idx).updateConfirmStatus(RequestStatus.CONFIRM.getValue());
     }
 
     private CarePost getCarePostBy(Long idx) {
@@ -97,24 +98,76 @@ public class CarePostService {
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
-        carePost.isFinished();
-        carePost.equalsWriter(loginUser);
-        carePost.isSubmitted(loginUser);
+        if(!carePost.equalsType(careApplication.getType()))
+            throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
+        if(carePost.isFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
+
+        if(carePost.equalsWriter(loginUser))
+            throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
+
+        if(carePost.isSubmitted(loginUser))
+            throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
         careApplicationRepository.save(
                 CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
-                .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
-                .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
-                .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
-                .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
+                        .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
+                        .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
+                        .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
+                        .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
     }
 
     @Transactional
-    public void acceptCareApplication(Long careApplicationIdx, User loginUser){
+    public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
         careApplication.getCarePost().isFinished();
 
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();
+
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(careApplication.getIdx())
+                .requestType(RequestType.CAREAPPLICATION)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(loginUser));
+    }
+
+    public Iterable<CarePost> getCarePostRequests() {
+        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+    }
+
+    @Transactional
+    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+        CarePost carePost = getCarePostBy(idx);
+
+        // 거절일 경우
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseCarePostRequest(carePost, approver);
+            return;
+        }
+        // 승인일 경우
+        approveCarePostRequest(carePost, approver);
+    }
+
+    private void refuseCarePostRequest(CarePost carePost, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.CAREPOST)
+                .requestIdx(carePost.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        carePost.updateConfirmStatus(RequestStatus.REFUSE.getValue());
+    }
+
+    private void approveCarePostRequest(CarePost carePost, User approver) {
+        carePost.updateConfirmStatus(RequestStatus.CONFIRM.getValue());
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(carePost.getIdx())
+                .requestType(RequestType.CAREPOST)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
     }
 }
+

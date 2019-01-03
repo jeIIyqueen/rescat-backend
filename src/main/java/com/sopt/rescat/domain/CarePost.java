@@ -5,8 +5,6 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -15,7 +13,6 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Builder
@@ -99,6 +96,12 @@ public class CarePost extends BaseEntity {
     @Transient
     private String nickname;
 
+    @Transient
+    private Boolean isSubmitted;
+
+    @Transient
+    private Boolean isWriter;
+
     public CarePost setWriterNickname() {
         this.nickname = getWriter().getNickname();
         return this;
@@ -133,22 +136,31 @@ public class CarePost extends BaseEntity {
         this.isConfirmed = isConfirmed;
     }
 
-    public void isFinished(){
-        if(this.isFinished)
-            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
+    @JsonIgnore
+    public boolean isFinished() {
+        return this.isFinished;
     }
 
-    public void finish(){
+    @JsonIgnore
+    public void finish() {
         this.isFinished = true;
     }
 
-    public void isSubmitted(User loginUser){
-        if(careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser)))
-            throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
+    public boolean isSubmitted(User loginUser) {
+        return careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser));
     }
 
-    public void equalsWriter(User loginUser){
-        if(this.getWriter().equals(loginUser))
-            throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
+    public boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public CarePost setSubmitStatus(User loginUser){
+        this.isSubmitted = this.isSubmitted(loginUser);
+        this.isWriter = this.equalsWriter(loginUser);
+        return this;
+    }
+
+    public boolean equalsType(Integer type){
+        return this.type.equals(type);
     }
 }

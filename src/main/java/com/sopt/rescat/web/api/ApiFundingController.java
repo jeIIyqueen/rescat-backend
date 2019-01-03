@@ -7,7 +7,6 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -71,21 +70,6 @@ public class ApiFundingController {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.findByIdx(idx));
     }
 
-    @ApiOperation(value = "크라우드 펀딩 글 승인", notes = "idx 에 따른 크라우드 펀딩 글을 승인합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글 승인 성공"),
-            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @AdminAuth
-    @PutMapping("/{idx}")
-    public ResponseEntity<Void> confirmPost(
-            @RequestHeader(value = "Authorization") final String token,
-            @PathVariable Long idx) {
-        fundingService.confirmFunding(idx);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 조회", notes = "idx 에 따른 크라우드 펀딩 글의 댓글 리스트를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 리스트 반환 성공"),
@@ -112,7 +96,7 @@ public class ApiFundingController {
             @PathVariable Long idx,
             @RequestBody Long mileage,
             HttpServletRequest httpServletRequest) {
-        if(mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
+        if (mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         fundingService.payForMileage(idx, mileage, loginUser);

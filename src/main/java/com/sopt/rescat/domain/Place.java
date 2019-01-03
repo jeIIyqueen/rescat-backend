@@ -55,15 +55,6 @@ public class Place extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_place_region_idx"))
     private Region region;
 
-    public MarkerDto toMarkerDto() {
-        return MarkerDto.builder()
-                .address(address).category(category)
-                .etc(etc).idx(idx).lat(lat).lng(lng)
-                .name(name).phone(phone).photoUrl(photoUrl)
-                .region(region.toRegionDto())
-                .build();
-    }
-
     @Builder
     public Place(User writer, @NonNull Integer category, @NonNull @Length(max = 50) String name, @NonNull Double lat, @NonNull Double lng, String etc, @NonNull String address, @Length(max = 13) @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$") String phone, String photoUrl, @NonNull Region region) {
         super(writer);
@@ -76,5 +67,26 @@ public class Place extends BaseEntity {
         this.phone = phone;
         this.photoUrl = photoUrl;
         this.region = region;
+    }
+
+    public MarkerDto toMarkerDto() {
+        return MarkerDto.builder()
+                .address(address).category(category)
+                .etc(etc).idx(idx).lat(lat).lng(lng)
+                .name(name).phone(phone).photoUrl(photoUrl)
+                .region(region.toRegionDto())
+                .build();
+    }
+
+    public void update(MapRequest mapRequest) {
+        this.address = mapRequest.getAddress();
+        this.etc = mapRequest.getEtc();
+        this.lat = mapRequest.getLat();
+        this.lng = mapRequest.getLng();
+        this.name = mapRequest.getName();
+        this.phone = mapRequest.getPhone();
+        this.photoUrl = mapRequest.getPhotoUrl();
+        this.region = mapRequest.getRegion();
+        this.initWriter(mapRequest.getWriter());
     }
 }

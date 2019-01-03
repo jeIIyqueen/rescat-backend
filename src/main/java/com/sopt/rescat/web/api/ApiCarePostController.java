@@ -1,8 +1,8 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
@@ -10,7 +10,6 @@ import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.service.CarePostService;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -69,31 +68,24 @@ public class ApiCarePostController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation(value = "입양/임시보호 글 조회", notes = "idx 에 따른 입양/임시보호 글을 조회합니다.")
+    @ApiOperation(value = "입양/임시보호 글 조회", notes = "idx에 따른 입양/임시보호 글을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 반환 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
     @GetMapping("/{idx}")
     public ResponseEntity<CarePost> getPostByIdx(
+            @RequestHeader(value = "Authorization") final Optional<String> token,
             @ApiParam(value = "글 번호", required = true) @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx));
-    }
-
-    @ApiOperation(value = "입양/임시보호 글 승인", notes = "idx 에 따른 입양/임시보호 글을 승인합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "입양/임시보호 글 승인 성공"),
-            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
-            @ApiResponse(code = 500, message = "서버 에러")
-    })
-    @AdminAuth
-    @PutMapping("/{idx}")
-    public ResponseEntity<Void> confirmPost(
-            @RequestHeader(value = "Authorization") final String token,
-            @PathVariable Long idx) {
-        carePostService.confirmPost(idx);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        if(token.isPresent()){
+            User loginUser = userService.getUserBy(jwtService.decode(token.get()).getIdx());
+            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx, loginUser));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(idx, null));
     }
 
     @ApiOperation(value = "입양/임시보호 글의 댓글 조회", notes = "idx에 해당하는 입양/임시보호 글의 댓글 리스트를 조회합니다.")

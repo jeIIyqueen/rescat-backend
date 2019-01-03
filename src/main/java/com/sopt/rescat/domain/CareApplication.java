@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
@@ -32,6 +33,7 @@ public class CareApplication extends BaseEntity {
 
     @Column
     @NonNull
+    @NotNull
     @Range(min = 0, max = 1)
     @ApiModelProperty(notes = "신청하고자 하는 글의 유형(0: 입양, 1: 임시보호)", position = 1, required = true)
     // 0: 입양, 1: 임시보호
@@ -40,40 +42,47 @@ public class CareApplication extends BaseEntity {
     @Column
     @Length(max = 10)
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 이름", position = 2, required = true)
     private String name;
 
     @Column
     @Length(max = 11)
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 연락처", position = 3, required = true)
     private String phone;
 
     @Column
     @Past
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 생년월일", position = 4, required = true)
     private LocalDate birth;
 
     @Column
     @Length(max = 20)
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 직업", position = 5, required = true)
     private String job;
 
     @Column
     @Length(max = 50)
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 자택 주소", position = 6, required = true)
     private String address;
 
     @Column
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "신청자 자택 형태(0: 아파트, 1: 주택, 2: 다세대주택, 3: 원룸)", position = 7, required = true)
     private HouseType houseType;
 
     @Column
     @NonNull
+    @NotNull
     @ApiModelProperty(notes = "반려경험(true/false)", position = 8, required = true)
     private Boolean companionExperience;
 
@@ -105,13 +114,13 @@ public class CareApplication extends BaseEntity {
         this.isAccepted = isAccepted;
     }
 
-    public void accept(User loginUser){
+    public void accept(User loginUser) {
         if (!loginUser.equals(this.getCarePost().getWriter()))
-            throw new NotMatchException("user","타인의 글에 대한 신청을 승낙할 수 없습니다.");
+            throw new NotMatchException("user", "타인의 글에 대한 신청을 승낙할 수 없습니다.");
         this.isAccepted = true;
     }
 
-    public boolean isMyApplication(User loginUser){
+    public boolean isMyApplication(User loginUser) {
         return this.getWriter().equals(loginUser);
     }
 }

@@ -52,15 +52,6 @@ public class Cat extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
 
-    public MarkerDto toMarkerDto() {
-        return MarkerDto.builder()
-                .category(2)
-                .age(age).etc(etc).idx(idx).lat(lat).lng(lng)
-                .name(name).photoUrl(photoUrl).radius(radius)
-                .region(region.toRegionDto()).sex(sex).tnr(tnr)
-                .build();
-    }
-
     @Builder
     public Cat(User writer, String name, @NonNull Double lat, @NonNull Double lng, @NonNull Integer radius, @NonNull Integer sex, String age, Integer tnr, String etc, String photoUrl, @NonNull Region region) {
         super(writer);
@@ -74,5 +65,28 @@ public class Cat extends BaseEntity {
         this.etc = etc;
         this.photoUrl = photoUrl;
         this.region = region;
+    }
+
+    public MarkerDto toMarkerDto() {
+        return MarkerDto.builder()
+                .category(2)
+                .age(age).etc(etc).idx(idx).lat(lat).lng(lng)
+                .name(name).photoUrl(photoUrl).radius(radius)
+                .region(region.toRegionDto()).sex(sex).tnr(tnr)
+                .build();
+    }
+
+    public void update(MapRequest mapRequest) {
+        this.age = mapRequest.getAge();
+        this.etc = mapRequest.getEtc();
+        this.lat = mapRequest.getLat();
+        this.lng = mapRequest.getLng();
+        this.name = mapRequest.getName();
+        this.photoUrl = mapRequest.getPhotoUrl();
+        this.radius = mapRequest.getRadius();
+        this.region = mapRequest.getRegion();
+        this.sex = mapRequest.getSex();
+        this.tnr = mapRequest.getTnr();
+        initWriter(mapRequest.getWriter());
     }
 }

@@ -1,6 +1,6 @@
 package com.sopt.rescat.domain.enums;
 
-public enum  MarkerType {
+public enum MarkerType {
     // 0: 배식소, 1: 병원, 2: 고양이
     CAFETERIA(0),
     HOSPITAL(1),

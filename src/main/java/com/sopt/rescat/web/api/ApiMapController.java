@@ -3,18 +3,12 @@ package com.sopt.rescat.web.api;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.MarkerDto;
-
-import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.MapService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.http.HttpStatus;
-import io.swagger.annotations.Api;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
