@@ -89,7 +89,7 @@ public class CarePost extends BaseEntity {
     @NonNull
     private Boolean isFinished;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CareApplication> careApplications;
 
