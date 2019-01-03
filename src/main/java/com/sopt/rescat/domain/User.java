@@ -83,6 +83,10 @@ public class User extends BaseTime {
         this.mileage = 0L;
     }
 
+    public boolean match(User target) {
+        return this.idx.equals(target.getIdx());
+    }
+
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");

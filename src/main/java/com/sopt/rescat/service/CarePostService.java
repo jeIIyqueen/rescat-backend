@@ -1,15 +1,13 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.ApprovalLog;
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
@@ -125,6 +123,19 @@ public class CarePostService {
                 .initCarePost(getCarePostBy(carePostIdx)))
                 .setWriterNickname()
                 .setUserRole();
+    }
+
+    public void deleteComment(Long commentIdx, User loginUser) {
+        CarePostComment carePostComment = getCommentBy(commentIdx);
+        if(!loginUser.match(carePostComment.getWriter()))
+            throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
+
+        carePostCommentRepository.delete(carePostComment);
+    }
+
+    private CarePostComment getCommentBy(Long commentIdx) {
+        return carePostCommentRepository.findById(commentIdx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
 
     private CarePost getCarePostBy(Long idx) {

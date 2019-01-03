@@ -6,6 +6,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.FundingCommentRepository;
 import com.sopt.rescat.repository.FundingRepository;
@@ -131,9 +132,22 @@ public class FundingService {
                 .setUserRole();
     }
 
+    public void deleteComment(Long commentIdx, User loginUser) {
+        FundingComment fundingComment = getCommentBy(commentIdx);
+        if(!loginUser.match(fundingComment.getWriter()))
+            throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
+
+        fundingCommentRepository.delete(fundingComment);
+    }
+
     private Funding getFundingBy(Long idx) {
         return fundingRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
+    }
+
+    private FundingComment getCommentBy(Long idx) {
+        return fundingCommentRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
 
     public Iterable<Funding> findAllByUser(User user) {

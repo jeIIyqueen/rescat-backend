@@ -104,6 +104,28 @@ public class ApiCarePostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(carePostService.createComment(idx, carePostComment, loginUser));
     }
 
+    @ApiOperation(value = "입양/임시보호 글의 댓글 삭제", notes = "idx 에 따른 입양/임시보호 글의 댓글을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "입양/임시보호 펀딩 글의 댓글 삭제 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "댓글 삭제 권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "idx", value = "carePostIdx", required = true, dataType = "long", paramType = "path")
+    })
+    @DeleteMapping("/{idx}/comments/{comment-idx}")
+    @Auth
+    public ResponseEntity<Void> createComment(
+            @ApiParam(value = "글 번호", required = true)
+            @PathVariable(name = "comment-idx") Long commentIdx,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        carePostService.deleteComment(commentIdx, loginUser);
+        return ResponseEntity.ok().build();
+    }
+
     @ApiOperation(value = "입양/임시보호 글 중 최신 5개 리스트 조회", notes = "입양/임시보호 글 중 최신 5개 리스트를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 중 최신 5개 리스트 반환 성공"),
