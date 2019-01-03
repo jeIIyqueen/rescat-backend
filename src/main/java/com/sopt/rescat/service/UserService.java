@@ -119,6 +119,7 @@ public class UserService {
         return UserMypageDto.builder()
                 .regions(regions)
                 .id(user.getId())
+                .nickname(user.getNickname())
                 .build();
     }
 
@@ -164,6 +165,8 @@ public class UserService {
     public UserMypageDto getEditUser(User user) {
         return UserMypageDto.builder()
                 .id(user.getId())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
                 .build();
     }
 
@@ -171,18 +174,17 @@ public class UserService {
     public UserMypageDto editUser(User user, UserEditDto userEditDto) {
         User tokenUser = userRepository.findByIdx(user.getIdx());
         String editNickname = userEditDto.getNickname();
+        String editPhone = userEditDto.getPhone();
 
-        if (tokenUser.getRole() == Role.MEMBER) {
-            if (!isExistingNickname(editNickname)) {
-                user.updateUser(editNickname, null);
-            }
-        } else if (tokenUser.getRole() == Role.CARETAKER) {
-            if (!isExistingNickname(editNickname)) {
-                user.updateUser(userEditDto.getNickname(), userEditDto.getPhone());
-            }
-        }
+        if(user.getRole() == Role.MEMBER && !isExistingNickname(editNickname))
+            user.updateUser(editNickname, null);
+        else if(user.getRole() == Role.CARETAKER && !isExistingNickname(editNickname))
+            user.updateUser(editNickname, editPhone);
+
         return UserMypageDto.builder()
                 .id(user.getId())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
                 .build();
     }
 
@@ -232,6 +234,53 @@ public class UserService {
                 .requestStatus(RequestStatus.CONFIRM)
                 .build()
                 .setApprover(approver));
+    }
+
+    @Transactional
+    public void deleteRegion(User user, Integer emdCode){
+
+        Region deleteRegion = regionRepository.findByEmdCode(emdCode)
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        if(deleteRegion.equals(user.getMainRegion()))
+            user.deleteMainRegion(user.getSubRegion1(), user.getSubRegion2());
+
+        else if(deleteRegion.equals(user.getSubRegion1()))
+            user.deleteSubRegion1(user.getSubRegion2());
+
+        else if(deleteRegion.equals(user.getSubRegion2()))
+            user.deleteSubRegion2();
+
+        else
+            throw new NotMatchException("mainRegion or subRegion1 or subRegion2", "유저에게 존재하지 않는 지역코드입니다.");
+    }
+
+    @Transactional
+    public void saveAddRegionRequest(final User user, Integer emdCode, String authenticationPhotoUrl) {
+
+        Region region = regionRepository.findByEmdCode(emdCode)
+                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        if(user.getSubRegion1() == null){
+            careTakerRequestRepository.save(CareTakerRequest.builder()
+                    .authenticationPhotoUrl(authenticationPhotoUrl)
+                    .isConfirmed(RequestStatus.DEFER.getValue())
+                    .mainRegion(user.getMainRegion())
+                    .subRegion1(region)
+                    .name(user.getName())
+                    .phone(user.getPhone())
+                    .writer(user).build());
+        }
+        else if(user.getSubRegion1() != null){
+            careTakerRequestRepository.save(CareTakerRequest.builder()
+                    .authenticationPhotoUrl(authenticationPhotoUrl)
+                    .isConfirmed(RequestStatus.DEFER.getValue())
+                    .mainRegion(user.getMainRegion())
+                    .subRegion2(region)
+                    .name(user.getName())
+                    .phone(user.getPhone())
+                    .writer(user).build());
+        }
     }
 
     private int getRandomCode() {
