@@ -96,6 +96,7 @@ public class Funding extends BaseEntity {
         return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
+                .contents(contents)
                 .currentAmount(currentAmount)
                 .goalAmount(goalAmount)
                 .introduction(introduction)

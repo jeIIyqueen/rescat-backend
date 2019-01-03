@@ -26,7 +26,6 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    @Length(max = 500)
     private String contents;
 
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
