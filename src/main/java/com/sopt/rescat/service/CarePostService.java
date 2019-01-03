@@ -1,9 +1,6 @@
 package com.sopt.rescat.service;
 
-import com.sopt.rescat.domain.ApprovalLog;
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CarePostComment;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
@@ -13,6 +10,8 @@ import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CarePostPhotoRepository;
 import com.sopt.rescat.repository.CarePostRepository;
+import com.sopt.rescat.repository.NotificationRepository;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,10 +24,15 @@ public class CarePostService {
 
     private CarePostRepository carePostRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
-    public CarePostService(final CarePostRepository carePostRepository, final ApprovalLogRepository approvalLogRepository) {
+    public CarePostService(final CarePostRepository carePostRepository, final ApprovalLogRepository approvalLogRepository,
+                            final NotificationRepository notificationRepository, final NotificationService notificationService) {
         this.carePostRepository = carePostRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -91,15 +95,32 @@ public class CarePostService {
     @Transactional
     public void confirmCarePost(Long idx, Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
+        String category;
+
+        if(carePost.getType()==0)
+            category = "입양";
+        else
+            category = "임시보호";
 
         // 거절일 경우
         if(status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
+
+            Notification notification = new Notification(carePost.getWriter(),"님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            notificationRepository.save(notification);
+
+            notificationService.writePush(notification);
+
             return;
         }
 
         // 승인일 경우
         approveCarePostRequest(carePost, approver);
+
+        Notification notification = new Notification(carePost.getWriter(), carePost.getIdx(),"님의 " + category +" 등록 신청이 승인되었습니다. 좋은 "+ category +"자를 만날 수 있기를 응원합니다.");
+        notificationRepository.save(notification);
+
+        notificationService.writePush(notification);
     }
 
     private void refuseCarePostRequest(CarePost carePost, User approver) {

@@ -8,10 +8,12 @@ import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.FundingRepository;
+import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,13 +23,19 @@ public class FundingService {
     private FundingRepository fundingRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
 
     public FundingService(final FundingRepository fundingRepository,
                           final ProjectFundingLogRepository projectFundingLogRepository,
-                          final ApprovalLogRepository approvalLogRepository) {
+                          final ApprovalLogRepository approvalLogRepository,
+                          final NotificationRepository notificationRepository,
+                          final NotificationService notificationService) {
         this.fundingRepository = fundingRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -77,11 +85,8 @@ public class FundingService {
         funding.updateCurrentAmount(mileage);
     }
 
-
     public Iterable<Funding> getFundingRequests(){
-        return fundingRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream()
-                .collect(Collectors.toList());
+        return new ArrayList<>(fundingRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
     }
 
     @Transactional
@@ -91,11 +96,23 @@ public class FundingService {
         // 거절일 경우
         if(status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
+
+            Notification notification = new Notification(funding.getWriter(), "님의 후원글 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            notificationRepository.save(notification);
+
+            notificationService.writePush(notification);
+
             return;
         }
 
         // 승인일 경우
         approveFundingRequest(funding, approver);
+
+        Notification notification = new Notification(funding.getWriter(), funding.getIdx(),"님의 후원글 등록 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.");
+        notificationRepository.save(notification);
+
+        notificationService.writePush(notification);
+
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {

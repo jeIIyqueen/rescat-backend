@@ -74,6 +74,9 @@ public class User extends BaseTime {
     @Column
     private Long mileage;
 
+    @Column
+    private String deviceTokrn;
+
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
@@ -122,5 +125,9 @@ public class User extends BaseTime {
     public void updateUser(String nickname, String phone){
         this.nickname = nickname;
         this.phone = phone;
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceTokrn=deviceToken;
     }
 }

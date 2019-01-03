@@ -11,7 +11,9 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +35,8 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
+    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
 
     @Value("${GABIA.SMSPHONENUMBER}")
@@ -44,13 +48,16 @@ public class UserService {
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, final ProjectFundingLogRepository projectFundingLogRepository,
-                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository) {
+                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository,
+                       final NotificationService notificationService, final NotificationRepository notificationRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.regionRepository = regionRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
+        this.notificationService = notificationService;
+        this.notificationRepository = notificationRepository;
     }
 
     public Boolean isExistingId(String id) {
@@ -80,10 +87,20 @@ public class UserService {
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
+
+    ////////////////////////////////////////////////////////////////푸시 예시
+    @Transactional
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
                 .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
+        savedUser.updateDeviceToken(userLoginDto.getDeviceToken());
+
+        Notification notification = new Notification(savedUser,"님이 로그인 하셨습니다.");
+        notificationRepository.save(notification);
+
+        notificationService.writePush(notification);
+
         return savedUser;
     }
 
@@ -201,11 +218,23 @@ public class UserService {
         // 거절일 경우
         if(status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCareTakerRequest(careTakerRequest, approver);
+
+            Notification notification = new Notification(careTakerRequest.getWriter(), "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            notificationRepository.save(notification);
+
+            notificationService.writePush(notification);
+
             return;
         }
 
         // 승인일 경우
         approveCareTakerRequest(careTakerRequest, approver);
+
+        Notification notification = new Notification(careTakerRequest.getWriter(), "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.");
+        notificationRepository.save(notification);
+
+        notificationService.writePush(notification);
+
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
