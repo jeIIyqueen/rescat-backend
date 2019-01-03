@@ -6,68 +6,74 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.exception.AlreadyExistsException;
-import com.sopt.rescat.exception.InvalidValueException;
-import com.sopt.rescat.exception.NotFoundException;
-import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
+import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
-import com.sopt.rescat.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CarePostService {
 
     private CarePostRepository carePostRepository;
+    private CarePostCommentRepository carePostCommentRepository;
     private CareApplicationRepository careApplicationRepository;
-    private UserRepository userRepository;
     private ApprovalLogRepository approvalLogRepository;
 
 
     public CarePostService(final CarePostRepository carePostRepository,
+                           final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
-                           final UserRepository userRepository,
-                           final ApprovalLogRepository approvalLogRepository
-    ) {
+                           final ApprovalLogRepository approvalLogRepository) {
         this.carePostRepository = carePostRepository;
+        this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
-        this.userRepository = userRepository;
         this.approvalLogRepository = approvalLogRepository;
     }
 
     @Transactional
     public void create(CarePostRequestDto carePostRequestDto, User loginUser) {
+        if (carePostRepository.existsCarePostByWriterAndIsFinished(loginUser, false)) {
+            throw new AlreadyExistsException("carePost", "완료되지 않은 작성글이 있습니다.");
+        }
+
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
+    public CarePost findBy(Long idx) {
+        return getCarePostBy(idx)
+                .setWriterNickname()
+                .addViewCount();
+    }
+
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
-        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
+        return carePostRepository.findByTypeAndIsConfirmedOrderByUpdatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue());
+        return carePostRepository.findByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue());
     }
 
     public Iterable<CarePostResponseDto> find5Post() {
-        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
+        return carePostRepository.findTop5ByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        if(loginUser != null)
+        if (loginUser != null)
             return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
         return getCarePostBy(idx).setWriterNickname();
     }
@@ -81,32 +87,32 @@ public class CarePostService {
                 }).collect(Collectors.toList());
     }
 
-    private CarePost getCarePostBy(Long idx) {
-        return carePostRepository.findById(idx)
-                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
-    }
-
-    public List<Breed> getBreeds() {
-        return Arrays.asList(Breed.values());
+    public List<Map> getBreeds() {
+        return Arrays.stream(Breed.values())
+                .map((breedEnum) -> {
+                    Map<String, Object> breed = new HashMap<>();
+                    breed.put("english", breedEnum.name());
+                    breed.put("korean", breedEnum.getValue());
+                    return breed;
+                })
+                .collect(Collectors.toList());
     }
 
 
     public Iterable<CarePost> findAllByUser(User user) {
-        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
-        if(!carePost.equalsType(careApplication.getType()))
+        if (!carePost.equalsType(careApplication.getType()))
             throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
-        if(carePost.isFinished())
+        if (carePost.getIsFinished())
             throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
-
-        if(carePost.equalsWriter(loginUser))
+        if (carePost.equalsWriter(loginUser))
             throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
-
-        if(carePost.isSubmitted(loginUser))
+        if (carePost.isSubmitted(loginUser))
             throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
         careApplicationRepository.save(
@@ -120,7 +126,8 @@ public class CarePostService {
     @Transactional
     public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
-        careApplication.getCarePost().isFinished();
+        if (careApplication.getCarePost().getIsFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
 
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();
@@ -134,7 +141,7 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests() {
-        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue()));
     }
 
     @Transactional
@@ -168,6 +175,40 @@ public class CarePostService {
                 .requestStatus(RequestStatus.CONFIRM)
                 .build()
                 .setApprover(approver));
+    }
+
+    @Transactional
+    public void updateCarePostUpdateTime(Long carePostIdx, User loginUser) {
+        CarePost carePost = getCarePostBy(carePostIdx);
+        if (!carePost.equalsWriter(loginUser))
+            throw new InvalidValueException("idx", "해당 글의 작성자가 아닙니다.");
+        carePost.updateUpdatedAt();
+    }
+
+    public CarePostComment createComment(Long carePostIdx, CarePostComment carePostComment, User loginUser) {
+        return carePostCommentRepository.save(carePostComment
+                .setWriter(loginUser)
+                .initCarePost(getCarePostBy(carePostIdx)))
+                .setWriterNickname()
+                .setUserRole();
+    }
+
+    public void deleteComment(Long commentIdx, User loginUser) {
+        CarePostComment carePostComment = getCommentBy(commentIdx);
+        if (!loginUser.match(carePostComment.getWriter()))
+            throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
+
+        carePostCommentRepository.delete(carePostComment);
+    }
+
+    private CarePostComment getCommentBy(Long commentIdx) {
+        return carePostCommentRepository.findById(commentIdx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
+    }
+
+    private CarePost getCarePostBy(Long idx) {
+        return carePostRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 }
 

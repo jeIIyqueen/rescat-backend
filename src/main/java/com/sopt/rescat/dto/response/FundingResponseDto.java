@@ -11,6 +11,7 @@ import java.util.Date;
 public class FundingResponseDto {
     private Long idx;
     private String title;
+    private String contents;
     private String introduction;
     private Long goalAmount;
     private Long currentAmount;

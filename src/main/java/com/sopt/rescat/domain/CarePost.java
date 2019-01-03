@@ -5,20 +5,30 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
+
+@Slf4j
 @Getter
 @Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class CarePost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +36,12 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    @Length(max = 500)
     private String contents;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CarePostPhoto> photos;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CarePostComment> comments;
 
@@ -72,6 +81,7 @@ public class CarePost extends BaseEntity {
     private String etc;
 
     @Column
+    @Builder.Default
     private int viewCount = 0;
 
     @Column
@@ -92,6 +102,11 @@ public class CarePost extends BaseEntity {
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CareApplication> careApplications;
+
+    @ApiModelProperty(readOnly = true)
+    @LastModifiedDate
+    @Column
+    private LocalDateTime updatedAt;
 
     @Transient
     private String nickname;
@@ -114,7 +129,6 @@ public class CarePost extends BaseEntity {
         return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
-                .contents(contents)
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
@@ -136,9 +150,9 @@ public class CarePost extends BaseEntity {
         this.isConfirmed = isConfirmed;
     }
 
-    @JsonIgnore
-    public boolean isFinished() {
-        return this.isFinished;
+    public CarePost addViewCount() {
+        ++this.viewCount;
+        return this;
     }
 
     @JsonIgnore
@@ -154,13 +168,20 @@ public class CarePost extends BaseEntity {
         return this.getWriter().equals(loginUser);
     }
 
-    public CarePost setSubmitStatus(User loginUser){
+    public CarePost setSubmitStatus(User loginUser) {
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
 
-    public boolean equalsType(Integer type){
+    public boolean equalsType(Integer type) {
         return this.type.equals(type);
+    }
+
+    public void updateUpdatedAt() {
+        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200) {
+            throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
+        }
+        this.updatedAt = now();
     }
 }
