@@ -7,6 +7,7 @@ import com.sopt.rescat.domain.Region;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -107,8 +109,6 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 
-
-
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "요청 성공"),
@@ -121,11 +121,9 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/authentications/caretaker")
-    public ResponseEntity requestCareTaker(
-            @RequestBody @Valid CareTakerRequest careTakerRequest,
-            HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity requestCareTaker(@RequestBody @Valid CareTakerRequest careTakerRequest,
+                                            HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-
         userService.saveCareTakerRequest(user, careTakerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -244,6 +242,45 @@ public class ApiUserController {
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @Auth
+    @DeleteMapping("/mypage/region")
+    public ResponseEntity deleteRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+        if(!body.containsKey("emdCode"))
+            throw new InvalidValueException("emdCode", "emdCode field 가 body에 존재하지 않습니다.");
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.deleteRegion(loginUser, Integer.parseInt(String.valueOf(body.get("emdCode"))));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 추가 요청", notes = "케어테이커 유저가 지역 추가를 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @Auth
+    @PostMapping("/mypage/region")
+    public ResponseEntity requestAddRegion(@RequestBody Map<String, Object> body, HttpServletRequest httpServletRequest) {
+        if(!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
+            throw new InvalidValueException("emdCode", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
+
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))), String.valueOf(body.get("authenticationPhotoUrl")));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 
 }
 

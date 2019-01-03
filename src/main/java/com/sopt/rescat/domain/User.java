@@ -69,9 +69,6 @@ public class User extends BaseTime {
     private Role role;
 
     @Column
-    private String photoUrl;
-
-    @Column
     private Long mileage;
 
     @Builder
@@ -118,8 +115,25 @@ public class User extends BaseTime {
         this.phone = phone;
         this.name = name;
     }
+
     public void updateUser(String nickname, String phone){
         this.nickname = nickname;
         this.phone = phone;
     }
+
+    public void deleteMainRegion(Region subRegion1, Region subRegion2){
+        this.mainRegion = subRegion1;
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion1(Region subRegion2){
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion2(){
+        this.subRegion2 = null;
+    }
+
 }
