@@ -54,6 +54,7 @@ public class ApiCarePostController {
     @ApiOperation(value = "입양/임시보호 글 등록", notes = "입양/임시보호 글을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 등록 성공"),
+            @ApiResponse(code = 409, message = "완료되지 않은 글 중복 오류"),
             @ApiResponse(code = 400, message = "파라미터 형식 오류"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -133,7 +134,7 @@ public class ApiCarePostController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @Auth
-    @PostMapping("/{idx}/application")
+    @PostMapping("/{idx}/applications")
     public ResponseEntity<Void> createCareApplication(
             @RequestHeader(value = "Authorization") final String token,
             @ApiParam(value = "글 번호", required = true) @PathVariable Long idx,
@@ -156,7 +157,7 @@ public class ApiCarePostController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @CareTakerAuth
-    @PostMapping("/application/{idx}/accept")
+    @PostMapping("/applications/{idx}/accepting")
     public ResponseEntity<CareApplication> acceptCareApplication(
             @RequestHeader(value = "Authorization") final String token,
             @ApiParam(value = "신청 번호", required = true) @PathVariable Long idx,

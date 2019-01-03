@@ -14,6 +14,7 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CarePostService {
 
@@ -45,23 +47,27 @@ public class CarePostService {
 
     @Transactional
     public void create(CarePostRequestDto carePostRequestDto, User loginUser) {
+        if(carePostRepository.existsCarePostByWriterAndIsFinished(loginUser, false)) {
+            throw new AlreadyExistsException("carePost", "완료되지 않은 작성글이 있습니다.");
+        }
+
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
-        return carePostRepository.findByTypeAndIsConfirmedOrderByCreatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
+        return carePostRepository.findByTypeAndIsConfirmedOrderByUpdatedAtDesc(type, RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
 
     public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue());
+        return carePostRepository.findByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue());
     }
 
     public Iterable<CarePostResponseDto> find5Post() {
-        return carePostRepository.findTop5ByIsConfirmedOrderByCreatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
+        return carePostRepository.findTop5ByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
     }
@@ -92,7 +98,7 @@ public class CarePostService {
 
 
     public Iterable<CarePost> findAllByUser(User user) {
-        return carePostRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 
     @Transactional
@@ -100,7 +106,7 @@ public class CarePostService {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
         if(!carePost.equalsType(careApplication.getType()))
             throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
-        if(carePost.isFinished())
+        if(carePost.getIsFinished())
             throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
 
         if(carePost.equalsWriter(loginUser))
@@ -120,7 +126,8 @@ public class CarePostService {
     @Transactional
     public void acceptCareApplication(Long careApplicationIdx, User loginUser) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx).orElseThrow(() -> new NotFoundException("idx", "신청서를 찾을 수 없습니다."));
-        careApplication.getCarePost().isFinished();
+        if(careApplication.getCarePost().getIsFinished())
+            throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
 
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();
@@ -134,7 +141,7 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests() {
-        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue()));
     }
 
     @Transactional
@@ -168,6 +175,14 @@ public class CarePostService {
                 .requestStatus(RequestStatus.CONFIRM)
                 .build()
                 .setApprover(approver));
+    }
+
+    @Transactional
+    public void updateCarePostUpdateTime(Long carePostIdx, User loginUser){
+        CarePost carePost = getCarePostBy(carePostIdx);
+        if(!carePost.equalsWriter(loginUser))
+            throw new InvalidValueException("idx", "해당 글의 작성자가 아닙니다.");
+        carePost.updateUpdatedAt();
     }
 }
 

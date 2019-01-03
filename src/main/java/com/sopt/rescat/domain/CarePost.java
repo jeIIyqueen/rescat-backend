@@ -5,15 +5,20 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotExistException;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @Getter
 @Builder
 @Entity
@@ -29,10 +34,10 @@ public class CarePost extends BaseEntity {
     @Length(max = 500)
     private String contents;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CarePostPhoto> photos;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<CarePostComment> comments;
 
@@ -136,10 +141,6 @@ public class CarePost extends BaseEntity {
         this.isConfirmed = isConfirmed;
     }
 
-    @JsonIgnore
-    public boolean isFinished() {
-        return this.isFinished;
-    }
 
     @JsonIgnore
     public void finish() {
@@ -162,5 +163,11 @@ public class CarePost extends BaseEntity {
 
     public boolean equalsType(Integer type){
         return this.type.equals(type);
+    }
+
+    public void updateUpdatedAt(){
+        if(Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200){
+            throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");}
+        initUpdatedAt();
     }
 }

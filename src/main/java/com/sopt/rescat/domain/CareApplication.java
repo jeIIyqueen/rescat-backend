@@ -74,6 +74,7 @@ public class CareApplication extends BaseEntity {
     @ApiModelProperty(notes = "신청자 자택 주소", position = 6, required = true)
     private String address;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column
     @NonNull
     @NotNull

@@ -215,6 +215,22 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllByUser(loginUser));
     }
 
+    @ApiOperation(value = "유저가 작성한 완료되지 않은 입양/임시보호 글 끌올", notes = "유저가 작성한 완료되지 않은 입양/임시보호 글의 작성시간을 최신으로 만듭니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "끌올 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/care-posts/{idx}")
+    public ResponseEntity<Iterable<CarePost>> pullUpCarePost(@RequestHeader(value = "Authorization") final String token,
+                                                                   @ApiParam(value = "글 번호") @PathVariable Long idx,
+                                                                   HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        carePostService.updateCarePostUpdateTime(idx, loginUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @ApiOperation(value = "유저가 작성한 펀딩 글 리스트 조회", notes = "유저가 작성한 펀딩 글 리스트를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공"),
