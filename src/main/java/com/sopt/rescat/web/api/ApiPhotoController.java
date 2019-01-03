@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 @Slf4j
-@Api(value = "PhotoController", description = "사진 api")
+@Api(value = "ApiPhotoController", description = "사진 api")
 @RestController
 @RequestMapping("/api/photo")
 public class ApiPhotoController {

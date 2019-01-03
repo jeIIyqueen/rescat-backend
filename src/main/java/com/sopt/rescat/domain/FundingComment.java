@@ -2,6 +2,7 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -9,14 +10,13 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Getter
-@Setter
 @Entity
 public class FundingComment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(length = 300)
+    @Column
     @NonNull
     private String contents;
 
@@ -29,9 +29,11 @@ public class FundingComment extends BaseEntity {
     private Funding funding;
 
     @Transient
+    @ApiModelProperty(readOnly = true)
     private String nickname;
 
     @Transient
+    @ApiModelProperty(readOnly = true)
     private Role userRole;
 
     public FundingComment setWriterNickname() {
@@ -41,6 +43,16 @@ public class FundingComment extends BaseEntity {
 
     public FundingComment setUserRole() {
         this.userRole = getWriter().getRole();
+        return this;
+    }
+
+    public FundingComment setWriter(User loginUser) {
+        initWriter(loginUser);
+        return this;
+    }
+
+    public FundingComment initFunding(Funding funding) {
+        this.funding = funding;
         return this;
     }
 }

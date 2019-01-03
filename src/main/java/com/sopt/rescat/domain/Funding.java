@@ -6,6 +6,7 @@ import com.sopt.rescat.domain.photo.FundingPhoto;
 
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
@@ -28,9 +29,10 @@ public class Funding extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FundingComment> comments;
 
@@ -67,14 +69,14 @@ public class Funding extends BaseEntity {
     private String mainRegion;
 
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
     private Integer category;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> photos;
 
     @Column

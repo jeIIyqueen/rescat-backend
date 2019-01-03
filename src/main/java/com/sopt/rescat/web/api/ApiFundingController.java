@@ -7,7 +7,6 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -82,6 +81,25 @@ public class ApiFundingController {
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.findCommentsBy(idx));
+    }
+
+    @ApiOperation(value = "크라우드 펀딩 글의 댓글 등록", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 등록합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 등록 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "댓글 작성 권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @PostMapping("/{idx}/comments")
+    @Auth
+    public ResponseEntity<FundingComment> createComment(
+            @ApiParam(value = "글 번호", required = true)
+            @PathVariable Long idx,
+            @RequestBody FundingComment fundingComment,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.CREATED).body(fundingService.createComment(idx, fundingComment, loginUser));
     }
 
     @ApiOperation(value = "마일리지 결제", notes = "idx에 해당하는 펀딩 글에 마일리지로 결제합니다.")

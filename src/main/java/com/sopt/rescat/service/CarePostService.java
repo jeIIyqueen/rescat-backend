@@ -11,7 +11,7 @@ import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.CarePostPhotoRepository;
+import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
 public class CarePostService {
 
     private CarePostRepository carePostRepository;
+    private CarePostCommentRepository carePostCommentRepository;
     private ApprovalLogRepository approvalLogRepository;
 
-    public CarePostService(final CarePostRepository carePostRepository, final ApprovalLogRepository approvalLogRepository) {
+    public CarePostService(final CarePostRepository carePostRepository, CarePostCommentRepository carePostCommentRepository, final ApprovalLogRepository approvalLogRepository) {
         this.carePostRepository = carePostRepository;
+        this.carePostCommentRepository = carePostCommentRepository;
         this.approvalLogRepository = approvalLogRepository;
     }
 
@@ -68,11 +70,6 @@ public class CarePostService {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
                 }).collect(Collectors.toList());
-    }
-
-    private CarePost getCarePostBy(Long idx) {
-        return carePostRepository.findById(idx)
-                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 
     public List<Breed> getBreeds() {
@@ -120,5 +117,18 @@ public class CarePostService {
                 .requestStatus(RequestStatus.CONFIRM)
                 .build()
                 .setApprover(approver));
+    }
+
+    public CarePostComment createComment(Long carePostIdx, CarePostComment carePostComment, User loginUser) {
+        return carePostCommentRepository.save(carePostComment
+                .setWriter(loginUser)
+                .initCarePost(getCarePostBy(carePostIdx)))
+                .setWriterNickname()
+                .setUserRole();
+    }
+
+    private CarePost getCarePostBy(Long idx) {
+        return carePostRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 }

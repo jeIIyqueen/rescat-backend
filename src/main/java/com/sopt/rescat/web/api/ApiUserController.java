@@ -25,7 +25,7 @@ import java.util.List;
 
 
 @Slf4j
-@Api(value = "UserController", description = "유저 관련 api")
+@Api(value = "ApiUserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
 public class ApiUserController {

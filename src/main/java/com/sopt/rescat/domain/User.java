@@ -51,15 +51,15 @@ public class User extends BaseTime {
     @JsonIgnore
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
