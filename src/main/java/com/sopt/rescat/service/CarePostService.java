@@ -11,13 +11,13 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
+import netscape.javascript.JSObject;
 import org.hibernate.validator.constraints.Range;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,7 +69,7 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        if(loginUser != null)
+        if (loginUser != null)
             return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
         return getCarePostBy(idx).setWriterNickname();
     }
@@ -83,8 +83,15 @@ public class CarePostService {
                 }).collect(Collectors.toList());
     }
 
-    public List<Breed> getBreeds() {
-        return Arrays.asList(Breed.values());
+    public List<Map> getBreeds() {
+        return Arrays.stream(Breed.values())
+                .map((breedEnum) -> {
+                    Map<String, Object> breed = new HashMap<>();
+                    breed.put("english", breedEnum.name());
+                    breed.put("korean", breedEnum.getValue());
+                    return breed;
+                })
+                .collect(Collectors.toList());
     }
 
 
@@ -95,15 +102,15 @@ public class CarePostService {
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
-        if(!carePost.equalsType(careApplication.getType()))
+        if (!carePost.equalsType(careApplication.getType()))
             throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
-        if(carePost.isFinished())
+        if (carePost.isFinished())
             throw new InvalidValueException("carePost", "신청이 완료된 글입니다.");
 
-        if(carePost.equalsWriter(loginUser))
+        if (carePost.equalsWriter(loginUser))
             throw new InvalidValueException("user", "작성자는 신청할 수 없습니다.");
 
-        if(carePost.isSubmitted(loginUser))
+        if (carePost.isSubmitted(loginUser))
             throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
         careApplicationRepository.save(
@@ -177,7 +184,7 @@ public class CarePostService {
 
     public void deleteComment(Long commentIdx, User loginUser) {
         CarePostComment carePostComment = getCommentBy(commentIdx);
-        if(!loginUser.match(carePostComment.getWriter()))
+        if (!loginUser.match(carePostComment.getWriter()))
             throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
 
         carePostCommentRepository.delete(carePostComment);

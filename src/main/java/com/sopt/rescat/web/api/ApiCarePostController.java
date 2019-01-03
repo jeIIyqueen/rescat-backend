@@ -4,7 +4,6 @@ import com.sopt.rescat.domain.CareApplication;
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CarePostComment;
 import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.service.CarePostService;
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Api(value = "ApiCarePostController", description = "입양/임시보호 글 관련 api")
@@ -159,7 +160,7 @@ public class ApiCarePostController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("/breeds")
-    public ResponseEntity<Iterable<Breed>> getBreeds() {
+    public ResponseEntity<List<Map>> getBreeds() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getBreeds());
     }
 
