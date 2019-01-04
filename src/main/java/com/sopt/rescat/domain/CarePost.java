@@ -131,6 +131,7 @@ public class CarePost extends BaseEntity {
         return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
+                .contents(contents)
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())

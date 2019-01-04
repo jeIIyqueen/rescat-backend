@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class CarePostResponseDto {
     private Long idx;
     private String name;
+    private String contents;
     private CarePostPhoto photo;
     // 0: 입양, 1: 임시보호
     private Integer type;
