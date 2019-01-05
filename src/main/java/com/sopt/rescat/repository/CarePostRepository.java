@@ -16,4 +16,6 @@ public interface CarePostRepository extends CrudRepository<CarePost, Long> {
     List<CarePost> findByWriterAndIsConfirmedOrderByCreatedAtDesc(User writer, Integer isConfirmed);
 
     List<CarePost> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
+
+    Integer countByIsConfirmed(Integer isConfirmed);
 }

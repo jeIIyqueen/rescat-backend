@@ -66,6 +66,10 @@ public class FundingService {
                 }).collect(Collectors.toList());
     }
 
+    public Integer getFundingCount() {
+        return fundingRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     @Transactional
     public void payForMileage(Long idx, Long mileage, User loginUser) {
         Funding funding = getFundingBy(idx);
@@ -127,5 +131,4 @@ public class FundingService {
     public Iterable<Funding> findAllByUser(User user) {
         return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
-
 }

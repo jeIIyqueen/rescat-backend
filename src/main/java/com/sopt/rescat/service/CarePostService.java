@@ -70,6 +70,10 @@ public class CarePostService {
                 }).collect(Collectors.toList());
     }
 
+    public Integer getCarePostRequestCount() {
+        return carePostRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     private CarePost getCarePostBy(Long idx) {
         return carePostRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));

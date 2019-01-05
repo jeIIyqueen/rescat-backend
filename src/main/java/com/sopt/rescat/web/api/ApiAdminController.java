@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.User;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.CarePostService;
 import com.sopt.rescat.service.FundingService;
+import com.sopt.rescat.service.MapService;
 import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @Api(value = "ApiAdminController", description = "관리자페이지 관련 api")
@@ -23,12 +25,32 @@ public class ApiAdminController {
     private UserService userService;
     private FundingService fundingService;
     private CarePostService carePostService;
+    private MapService mapService;
 
     public ApiAdminController(final UserService userService, final FundingService fundingService,
-                              final CarePostService carePostService) {
+                              final CarePostService carePostService, MapService mapService) {
         this.userService = userService;
         this.fundingService = fundingService;
         this.carePostService = carePostService;
+        this.mapService = mapService;
+    }
+
+    @ApiOperation(value = "홈화면 요청 개수 리스트 api", notes = "홈화면 요청 개수 리스트를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "홈화면 요청 개수 리스트 반환 성공"),
+            @ApiResponse(code = 401, message = "권한 미보유"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @AdminAuth
+    @GetMapping("/home/counts")
+    public ResponseEntity<Map<String, Integer>> getRequestCounts() {
+        Map<String, Integer> body = new HashMap<>();
+        body.put("care-taker-request", userService.getCareTakerRequestCount());
+        body.put("care-post-request", carePostService.getCarePostRequestCount());
+        body.put("funding-request", fundingService.getFundingCount());
+        body.put("map-marker-request", mapService.getMarkerRequestCount());
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @ApiOperation(value = "케어테이커 인증요청 리스트 api", notes = "케어테이커 인증요청 리스트를 반환합니다.")
