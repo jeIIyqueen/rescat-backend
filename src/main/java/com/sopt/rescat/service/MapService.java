@@ -57,6 +57,10 @@ public class MapService {
         return markerList;
     }
 
+    public Integer getMarkerRequestCount() {
+        return mapRequestRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequest mapRequest) throws IOException {
         if (mapRequest.isEditCategory()) {
@@ -104,10 +108,10 @@ public class MapService {
                 .build()
                 .setApprover(approver));
 
-        if (mapRequest.getRequestType() == 0) {
+        if (mapRequest.getRequestType().equals(RequestStatus.DEFER.getValue())) {
             save(mapRequest);
         }
-        if (mapRequest.getRequestType() == 1) {
+        if (mapRequest.getRequestType().equals(RequestStatus.CONFIRM.getValue())) {
             if (!isAmendable(mapRequest)) {
                 throw new NotFoundException("markerIdx", "존재하지 않는 마커입니다.");
             }

@@ -123,6 +123,10 @@ public class UserService {
                 .build();
     }
 
+    public Integer getCareTakerRequestCount() {
+        return careTakerRequestRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
         Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())

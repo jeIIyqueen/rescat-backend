@@ -103,6 +103,10 @@ public class CarePostService {
         return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
     }
 
+    public Integer getCarePostRequestCount() {
+        return carePostRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
         CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
