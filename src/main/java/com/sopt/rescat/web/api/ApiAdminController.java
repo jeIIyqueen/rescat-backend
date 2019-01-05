@@ -50,10 +50,10 @@ public class ApiAdminController {
     @GetMapping("/home/counts")
     public ResponseEntity<Map<String, Integer>> getRequestCounts() {
         Map<String, Integer> body = new HashMap<>();
-        body.put("care-taker-request", userService.getCareTakerRequestCount());
-        body.put("care-post-request", carePostService.getCarePostRequestCount());
-        body.put("funding-request", fundingService.getFundingCount());
-        body.put("map-marker-request", mapService.getMarkerRequestCount());
+        body.put("careTakerRequest", userService.getCareTakerRequestCount());
+        body.put("carePostRequest", carePostService.getCarePostRequestCount());
+        body.put("fundingRequest", fundingService.getFundingCount());
+        body.put("mapMarkerRequest", mapService.getMarkerRequestCount());
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
