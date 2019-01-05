@@ -15,6 +15,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -142,4 +144,19 @@ public class User extends BaseTime {
     public void deleteSubRegion2() {
         this.subRegion2 = null;
     }
+
+    public void updateRegions(List<Region> receivedRegions){
+        this.mainRegion = receivedRegions.get(1);
+        this.subRegion2 = receivedRegions.get(2);
+        this.subRegion2 = receivedRegions.get(3);
+    }
+
+    public void addSubRegion1(Region subRegion1){
+        this.subRegion1 = subRegion1;
+    }
+
+    public void addSubRegion2(Region subRegion2){
+        this.subRegion2 = subRegion2;
+    }
+
 }

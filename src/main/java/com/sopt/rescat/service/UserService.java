@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -128,8 +129,15 @@ public class UserService {
         Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
 
-        careTakerRequestRepository.save(CareTakerRequest.builder().authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
-                .isConfirmed(RequestStatus.DEFER.getValue()).mainRegion(region).name(careTakerRequest.getName()).phone(careTakerRequest.getPhone()).writer(user).build());
+        careTakerRequestRepository.save(CareTakerRequest.builder()
+                .authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
+                .isConfirmed(RequestStatus.DEFER.getValue())
+                .mainRegion(region)
+                .name(careTakerRequest.getName())
+                .phone(careTakerRequest.getPhone())
+                .writer(user)
+                .type(careTakerRequest.getType())
+                .build());
     }
 
     public List<RegionDto> getRegionList(final User user) {
@@ -172,7 +180,6 @@ public class UserService {
 
     @Transactional
     public UserMypageDto editUser(User user, UserEditDto userEditDto) {
-        User tokenUser = userRepository.findByIdx(user.getIdx());
         String editNickname = userEditDto.getNickname();
         String editPhone = userEditDto.getPhone();
 
@@ -256,10 +263,18 @@ public class UserService {
     }
 
     @Transactional
-    public void saveAddRegionRequest(final User user, Integer emdCode, String authenticationPhotoUrl) {
+    public void saveAddRegionRequest(final User user, Integer emdCode, String authenticationPhotoUrl, Integer type) {
 
         Region region = regionRepository.findByEmdCode(emdCode)
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        List<Region> regions = new ArrayList<>();
+        regions.add(user.getMainRegion());
+        regions.add(user.getSubRegion1());
+        regions.add(user.getSubRegion2());
+
+        if(regions.contains(region))
+            throw new AlreadyExistsException("emdCode", "이미 존재하는 지역입니다.");
 
         if (user.getSubRegion1() == null) {
             careTakerRequestRepository.save(CareTakerRequest.builder()
@@ -269,7 +284,9 @@ public class UserService {
                     .subRegion1(region)
                     .name(user.getName())
                     .phone(user.getPhone())
-                    .writer(user).build());
+                    .writer(user)
+                    .type(type)
+                    .build());
         } else if (user.getSubRegion1() != null) {
             careTakerRequestRepository.save(CareTakerRequest.builder()
                     .authenticationPhotoUrl(authenticationPhotoUrl)
@@ -278,11 +295,66 @@ public class UserService {
                     .subRegion2(region)
                     .name(user.getName())
                     .phone(user.getPhone())
-                    .writer(user).build());
+                    .writer(user)
+                    .type(type)
+                    .build());
         }
+    }
+
+    public void editUserRegion(User user, List<Region> receivedRegions){
+        List<Region> regions = new ArrayList<>();
+        regions.add(user.getMainRegion());
+        regions.add(user.getSubRegion1());
+        regions.add(user.getSubRegion2());
+
+        if(regions.equals(receivedRegions)){
+            user.updateRegions(receivedRegions);
+        }
+    }
+
+    @Transactional
+    public void confirmedAddRegion(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+        CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
+
+        // 거절일 경우
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
+            refuseAddRegionRequest(careTakerRequest, approver);
+            return;
+        }
+
+        // 승인일 경우
+        approveAddRegionRequest(careTakerRequest, approver);
+    }
+
+    private void refuseAddRegionRequest(CareTakerRequest careTakerRequest, User approver) {
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestType(RequestType.REGION)
+                .requestIdx(careTakerRequest.getIdx())
+                .requestStatus(RequestStatus.REFUSE)
+                .build()
+                .setApprover(approver));
+        careTakerRequest.refuse();
+    }
+
+    private void approveAddRegionRequest(CareTakerRequest careTakerRequest, User approver) {
+        careTakerRequest.approve();
+        if(careTakerRequest.getSubRegion1() != null){
+            careTakerRequest.getWriter().addSubRegion1(careTakerRequest.getSubRegion1());
+        }
+        else if(careTakerRequest.getSubRegion2() != null){
+            careTakerRequest.getWriter().addSubRegion2(careTakerRequest.getSubRegion2());
+        }
+        approvalLogRepository.save(ApprovalLog.builder()
+                .requestIdx(careTakerRequest.getIdx())
+                .requestType(RequestType.REGION)
+                .requestStatus(RequestStatus.CONFIRM)
+                .build()
+                .setApprover(approver));
     }
 
     private int getRandomCode() {
         return (int) Math.floor(Math.random() * 1000000);
     }
+
 }
