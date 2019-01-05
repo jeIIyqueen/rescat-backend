@@ -6,7 +6,9 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
+import com.sopt.rescat.repository.FundingCommentRepository;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
 import org.hibernate.validator.constraints.Range;
@@ -21,13 +23,15 @@ import java.util.stream.Collectors;
 public class FundingService {
 
     private FundingRepository fundingRepository;
+    private FundingCommentRepository fundingCommentRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
-                          final ProjectFundingLogRepository projectFundingLogRepository,
+                          FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                           final ApprovalLogRepository approvalLogRepository) {
         this.fundingRepository = fundingRepository;
+        this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
     }
@@ -53,7 +57,11 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Funding findByIdx(Long idx) {
+    public Iterable<Funding> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
+
+    public Funding findBy(Long idx) {
         return getFundingBy(idx).setWriterNickname();
     }
 
@@ -119,13 +127,30 @@ public class FundingService {
                 .setApprover(approver));
     }
 
+    @Transactional
+    public FundingComment createComment(Long idx, FundingComment fundingComment, User loginUser) {
+        return fundingCommentRepository.save(fundingComment
+                .setWriter(loginUser)
+                .initFunding(getFundingBy(idx)))
+                .setWriterNickname()
+                .setUserRole();
+    }
+
+    public void deleteComment(Long commentIdx, User loginUser) {
+        FundingComment fundingComment = getCommentBy(commentIdx);
+        if (!loginUser.match(fundingComment.getWriter()))
+            throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
+
+        fundingCommentRepository.delete(fundingComment);
+    }
+
     private Funding getFundingBy(Long idx) {
         return fundingRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 
-    public Iterable<Funding> findAllByUser(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    private FundingComment getCommentBy(Long idx) {
+        return fundingCommentRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
-
 }

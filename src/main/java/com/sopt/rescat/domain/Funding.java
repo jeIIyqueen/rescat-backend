@@ -3,15 +3,11 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
-
-import lombok.Getter;
-import lombok.NonNull;
-
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,9 +24,10 @@ public class Funding extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<FundingComment> comments;
 
@@ -51,6 +48,7 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
+    @Builder.Default
     private Long currentAmount = 0L;
 
     @Column
@@ -67,14 +65,14 @@ public class Funding extends BaseEntity {
     private String mainRegion;
 
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
     private Integer category;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> photos;
 
     @Column
@@ -99,6 +97,7 @@ public class Funding extends BaseEntity {
         return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
+                .contents(contents)
                 .currentAmount(currentAmount)
                 .goalAmount(goalAmount)
                 .introduction(introduction)

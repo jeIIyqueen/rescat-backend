@@ -1,15 +1,15 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.Region;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.*;
-import com.sopt.rescat.dto.response.CarePostResponseDto;
-import com.sopt.rescat.service.*;
+import com.sopt.rescat.exception.InvalidValueException;
+import com.sopt.rescat.service.CarePostService;
+import com.sopt.rescat.service.FundingService;
+import com.sopt.rescat.service.JWTService;
+import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
+import com.sopt.rescat.utils.auth.CareTakerAuth;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +22,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
-@Api(value = "UserController", description = "유저 관련 api")
+@Api(value = "ApiUserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
 public class ApiUserController {
@@ -107,8 +108,6 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
 
-
-
     @ApiOperation(value = "케어테이커 인증 요청", notes = "케어테이커 인증을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "요청 성공"),
@@ -121,11 +120,9 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/authentications/caretaker")
-    public ResponseEntity requestCareTaker(
-            @RequestBody @Valid CareTakerRequest careTakerRequest,
-            HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity requestCareTaker(@RequestBody @Valid CareTakerRequest careTakerRequest,
+                                           HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-
         userService.saveCareTakerRequest(user, careTakerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -139,7 +136,7 @@ public class ApiUserController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage")
-    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest){
+    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }
@@ -151,7 +148,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @Auth
+    @CareTakerAuth
     @GetMapping("/mypage/regions")
     public ResponseEntity<List<RegionDto>> getRegionList(HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -167,7 +164,7 @@ public class ApiUserController {
     @Auth
     @GetMapping("/mypage/edit")
     public ResponseEntity<UserMypageDto> getEditUser(@RequestHeader(value = "Authorization") final String token,
-                                                     HttpServletRequest httpServletRequest){
+                                                     HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getEditUser(loginUser));
     }
@@ -181,7 +178,7 @@ public class ApiUserController {
     @Auth
     @PutMapping("/mypage/edit")
     public ResponseEntity editUser(@RequestHeader(value = "Authorization") final String token,
-                                   HttpServletRequest httpServletRequest, UserEditDto userEditDto){
+                                   HttpServletRequest httpServletRequest, UserEditDto userEditDto) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.editUser(loginUser, userEditDto);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -190,13 +187,13 @@ public class ApiUserController {
     @ApiOperation(value = "유저가 후원한 펀딩 목록 조회", notes = "유저가 후원한 펀딩 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
-            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @GetMapping("/mypage/supporting")
     public ResponseEntity<List<Funding>> getUserSupportingFundings(@RequestHeader(value = "Authorization") final String token,
-                                                    HttpServletRequest httpServletRequest){
+                                                                   HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getSupportingFundings(loginUser));
     }
@@ -210,9 +207,26 @@ public class ApiUserController {
     @Auth
     @GetMapping("/mypage/care-posts")
     public ResponseEntity<Iterable<CarePost>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
-                                                                   HttpServletRequest httpServletRequest){
+                                                                   HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllByUser(loginUser));
+    }
+
+    @ApiOperation(value = "유저가 작성한 완료되지 않은 입양/임시보호 글 끌올", notes = "유저가 작성한 완료되지 않은 입양/임시보호 글의 작성시간을 최신으로 만듭니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "끌올 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/care-posts/{idx}")
+    public ResponseEntity<Iterable<CarePost>> pullUpCarePost(
+            @RequestHeader(value = "Authorization") final String token,
+            @ApiParam(value = "글 번호") @PathVariable Long idx,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        carePostService.updateCarePostToRecent(idx, loginUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "유저가 작성한 펀딩 글 리스트 조회", notes = "유저가 작성한 펀딩 글 리스트를 조회합니다.")
@@ -223,27 +237,91 @@ public class ApiUserController {
     })
     @Auth
     @GetMapping("/mypage/fundings")
-    public ResponseEntity<Iterable<Funding>> getUserFundingsList(@RequestHeader(value = "Authorization") final String token,
-                                                                 HttpServletRequest httpServletRequest){
+    public ResponseEntity<Iterable<Funding>> getUserFundingList(
+            @RequestHeader(value = "Authorization") final String token,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllByUser(loginUser));
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(loginUser));
     }
 
     @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),
-            @ApiResponse(code = 400, message = "유효성 검사 에러",response = ExceptionDto.class),
-            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @PutMapping("/mypage/edit/password")
-    public ResponseEntity editUserPassword(@RequestHeader(value = "Authorization") final String token,
-                                           @RequestBody @Valid UserPasswordDto userPasswordDto, HttpServletRequest httpServletRequest) {
+    public ResponseEntity editUserPassword(
+            @RequestHeader(value = "Authorization") final String token,
+            @RequestBody @Valid UserPasswordDto userPasswordDto,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-}
+    @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @CareTakerAuth
+    @DeleteMapping("/mypage/region")
+    public ResponseEntity deleteRegion(
+            @ApiParam(value = "example -> {\"emdCode\": 1101055}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("emdCode"))
+            throw new InvalidValueException("emdCode", "emdCode field 가 body에 존재하지 않습니다.");
 
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.deleteRegion(loginUser, Integer.parseInt(String.valueOf(body.get("emdCode"))));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 추가 요청", notes = "케어테이커 유저가 지역 추가를 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PostMapping("/mypage/region")
+    public ResponseEntity requestAddRegion(
+            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url, \n\"type\": 1\n}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl") && !body.containsKey("type"))
+            throw new InvalidValueException("emdCode or authenticationPhoto or type", "emdCode 또는 authenticationPhoto, type field 가 body에 존재하지 않습니다.");
+
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))),
+                String.valueOf(body.get("authenticationPhotoUrl")), Integer.parseInt(String.valueOf(body.get("type"))));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PutMapping("/mypage/region")
+    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<Region> receivedRegions) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserRegion(user, receivedRegions);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+}
