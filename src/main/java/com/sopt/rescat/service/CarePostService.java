@@ -145,7 +145,10 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests() {
-        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue()));
+        return carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue())
+                .stream()
+                .map(CarePost::setWriterNickname)
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.User;
@@ -140,7 +141,7 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @GetMapping("/care-post-requests")
-    public ResponseEntity showCarePostRequest() {
+    public ResponseEntity<Iterable<CarePost>> showCarePostRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
     }
 
