@@ -12,6 +12,7 @@ import com.sopt.rescat.repository.CarePostPhotoRepository;
 import com.sopt.rescat.repository.CarePostRepository;
 import com.sopt.rescat.repository.NotificationRepository;
 import org.hibernate.validator.constraints.Range;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -94,20 +95,17 @@ public class CarePostService {
     @Transactional
     public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
-        String category;
-
-        if(carePost.getType()==0)
-            category = "입양";
-        else
-            category = "임시보호";
+        String category = (carePost.getType()==0) ? "입양" : "임시보호";
 
         // 거절일 경우
         if(status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
 
-            Notification notification = new Notification(carePost.getWriter(),"님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            Notification notification = Notification.builder()
+                    .receivingUser(approver)
+                    .contents(carePost.getWriter() + "님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
             notificationRepository.save(notification);
-
             notificationService.writePush(notification);
 
             return;
@@ -116,7 +114,10 @@ public class CarePostService {
         // 승인일 경우
         approveCarePostRequest(carePost, approver);
 
-        Notification notification = new Notification(carePost.getWriter(), carePost.getIdx(),"님의 " + category +" 등록 신청이 승인되었습니다. 좋은 "+ category +"자를 만날 수 있기를 응원합니다.");
+        Notification notification = Notification.builder()
+                .receivingUser(approver)
+                .contents(carePost.getWriter() + "님의 " + category +" 등록 신청이 승인되었습니다. 좋은 "+ category +"자를 만날 수 있기를 응원합니다.")
+                .build();
         notificationRepository.save(notification);
 
         notificationService.writePush(notification);

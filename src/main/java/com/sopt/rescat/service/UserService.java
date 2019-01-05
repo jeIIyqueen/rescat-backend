@@ -88,19 +88,12 @@ public class UserService {
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
-
-    ////////////////////////////////////////////////////////////////푸시 예시
     @Transactional
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
                 .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         savedUser.updateDeviceToken(userLoginDto.getDeviceToken());
-
-        Notification notification = new Notification(savedUser,"님이 로그인 하셨습니다.");
-        notificationRepository.save(notification);
-
-        notificationService.writePush(notification);
 
         return savedUser;
     }
@@ -220,7 +213,10 @@ public class UserService {
         if(status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCareTakerRequest(careTakerRequest, approver);
 
-            Notification notification = new Notification(careTakerRequest.getWriter(), "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            Notification notification = Notification.builder()
+                    .receivingUser(approver)
+                    .contents(careTakerRequest.getWriter() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
             notificationRepository.save(notification);
 
             notificationService.writePush(notification);
@@ -231,7 +227,10 @@ public class UserService {
         // 승인일 경우
         approveCareTakerRequest(careTakerRequest, approver);
 
-        Notification notification = new Notification(careTakerRequest.getWriter(), "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.");
+        Notification notification =  Notification.builder()
+                .receivingUser(approver)
+                .contents(careTakerRequest.getWriter() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                .build();
         notificationRepository.save(notification);
 
         notificationService.writePush(notification);

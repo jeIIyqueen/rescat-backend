@@ -11,6 +11,8 @@ import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
+import com.sun.deploy.security.AuthKey;
+import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,14 +42,16 @@ public class ApiUserController {
     private final JWTService jwtService;
     private final CarePostService carePostService;
     private final FundingService fundingService;
-
+    private final NotificationService notificationService;
 
     public ApiUserController(final UserService userService, final JWTService jwtService,
-                             final CarePostService carePostService, final FundingService fundingService) {
+                             final CarePostService carePostService, final FundingService fundingService,
+                             final NotificationService notificationService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.carePostService = carePostService;
         this.fundingService = fundingService;
+        this.notificationService = notificationService;
     }
 
     @ApiOperation(value = "일반 유저 생성", notes = "일반 유저를 생성합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
@@ -249,6 +253,14 @@ public class ApiUserController {
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
+//
+//    @Auth
+//    @GetMapping("/mypage/notification-box")
+//    public ResponseEntity showNotification(@RequestHeader(value = "Authorization") final String token,
+//                                           @RequestBody HttpServletRequest httpServletRequest){
+//
+//        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+//        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
+//    }
 }
 

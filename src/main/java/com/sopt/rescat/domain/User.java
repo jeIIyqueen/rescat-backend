@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -75,7 +76,11 @@ public class User extends BaseTime {
     private Long mileage;
 
     @Column
-    private String deviceTokrn;
+    private String deviceToken;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "Notification", joinColumns = @JoinColumn(name = "user_idx"), inverseJoinColumns = @JoinColumn(name = "notification_idx"))
+    private List<Notification> notification;
 
     @Builder
     public User(String id, String password, String nickname) {
@@ -130,6 +135,6 @@ public class User extends BaseTime {
     }
 
     public void updateDeviceToken(String deviceToken) {
-        this.deviceTokrn=deviceToken;
+        this.deviceToken=deviceToken;
     }
 }

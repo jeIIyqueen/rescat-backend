@@ -99,7 +99,9 @@ public class FundingService {
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
 
-            Notification notification = new Notification(funding.getWriter(), "님의 후원글 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            Notification notification = Notification.builder()
+                    .contents(funding.getWriter() + "님의 후원글 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
             notificationRepository.save(notification);
 
             notificationService.writePush(notification);
@@ -110,7 +112,9 @@ public class FundingService {
         // 승인일 경우
         approveFundingRequest(funding, approver);
 
-        Notification notification = new Notification(funding.getWriter(), funding.getIdx(),"님의 후원글 등록 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.");
+        Notification notification = Notification.builder()
+                .contents(funding.getWriter() + "님의 후원글 등록 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                .build();
         notificationRepository.save(notification);
 
         notificationService.writePush(notification);
