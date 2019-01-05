@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @Api(value = "ApiAdminController", description = "관리자페이지 관련 api")
 @RestController
 @RequestMapping("/api/admin")
