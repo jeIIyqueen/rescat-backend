@@ -125,8 +125,11 @@ public class User extends BaseTime {
         this.mainRegion = mainRegion;
     }
 
-    public void updateUser(String nickname, String phone) {
+    public void updateNickname(String nickname){
         this.nickname = nickname;
+    }
+
+    public void updatePhone(String phone){
         this.phone = phone;
     }
 

@@ -179,20 +179,14 @@ public class UserService {
     }
 
     @Transactional
-    public UserMypageDto editUser(User user, UserEditDto userEditDto) {
-        String editNickname = userEditDto.getNickname();
-        String editPhone = userEditDto.getPhone();
+    public void editUserNickname(User user, String nickname) {
+        if (!isExistingNickname(nickname))
+            user.updateNickname(nickname);
+    }
 
-        if (user.getRole() == Role.MEMBER && !isExistingNickname(editNickname))
-            user.updateUser(editNickname, null);
-        else if (user.getRole() == Role.CARETAKER && !isExistingNickname(editNickname))
-            user.updateUser(editNickname, editPhone);
-
-        return UserMypageDto.builder()
-                .id(user.getId())
-                .nickname(user.getNickname())
-                .phone(user.getPhone())
-                .build();
+    @Transactional
+    public void editUserPhone(User user, String phone) {
+            user.updatePhone(phone);
     }
 
     @Transactional
