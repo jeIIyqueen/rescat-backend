@@ -1,30 +1,35 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.enums.RequestType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 public class Notification extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @ManyToMany(mappedBy = "notification")
-    private List<User> receivingUser;
-
-    @Column
-    private String data;
-
     @Column
     private String contents;
 
     @Column
-    // 0: 안읽음, 1: 읽음
-    private Integer isChecked = 0;
+    @Enumerated(EnumType.ORDINAL)
+    private RequestType targetType;
+
+    @Column
+    private Long targetIdx;
+
+    public boolean isTargetIdxNull() {
+        return this.targetIdx == null;
+    }
 }

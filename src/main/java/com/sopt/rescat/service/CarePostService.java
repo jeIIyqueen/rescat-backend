@@ -7,10 +7,8 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.CarePostPhotoRepository;
-import com.sopt.rescat.repository.CarePostRepository;
-import com.sopt.rescat.repository.NotificationRepository;
+import com.sopt.rescat.repository.*;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -28,13 +26,16 @@ public class CarePostService {
     private ApprovalLogRepository approvalLogRepository;
     private NotificationRepository notificationRepository;
     private NotificationService notificationService;
+    private UserNotificationLogRepository userNotificationLogRepository;
 
     public CarePostService(final CarePostRepository carePostRepository, final ApprovalLogRepository approvalLogRepository,
-                            final NotificationRepository notificationRepository, final NotificationService notificationService) {
+                           final NotificationService notificationService, final NotificationRepository notificationRepository,
+                           final UserNotificationLogRepository userNotificationLogRepository) {
         this.carePostRepository = carePostRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
+        this.userNotificationLogRepository = userNotificationLogRepository;
     }
 
     @Transactional
@@ -102,11 +103,17 @@ public class CarePostService {
             refuseCarePostRequest(carePost, approver);
 
             Notification notification = Notification.builder()
-                    .receivingUser(approver)
-                    .contents(carePost.getWriter() + "님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
-            notificationService.writePush(notification);
+         //   notificationService.writePush(notification, carePost.getWriter());
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(carePost.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
 
             return;
         }
@@ -115,12 +122,19 @@ public class CarePostService {
         approveCarePostRequest(carePost, approver);
 
         Notification notification = Notification.builder()
-                .receivingUser(approver)
-                .contents(carePost.getWriter() + "님의 " + category +" 등록 신청이 승인되었습니다. 좋은 "+ category +"자를 만날 수 있기를 응원합니다.")
+                .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
+                .targetType(RequestType.CAREPOST)
+                .targetIdx(carePost.getIdx())
                 .build();
         notificationRepository.save(notification);
+      //  notificationService.writePush(notification, carePost.getWriter());
 
-        notificationService.writePush(notification);
+        userNotificationLogRepository.save(
+                UserNotificationLog.builder()
+                        .receivingUser(carePost.getWriter())
+                        .notification(notification)
+                        .isChecked(RequestStatus.DEFER.getValue())
+                        .build());
     }
 
     private void refuseCarePostRequest(CarePost carePost, User approver) {

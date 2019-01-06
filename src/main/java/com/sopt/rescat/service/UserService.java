@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import sun.security.provider.certpath.OCSPResponse;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -36,8 +37,9 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
-    private final NotificationService notificationService;
+    private final UserNotificationLogRepository userNotificationLogRepository;
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
 
     @Value("${GABIA.SMSPHONENUMBER}")
@@ -50,15 +52,18 @@ public class UserService {
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                        final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository,
-                       final NotificationService notificationService, final NotificationRepository notificationRepository) {
+                       final UserNotificationLogRepository userNotificationLogRepository, final NotificationRepository notificationRepository,
+                       final NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.regionRepository = regionRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
-        this.notificationService = notificationService;
+        this.userNotificationLogRepository = userNotificationLogRepository;
         this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
+
     }
 
     public Boolean isExistingId(String id) {
@@ -88,6 +93,8 @@ public class UserService {
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
+
+    /////////////////////////////////////
     @Transactional
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
@@ -95,6 +102,18 @@ public class UserService {
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         savedUser.updateDeviceToken(userLoginDto.getDeviceToken());
 
+        Notification notification = Notification.builder()
+                .contents(savedUser.getNickname() + "님의 로그인했습니다.")
+                .build();
+        notificationRepository.save(notification);
+
+        notificationService.writePush(notification, savedUser);
+        userNotificationLogRepository.save(
+                UserNotificationLog.builder()
+                        .receivingUser(savedUser)
+                        .notification(notification)
+                        .isChecked(RequestStatus.DEFER.getValue())
+                        .build());
         return savedUser;
     }
 
@@ -214,27 +233,33 @@ public class UserService {
             refuseCareTakerRequest(careTakerRequest, approver);
 
             Notification notification = Notification.builder()
-                    .receivingUser(approver)
-                    .contents(careTakerRequest.getWriter() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
 
-            notificationService.writePush(notification);
-
+          //  notificationService.writePush(notification, carePost.getWriter());
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(careTakerRequest.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
             return;
         }
 
         // 승인일 경우
         approveCareTakerRequest(careTakerRequest, approver);
 
-        Notification notification =  Notification.builder()
-                .receivingUser(approver)
-                .contents(careTakerRequest.getWriter() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+        Notification notification = Notification.builder()
+                .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
                 .build();
         notificationRepository.save(notification);
 
-        notificationService.writePush(notification);
-
+        userNotificationLogRepository.save(UserNotificationLog.builder()
+                .receivingUser(careTakerRequest.getWriter())
+                .notification(notification)
+                .isChecked(RequestStatus.DEFER.getValue())
+                .build());
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {

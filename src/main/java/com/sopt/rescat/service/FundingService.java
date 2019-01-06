@@ -6,10 +6,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.FundingRepository;
-import com.sopt.rescat.repository.NotificationRepository;
-import com.sopt.rescat.repository.ProjectFundingLogRepository;
+import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +22,18 @@ public class FundingService {
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
     private NotificationRepository notificationRepository;
-    private NotificationService notificationService;
+    private UserNotificationLogRepository userNotificationLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
                           final ProjectFundingLogRepository projectFundingLogRepository,
                           final ApprovalLogRepository approvalLogRepository,
                           final NotificationRepository notificationRepository,
-                          final NotificationService notificationService) {
+                          final UserNotificationLogRepository userNotificationLogRepository) {
         this.fundingRepository = fundingRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationRepository = notificationRepository;
-        this.notificationService = notificationService;
+        this.userNotificationLogRepository = userNotificationLogRepository;
     }
 
     @Transactional
@@ -100,11 +97,17 @@ public class FundingService {
             refuseFundingRequest(funding, approver);
 
             Notification notification = Notification.builder()
-                    .contents(funding.getWriter() + "님의 후원글 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
+            //   notificationService.writePush(notification, carePost.getWriter());
 
-            notificationService.writePush(notification);
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(funding.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
 
             return;
         }
@@ -113,11 +116,19 @@ public class FundingService {
         approveFundingRequest(funding, approver);
 
         Notification notification = Notification.builder()
-                .contents(funding.getWriter() + "님의 후원글 등록 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                .targetType(RequestType.FUNDING)
+                .targetIdx(funding.getIdx())
                 .build();
         notificationRepository.save(notification);
+        //   notificationService.writePush(notification, carePost.getWriter());
 
-        notificationService.writePush(notification);
+        userNotificationLogRepository.save(
+                UserNotificationLog.builder()
+                        .receivingUser(funding.getWriter())
+                        .notification(notification)
+                        .isChecked(RequestStatus.DEFER.getValue())
+                        .build());
 
     }
 

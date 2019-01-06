@@ -1,12 +1,11 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.Region;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -15,6 +14,7 @@ import com.sun.deploy.security.AuthKey;
 import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 
 @Slf4j
@@ -253,14 +252,45 @@ public class ApiUserController {
         userService.editUserPassword(loginUser, userPasswordDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-//
-//    @Auth
-//    @GetMapping("/mypage/notification-box")
-//    public ResponseEntity showNotification(@RequestHeader(value = "Authorization") final String token,
-//                                           @RequestBody HttpServletRequest httpServletRequest){
-//
-//        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
-//    }
+
+    @ApiOperation(value = "알림 리스트 조회", notes = "마이페이지에서 유저가 받은 알림들을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box")
+    public ResponseEntity getNotifications(@RequestHeader(value = "Authorization") final String token,
+                                           HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
+    }
+
+    @ApiOperation(value = "알림 상세 조회", notes = "마이페이지에서 유저가 받은 알림관련 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box/{idx}")
+    public ResponseEntity getTargetContents(@RequestHeader(value = "Authorization") final String token,
+                                            @ApiParam(value = "알림 idx", required = true) @PathVariable Long idx,
+                                            HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+
+        Notification notification = notificationService.updateIsChecked(idx, loginUser);
+
+        if (notification.getTargetType().equals(RequestType.CAREPOST))
+            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(notification.getTargetIdx()));
+        if(notification.getTargetType().equals(RequestType.FUNDING))
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findByIdx(notification.getTargetIdx()));
+
+        //target이 없는 경우
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.sopt.rescat.dto;
 
+import com.sopt.rescat.domain.Notification;
 import lombok.Builder;
 import lombok.Data;
 import org.json.JSONObject;

@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,9 +79,8 @@ public class User extends BaseTime {
     @Column
     private String deviceToken;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "Notification", joinColumns = @JoinColumn(name = "user_idx"), inverseJoinColumns = @JoinColumn(name = "notification_idx"))
-    private List<Notification> notification;
+    //@OneToMany(mappedBy = "user")
+//    private List<UserNotificationLog> userNotificationLogs = new ArrayList<>();
 
     @Builder
     public User(String id, String password, String nickname) {

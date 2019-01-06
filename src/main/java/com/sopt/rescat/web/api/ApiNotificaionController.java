@@ -39,7 +39,8 @@ public class ApiNotificaionController {
 
         JSONObject body = new JSONObject();
 
-        body.put("to","/topics/"+TOPIC);
+       // body.put("to","/topics/"+TOPIC);
+        body.put("to","05b4a1e9e0fc295538bf8bb312da60119120bc34ab735321bf76a283f8e544aa");
         body.put("priority","high");
 
 //        //DB에 저장된 여러개의 토큰(수신자)을 가져와서 설정할 수 있다.//
