@@ -66,8 +66,7 @@ public class FundingService {
     }
 
     public List<FundingComment> findCommentsBy(Long idx) {
-        return getFundingBy(idx)
-                .getComments().stream()
+        return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();

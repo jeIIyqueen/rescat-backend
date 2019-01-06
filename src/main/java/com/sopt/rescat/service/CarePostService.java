@@ -79,8 +79,7 @@ public class CarePostService {
     }
 
     public List<CarePostComment> findCommentsBy(Long idx) {
-        return getCarePostBy(idx)
-                .getComments().stream()
+        return carePostCommentRepository.findByCarePostIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((carePostComment) -> {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
