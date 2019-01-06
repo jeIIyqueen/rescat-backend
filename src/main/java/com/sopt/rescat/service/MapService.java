@@ -57,6 +57,10 @@ public class MapService {
         return markerList;
     }
 
+    public Integer getMarkerRequestCount() {
+        return mapRequestRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
+    }
+
     @Transactional
     public void saveMarkerRequest(final User user, final MapRequest mapRequest) throws IOException {
         if (mapRequest.isEditCategory()) {
@@ -82,17 +86,18 @@ public class MapService {
 
     public List<MapRequest> getMapRequest() {
         return mapRequestRepository.findByIsConfirmedOrderByCreatedAtDesc(RequestStatus.DEFER.getValue())
-                .stream().map(MapRequest::setWriterName).collect(Collectors.toList());
+                .stream().map(mapRequest -> mapRequest.setWriterName().setRegionFullName()).collect(Collectors.toList());
     }
 
     @Transactional
-    public void approveMap(Long mapRequestIdx, Integer status, User approver) {
+    public MapRequest approveMap(Long mapRequestIdx, Integer status, User approver) {
         MapRequest mapRequest = mapRequestRepository.findById(mapRequestIdx).orElseThrow(() -> new NotFoundException("idx", "존재하지 않는 등록/수정 요청입니다."));
 
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseMapRequest(mapRequest, approver);
         }
         approveMapRequest(mapRequest, approver);
+        return mapRequest;
     }
 
     private void approveMapRequest(MapRequest mapRequest, User approver) {
@@ -104,10 +109,10 @@ public class MapService {
                 .build()
                 .setApprover(approver));
 
-        if (mapRequest.getRequestType() == 0) {
+        if (mapRequest.getRequestType().equals(RequestStatus.DEFER.getValue())) {
             save(mapRequest);
         }
-        if (mapRequest.getRequestType() == 1) {
+        if (mapRequest.getRequestType().equals(RequestStatus.CONFIRM.getValue())) {
             if (!isAmendable(mapRequest)) {
                 throw new NotFoundException("markerIdx", "존재하지 않는 마커입니다.");
             }

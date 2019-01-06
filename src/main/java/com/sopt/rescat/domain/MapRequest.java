@@ -74,7 +74,7 @@ public class MapRequest extends BaseEntity {
     private String address;
 
     @Column
-    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$")
+//    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$")
     @ApiModelProperty(notes = "(only병원)전화번호", position = 7)
     private String phone;
 
@@ -140,6 +140,11 @@ public class MapRequest extends BaseEntity {
 
     public MapRequest setWriterName() {
         this.writerName = getWriter().getName();
+        return this;
+    }
+
+    public MapRequest setRegionFullName() {
+        this.regionFullName = this.getRegion().toRegionDto().getName();
         return this;
     }
 

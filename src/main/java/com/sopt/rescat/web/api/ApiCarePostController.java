@@ -49,8 +49,7 @@ public class ApiCarePostController {
     public ResponseEntity<Iterable<CarePostResponseDto>> getAllBy(
             @ApiParam(value = "0: 입양, 1: 임시보호", required = true)
             @RequestParam Integer type) {
-        Iterable<CarePostResponseDto> list = carePostService.findAllBy(type);
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllBy(type));
     }
 
     @ApiOperation(value = "입양/임시보호 글 등록", notes = "입양/임시보호 글을 등록합니다.")

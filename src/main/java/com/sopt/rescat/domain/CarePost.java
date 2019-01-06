@@ -26,10 +26,13 @@ import static java.time.LocalDateTime.now;
 @Getter
 @Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class CarePost extends BaseEntity {
+    private static final Integer SECONDS_OF_3DAYS = 259200;
+    private static final Integer MAIN_PHOTO_INDEX = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -82,7 +85,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @Builder.Default
-    private int viewCount = 0;
+    private Integer viewCount = 0;
 
     @Column
     private LocalDateTime startProtectionPeriod;
@@ -123,15 +126,17 @@ public class CarePost extends BaseEntity {
     }
 
     public CarePostResponseDto toCarePostDto() {
-        Integer MAIN_PHOTO_INDEX = 0;
         if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
 
         return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
+                .type(type)
+                .contents(contents)
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
+                .updatedAt(updatedAt)
                 .isFinished(isFinished)
                 .build();
     }
@@ -179,9 +184,9 @@ public class CarePost extends BaseEntity {
     }
 
     public void updateUpdatedAt() {
-        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < 259200) {
+        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < SECONDS_OF_3DAYS)
             throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
-        }
+
         this.updatedAt = now();
     }
 }

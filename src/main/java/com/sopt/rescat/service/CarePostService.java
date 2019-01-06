@@ -50,7 +50,7 @@ public class CarePostService {
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
-    public CarePost findBy(Long idx) {
+    private CarePost findBy(Long idx) {
         return getCarePostBy(idx)
                 .setWriterNickname()
                 .addViewCount();
@@ -74,13 +74,12 @@ public class CarePostService {
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
         if (loginUser != null)
-            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
-        return getCarePostBy(idx).setWriterNickname();
+            return findBy(idx).setSubmitStatus(loginUser);
+        return findBy(idx);
     }
 
     public List<CarePostComment> findCommentsBy(Long idx) {
-        return getCarePostBy(idx)
-                .getComments().stream()
+        return carePostCommentRepository.findByCarePostIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((carePostComment) -> {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
@@ -101,6 +100,10 @@ public class CarePostService {
 
     public Iterable<CarePost> findAllByUser(User user) {
         return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
+
+    public Integer getCarePostRequestCount() {
+        return carePostRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
     }
 
     @Transactional
@@ -141,20 +144,24 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests() {
-        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue()));
+        return carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue())
+                .stream()
+                .map(CarePost::setWriterNickname)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+    public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
-            return;
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveCarePostRequest(carePost, approver);
         }
-        // 승인일 경우
-        approveCarePostRequest(carePost, approver);
+
+        return carePost.toCarePostDto();
     }
 
     private void refuseCarePostRequest(CarePost carePost, User approver) {
@@ -178,7 +185,7 @@ public class CarePostService {
     }
 
     @Transactional
-    public void updateCarePostUpdateTime(Long carePostIdx, User loginUser) {
+    public void updateCarePostToRecent(Long carePostIdx, User loginUser) {
         CarePost carePost = getCarePostBy(carePostIdx);
         if (!carePost.equalsWriter(loginUser))
             throw new InvalidValueException("idx", "해당 글의 작성자가 아닙니다.");
