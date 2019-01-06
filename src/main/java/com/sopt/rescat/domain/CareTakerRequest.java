@@ -66,8 +66,8 @@ public class CareTakerRequest extends BaseEntity {
     private Integer isConfirmed;
 
     @Transient
-    @ApiModelProperty(notes = "주소")
-    private Integer emdCode;
+    @ApiModelProperty(notes = "지역 전체 이름", required = true)
+    private String regionFullName;
 
     @Transient
     @ApiModelProperty(notes = "요청자 이름")

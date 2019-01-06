@@ -148,8 +148,13 @@ public class UserService {
 
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
-        Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
-                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        String[] fullName = careTakerRequest.getRegionFullName().split(" ");
+        if (fullName.length != 3)
+            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
+        Region region = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
+                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+
 
         careTakerRequestRepository.save(CareTakerRequest.builder()
                 .authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())

@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.ApprovalLogRepository;
@@ -13,6 +14,7 @@ import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
 import com.sopt.rescat.repository.UserNotificationLogRepository;
 import com.sopt.rescat.repository.NotificationRepository;
+import org.hibernate.InvalidMappingException;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +48,7 @@ public class FundingService {
 
     @Transactional
     public void create(FundingRequestDto fundingRequestDto, User loginUser) {
+
         Funding funding = fundingRepository.save(fundingRequestDto.toFunding()
                 .setWriter(loginUser));
 

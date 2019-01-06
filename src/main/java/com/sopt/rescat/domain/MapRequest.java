@@ -110,7 +110,7 @@ public class MapRequest extends BaseEntity {
     private Integer isConfirmed;
 
     @Transient
-    @ApiModelProperty(notes = "지역 전체 이름", position = 14, required = true)
+    @ApiModelProperty(notes = "지역 전체 이름", position = 14)
     private String regionFullName;
 
     @ApiModelProperty(hidden = true)

@@ -64,7 +64,6 @@ public class Funding extends BaseEntity {
     @NonNull
     private String mainRegion;
 
-
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> certifications;
 
