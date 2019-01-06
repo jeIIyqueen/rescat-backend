@@ -50,7 +50,7 @@ public class CarePostService {
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
-    public CarePost findBy(Long idx) {
+    private CarePost findBy(Long idx) {
         return getCarePostBy(idx)
                 .setWriterNickname()
                 .addViewCount();
@@ -74,8 +74,8 @@ public class CarePostService {
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
         if (loginUser != null)
-            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
-        return getCarePostBy(idx).setWriterNickname();
+            return findBy(idx).setSubmitStatus(loginUser);
+        return findBy(idx);
     }
 
     public List<CarePostComment> findCommentsBy(Long idx) {
@@ -152,16 +152,17 @@ public class CarePostService {
     }
 
     @Transactional
-    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+    public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
-            return;
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveCarePostRequest(carePost, approver);
         }
-        // 승인일 경우
-        approveCarePostRequest(carePost, approver);
+
+        return carePost.toCarePostDto();
     }
 
     private void refuseCarePostRequest(CarePost carePost, User approver) {

@@ -90,13 +90,14 @@ public class MapService {
     }
 
     @Transactional
-    public void approveMap(Long mapRequestIdx, Integer status, User approver) {
+    public MapRequest approveMap(Long mapRequestIdx, Integer status, User approver) {
         MapRequest mapRequest = mapRequestRepository.findById(mapRequestIdx).orElseThrow(() -> new NotFoundException("idx", "존재하지 않는 등록/수정 요청입니다."));
 
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseMapRequest(mapRequest, approver);
         }
         approveMapRequest(mapRequest, approver);
+        return mapRequest;
     }
 
     private void approveMapRequest(MapRequest mapRequest, User approver) {
