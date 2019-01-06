@@ -5,7 +5,9 @@ public enum RequestType {
     MAP(1),
     CAREPOST(2),
     FUNDING(3),
-    CAREAPPLICATION(4);
+    CAREAPPLICATION(4),
+    REGION(5);
+
 
     private Integer value;
 

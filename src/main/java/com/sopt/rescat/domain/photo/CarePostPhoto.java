@@ -10,7 +10,6 @@ import lombok.NonNull;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
 @Getter
 @Entity
 public class CarePostPhoto extends BaseTime {

@@ -60,9 +60,9 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @ApiOperation(value = "케어테이커 인증요청 리스트 api", notes = "케어테이커 인증요청 리스트를 반환합니다.")
+    @ApiOperation(value = "케어테이커 인증요청, 마이페이지에서의 지역 추가요청 리스트 api", notes = "케어테이커 인증요청, 지역 추가요청 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "케어테이커 인증요청 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "케어테이커 인증요청, 지역추가요청 리스트 반환 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -96,6 +96,31 @@ public class ApiAdminController {
         userService.approveCareTaker(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @ApiOperation(value = "케어테이커 지역 추가요청 승인 api", notes = "케어테이커 지역 추가요청을 승인/거절합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "케어테이커 지역 추가요청 처리 성공"),
+            @ApiResponse(code = 401, message = "권한 미보유"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
+    })
+    @AdminAuth
+    @PostMapping("/add-region-requests/{idx}")
+    public ResponseEntity<Void> approveAddRegion(
+            @PathVariable Long idx,
+            @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("status"))
+            throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
+
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.confirmedAddRegion(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     @ApiOperation(value = "크라우드 펀딩 글 게시요청 리스트 api", notes = "크라우드 펀딩 글 게시요청 리스트를 반환합니다.")
     @ApiResponses(value = {
