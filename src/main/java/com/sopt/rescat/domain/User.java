@@ -53,15 +53,15 @@ public class User extends BaseTime {
     @JsonIgnore
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
@@ -69,9 +69,6 @@ public class User extends BaseTime {
     @Column
     @NonNull
     private Role role;
-
-    @Column
-    private String photoUrl;
 
     @Column
     private Long mileage;
@@ -89,6 +86,10 @@ public class User extends BaseTime {
         this.nickname = nickname;
         this.role = Role.MEMBER;
         this.mileage = 0L;
+    }
+
+    public boolean match(User target) {
+        return this.idx.equals(target.getIdx());
     }
 
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
@@ -117,10 +118,10 @@ public class User extends BaseTime {
                     || this.subRegion1.getEmdCode().equals(emdCode)
                     || this.subRegion2.getEmdCode().equals(emdCode))
                 return true;
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
         }
-        return false;
+        throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 
     public void grantCareTakerAuth(String phone, String name, Region mainRegion) {
@@ -129,12 +130,47 @@ public class User extends BaseTime {
         this.name = name;
         this.mainRegion = mainRegion;
     }
-    public void updateUser(String nickname, String phone){
+
+    public void updateNickname(String nickname){
         this.nickname = nickname;
+    }
+
+    public void updatePhone(String phone){
         this.phone = phone;
     }
 
+
     public void updateDeviceToken(String deviceToken) {
         this.deviceToken=deviceToken;
+    }
+
+
+    public void deleteMainRegion(Region subRegion1, Region subRegion2) {
+        this.mainRegion = subRegion1;
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion1(Region subRegion2) {
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion2() {
+        this.subRegion2 = null;
+    }
+
+    public void updateRegions(List<Region> receivedRegions){
+        this.mainRegion = receivedRegions.get(1);
+        this.subRegion2 = receivedRegions.get(2);
+        this.subRegion2 = receivedRegions.get(3);
+    }
+
+    public void addSubRegion1(Region subRegion1){
+        this.subRegion1 = subRegion1;
+    }
+
+    public void addSubRegion2(Region subRegion2){
+        this.subRegion2 = subRegion2;
     }
 }

@@ -4,10 +4,12 @@ public enum RequestType {
     CARETAKER(0),
     MAP(1),
     CAREPOST(2),
-    FUNDING(3);
+    FUNDING(3),
+    CAREAPPLICATION(4),
+    REGION(5);
+
 
     private Integer value;
-
 
     RequestType(Integer value) {
         this.value = value;

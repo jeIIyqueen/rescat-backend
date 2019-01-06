@@ -1,10 +1,7 @@
 package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.Region;
-
 import org.springframework.data.repository.CrudRepository;
-
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -6,7 +6,13 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
-import com.sopt.rescat.repository.*;
+import com.sopt.rescat.exception.UnAuthenticationException;
+import com.sopt.rescat.repository.ApprovalLogRepository;
+import com.sopt.rescat.repository.FundingCommentRepository;
+import com.sopt.rescat.repository.FundingRepository;
+import com.sopt.rescat.repository.ProjectFundingLogRepository;
+import com.sopt.rescat.repository.UserNotificationLogRepository;
+import com.sopt.rescat.repository.NotificationRepository;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +25,19 @@ import java.util.stream.Collectors;
 public class FundingService {
 
     private FundingRepository fundingRepository;
+    private FundingCommentRepository fundingCommentRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
     private NotificationRepository notificationRepository;
     private UserNotificationLogRepository userNotificationLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
-                          final ProjectFundingLogRepository projectFundingLogRepository,
-                          final ApprovalLogRepository approvalLogRepository,
                           final NotificationRepository notificationRepository,
-                          final UserNotificationLogRepository userNotificationLogRepository) {
+                          final UserNotificationLogRepository userNotificationLogRepository,
+                          FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
+                          final ApprovalLogRepository approvalLogRepository) {
         this.fundingRepository = fundingRepository;
+        this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationRepository = notificationRepository;
@@ -57,17 +65,24 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Funding findByIdx(Long idx) {
+    public Iterable<Funding> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
+
+    public Funding findBy(Long idx) {
         return getFundingBy(idx).setWriterNickname();
     }
 
     public List<FundingComment> findCommentsBy(Long idx) {
-        return getFundingBy(idx)
-                .getComments().stream()
+        return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();
                 }).collect(Collectors.toList());
+    }
+
+    public Integer getFundingCount() {
+        return fundingRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
     }
 
     @Transactional
@@ -89,7 +104,7 @@ public class FundingService {
     }
 
     @Transactional
-    public void confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+    public FundingResponseDto confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
         // 거절일 경우
@@ -100,7 +115,6 @@ public class FundingService {
                     .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
-            //   notificationService.writePush(notification, carePost.getWriter());
 
             userNotificationLogRepository.save(
                     UserNotificationLog.builder()
@@ -109,19 +123,14 @@ public class FundingService {
                             .isChecked(RequestStatus.DEFER.getValue())
                             .build());
 
-            return;
-        }
-
-        // 승인일 경우
-        approveFundingRequest(funding, approver);
-
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveFundingRequest(funding, approver);
         Notification notification = Notification.builder()
                 .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
                 .targetType(RequestType.FUNDING)
                 .targetIdx(funding.getIdx())
                 .build();
         notificationRepository.save(notification);
-        //   notificationService.writePush(notification, carePost.getWriter());
 
         userNotificationLogRepository.save(
                 UserNotificationLog.builder()
@@ -129,7 +138,8 @@ public class FundingService {
                         .notification(notification)
                         .isChecked(RequestStatus.DEFER.getValue())
                         .build());
-
+        }
+        return funding.toFundingDto();
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {
@@ -152,13 +162,30 @@ public class FundingService {
                 .setApprover(approver));
     }
 
+    @Transactional
+    public FundingComment createComment(Long idx, FundingComment fundingComment, User loginUser) {
+        return fundingCommentRepository.save(fundingComment
+                .setWriter(loginUser)
+                .initFunding(getFundingBy(idx)))
+                .setWriterNickname()
+                .setUserRole();
+    }
+
+    public void deleteComment(Long commentIdx, User loginUser) {
+        FundingComment fundingComment = getCommentBy(commentIdx);
+        if (!loginUser.match(fundingComment.getWriter()))
+            throw new UnAuthenticationException("token", "삭제 권한을 가진 유저가 아닙니다.");
+
+        fundingCommentRepository.delete(fundingComment);
+    }
+
     private Funding getFundingBy(Long idx) {
         return fundingRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
 
-    public Iterable<Funding> findAllByUser(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    private FundingComment getCommentBy(Long idx) {
+        return fundingCommentRepository.findById(idx)
+                .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
-
 }
