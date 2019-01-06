@@ -25,6 +25,11 @@ public class CareTakerRequest extends BaseEntity {
 
     @Column
     @NonNull
+    // 0: 케어테이커 인증요청, 1: 지역 추가요청
+    private Integer type;
+
+    @Column
+    @NonNull
     @Length(max = 10)
     @ApiModelProperty(notes = "인증하고자 하는 유저의 이름", position = 3)
     private String name;
@@ -70,7 +75,7 @@ public class CareTakerRequest extends BaseEntity {
 
     @Builder
     public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone,
-                            Region mainRegion, Region subRegion1, Region subRegion2, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed) {
+                            Region mainRegion, Region subRegion1, Region subRegion2, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed, Integer type) {
         super(writer);
         this.name = name;
         this.phone = phone;
@@ -79,6 +84,7 @@ public class CareTakerRequest extends BaseEntity {
         this.subRegion2 = subRegion2;
         this.authenticationPhotoUrl = authenticationPhotoUrl;
         this.isConfirmed = isConfirmed;
+        this.type = type;
     }
 
     public void fillUserNickname() {

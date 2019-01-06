@@ -12,6 +12,7 @@ import java.util.List;
 @Builder
 public class UserMypageDto {
     private String id;
+    private String name;
     private String nickname;
     private Role role;
     private List<RegionDto> regions;

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CareTakerRequestRepository extends CrudRepository<CareTakerRequest, Long> {
     List<CareTakerRequest> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
+
+    Integer countByIsConfirmed(Integer isConfirmed);
 }

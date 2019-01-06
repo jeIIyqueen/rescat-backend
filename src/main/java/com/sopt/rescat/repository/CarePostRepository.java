@@ -18,4 +18,8 @@ public interface CarePostRepository extends CrudRepository<CarePost, Long> {
     List<CarePost> findAllByIsConfirmedOrderByUpdatedAt(Integer isConfirmed);
 
     Boolean existsCarePostByWriterAndIsFinished(User writer, Boolean isFinished);
+
+    List<CarePost> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
+
+    Integer countByIsConfirmed(Integer isConfirmed);
 }

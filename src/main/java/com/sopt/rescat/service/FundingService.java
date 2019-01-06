@@ -66,12 +66,15 @@ public class FundingService {
     }
 
     public List<FundingComment> findCommentsBy(Long idx) {
-        return getFundingBy(idx)
-                .getComments().stream()
+        return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();
                 }).collect(Collectors.toList());
+    }
+
+    public Integer getFundingCount() {
+        return fundingRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
     }
 
     @Transactional
@@ -94,17 +97,17 @@ public class FundingService {
     }
 
     @Transactional
-    public void confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+    public FundingResponseDto confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
-            return;
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveFundingRequest(funding, approver);
         }
 
-        // 승인일 경우
-        approveFundingRequest(funding, approver);
+        return funding.toFundingDto();
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {
