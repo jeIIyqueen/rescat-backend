@@ -120,6 +120,8 @@ public class UserService {
                 .regions(regions)
                 .id(user.getId())
                 .nickname(user.getNickname())
+                .role(user.getRole())
+                .regions(regions)
                 .build();
     }
 
