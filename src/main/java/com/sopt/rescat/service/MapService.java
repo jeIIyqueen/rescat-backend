@@ -86,7 +86,7 @@ public class MapService {
 
     public List<MapRequest> getMapRequest() {
         return mapRequestRepository.findByIsConfirmedOrderByCreatedAtDesc(RequestStatus.DEFER.getValue())
-                .stream().map(MapRequest::setWriterName).collect(Collectors.toList());
+                .stream().map(mapRequest -> mapRequest.setWriterName().setRegionFullName()).collect(Collectors.toList());
     }
 
     @Transactional
