@@ -136,6 +136,7 @@ public class CarePost extends BaseEntity {
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
+                .updatedAt(updatedAt)
                 .isFinished(isFinished)
                 .build();
     }
