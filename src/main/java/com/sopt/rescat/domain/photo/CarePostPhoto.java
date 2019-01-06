@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.CarePost;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,6 +13,8 @@ import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarePostPhoto extends BaseTime {
     public static final Long DEFAULT_PHOTO_ID = 1L;
 
