@@ -169,18 +169,33 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getEditUser(loginUser));
     }
 
-    @ApiOperation(value = "유저의 회원정보 수정", notes = "유저의 회원정보를 수정합니다.")
+    @ApiOperation(value = "유저의 닉네임 수정", notes = "유저의 닉네임을 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "수정 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
-    @PutMapping("/mypage/edit")
-    public ResponseEntity editUser(@RequestHeader(value = "Authorization") final String token,
-                                   HttpServletRequest httpServletRequest, UserEditDto userEditDto) {
+    @PutMapping("/mypage/edit/nickname")
+    public ResponseEntity editUserNickname(HttpServletRequest httpServletRequest, @RequestParam String nickname) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        userService.editUser(loginUser, userEditDto);
+        userService.editUserNickname(loginUser, nickname);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "유저의 핸드폰 번호 수정", notes = "유저의 핸드폰 번호를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @Auth
+    @PutMapping("/mypage/edit/phone")
+    public ResponseEntity editUserPhone(HttpServletRequest httpServletRequest, @RequestParam String phone) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPhone(loginUser, phone);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -205,6 +220,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
+
     @GetMapping("/mypage/care-posts")
     public ResponseEntity<Iterable<CarePost>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
                                                                    HttpServletRequest httpServletRequest) {
