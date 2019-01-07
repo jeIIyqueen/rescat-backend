@@ -11,8 +11,11 @@ import com.sopt.rescat.repository.ApprovalLogRepository;
 import com.sopt.rescat.repository.CareApplicationRepository;
 import com.sopt.rescat.repository.CarePostCommentRepository;
 import com.sopt.rescat.repository.CarePostRepository;
+import com.sopt.rescat.repository.NotificationRepository;
+import com.sopt.rescat.repository.UserNotificationLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,16 +30,22 @@ public class CarePostService {
     private CarePostCommentRepository carePostCommentRepository;
     private CareApplicationRepository careApplicationRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationRepository notificationRepository;
+    private UserNotificationLogRepository userNotificationLogRepository;
 
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
-                           final ApprovalLogRepository approvalLogRepository) {
+                           final ApprovalLogRepository approvalLogRepository,
+                           final NotificationRepository notificationRepository,
+                           final UserNotificationLogRepository userNotificationLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.userNotificationLogRepository = userNotificationLogRepository;
     }
 
     @Transactional
@@ -50,7 +59,7 @@ public class CarePostService {
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
-    public CarePost findBy(Long idx) {
+    private CarePost findBy(Long idx) {
         return getCarePostBy(idx)
                 .setWriterNickname()
                 .addViewCount();
@@ -74,13 +83,12 @@ public class CarePostService {
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
         if (loginUser != null)
-            return getCarePostBy(idx).setWriterNickname().setSubmitStatus(loginUser);
-        return getCarePostBy(idx).setWriterNickname();
+            return findBy(idx).setSubmitStatus(loginUser);
+        return findBy(idx);
     }
 
     public List<CarePostComment> findCommentsBy(Long idx) {
-        return getCarePostBy(idx)
-                .getComments().stream()
+        return carePostCommentRepository.findByCarePostIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((carePostComment) -> {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
@@ -101,6 +109,10 @@ public class CarePostService {
 
     public Iterable<CarePost> findAllByUser(User user) {
         return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    }
+
+    public Integer getCarePostRequestCount() {
+        return carePostRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
     }
 
     @Transactional
@@ -141,20 +153,52 @@ public class CarePostService {
     }
 
     public Iterable<CarePost> getCarePostRequests() {
-        return new ArrayList<>(carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue()));
+        return carePostRepository.findAllByIsConfirmedOrderByUpdatedAt(RequestStatus.DEFER.getValue())
+                .stream()
+                .map(CarePost::setWriterNickname)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public void confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
+    public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
+        String category = (carePost.getType()==0) ? "입양" : "임시보호";
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
-            return;
+
+            Notification notification = Notification.builder()
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+            notificationRepository.save(notification);
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(carePost.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
+
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveCarePostRequest(carePost, approver);
+
+        Notification notification = Notification.builder()
+                .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
+                .targetType(RequestType.CAREPOST)
+                .targetIdx(carePost.getIdx())
+                .build();
+        notificationRepository.save(notification);
+
+        userNotificationLogRepository.save(
+                UserNotificationLog.builder()
+                        .receivingUser(carePost.getWriter())
+                        .notification(notification)
+                        .isChecked(RequestStatus.DEFER.getValue())
+                        .build());
         }
-        // 승인일 경우
-        approveCarePostRequest(carePost, approver);
+
+        return carePost.toCarePostDto();
     }
 
     private void refuseCarePostRequest(CarePost carePost, User approver) {

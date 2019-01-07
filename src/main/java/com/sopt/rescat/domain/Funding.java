@@ -64,7 +64,6 @@ public class Funding extends BaseEntity {
     @NonNull
     private String mainRegion;
 
-
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> certifications;
 
@@ -97,7 +96,6 @@ public class Funding extends BaseEntity {
         return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
-                .contents(contents)
                 .currentAmount(currentAmount)
                 .goalAmount(goalAmount)
                 .introduction(introduction)

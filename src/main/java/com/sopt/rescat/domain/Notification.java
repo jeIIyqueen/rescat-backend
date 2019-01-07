@@ -1,35 +1,35 @@
 package com.sopt.rescat.domain;
 
-import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Builder
-@Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApprovalLog extends BaseEntity {
+@Entity
+@Builder
+public class Notification extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @Column
-    private Long requestIdx;
+    private String contents;
 
     @Column
     @Enumerated(EnumType.ORDINAL)
-    private RequestStatus requestStatus;
+    private RequestType targetType;
 
     @Column
-    @Enumerated(EnumType.ORDINAL)
-    private RequestType requestType;
+    private Long targetIdx;
 
-    public ApprovalLog setApprover(User approver) {
-        initWriter(approver);
-        return this;
+    public boolean isTargetIdxNull() {
+        return this.targetIdx == null;
     }
 }

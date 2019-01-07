@@ -12,12 +12,16 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import sun.security.provider.certpath.OCSPResponse;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +40,9 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
+    private final UserNotificationLogRepository userNotificationLogRepository;
+    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
 
     @Value("${GABIA.SMSPHONENUMBER}")
@@ -47,13 +54,19 @@ public class UserService {
 
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, final ProjectFundingLogRepository projectFundingLogRepository,
-                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository) {
+                       final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository,
+                       final UserNotificationLogRepository userNotificationLogRepository, final NotificationRepository notificationRepository,
+                       final NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.careTakerRequestRepository = careTakerRequestRepository;
         this.regionRepository = regionRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
+        this.userNotificationLogRepository = userNotificationLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
+
     }
 
     public User getUserBy(Long userIdx) {
@@ -87,10 +100,13 @@ public class UserService {
         return userRepository.save(userJoinDto.toUser(passwordEncoder.encode(userJoinDto.getPassword())));
     }
 
+    @Transactional
     public User login(UserLoginDto userLoginDto) {
         User savedUser = userRepository.findById(userLoginDto.getId())
                 .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
+        savedUser.updateDeviceToken(userLoginDto.getDeviceToken());
+
         return savedUser;
     }
 
@@ -121,13 +137,24 @@ public class UserService {
                 .regions(regions)
                 .id(user.getId())
                 .nickname(user.getNickname())
+                .role(user.getRole())
+                .regions(regions)
                 .build();
+    }
+
+    public Integer getCareTakerRequestCount() {
+        return careTakerRequestRepository.countByIsConfirmed(RequestStatus.DEFER.getValue());
     }
 
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
-        Region region = regionRepository.findByEmdCode(careTakerRequest.getEmdCode())
-                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
+
+        String[] fullName = careTakerRequest.getRegionFullName().split(" ");
+        if (fullName.length != 3)
+            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
+        Region region = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
+                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+
 
         careTakerRequestRepository.save(CareTakerRequest.builder()
                 .authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
@@ -173,8 +200,10 @@ public class UserService {
     public UserMypageDto getEditUser(User user) {
         return UserMypageDto.builder()
                 .id(user.getId())
+                .name(user.getName())
                 .nickname(user.getNickname())
                 .phone(user.getPhone())
+                .role(user.getRole())
                 .build();
     }
 
@@ -209,11 +238,34 @@ public class UserService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCareTakerRequest(careTakerRequest, approver);
+
+            Notification notification = Notification.builder()
+                    .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+            notificationRepository.save(notification);
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(careTakerRequest.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
             return;
         }
 
         // 승인일 경우
         approveCareTakerRequest(careTakerRequest, approver);
+
+        Notification notification = Notification.builder()
+                .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                .build();
+        notificationRepository.save(notification);
+
+        userNotificationLogRepository.save(UserNotificationLog.builder()
+                .receivingUser(careTakerRequest.getWriter())
+                .notification(notification)
+                .isChecked(RequestStatus.DEFER.getValue())
+                .build());
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {

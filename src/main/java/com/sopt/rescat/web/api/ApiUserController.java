@@ -1,18 +1,23 @@
 package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.CarePostService;
 import com.sopt.rescat.service.FundingService;
 import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.UserService;
+import com.sopt.rescat.service.NotificationService;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
+import com.sun.deploy.security.AuthKey;
+import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +43,16 @@ public class ApiUserController {
     private final JWTService jwtService;
     private final CarePostService carePostService;
     private final FundingService fundingService;
-
+    private final NotificationService notificationService;
 
     public ApiUserController(final UserService userService, final JWTService jwtService,
-                             final CarePostService carePostService, final FundingService fundingService) {
+                             final CarePostService carePostService, final FundingService fundingService,
+                             final NotificationService notificationService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.carePostService = carePostService;
         this.fundingService = fundingService;
+        this.notificationService = notificationService;
     }
 
     @ApiOperation(value = "일반 유저 생성", notes = "일반 유저를 생성합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
@@ -88,7 +97,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto){
         return ResponseEntity.status(HttpStatus.OK).body(JwtTokenDto.builder().token(jwtService.create(userService.login(userLoginDto).getIdx())).build());
     }
 
@@ -278,6 +287,46 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ApiOperation(value = "알림 리스트 조회", notes = "마이페이지에서 유저가 받은 알림들을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box")
+    public ResponseEntity getNotifications(@RequestHeader(value = "Authorization") final String token,
+                                           HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
+    }
+
+    @ApiOperation(value = "알림 상세 조회", notes = "마이페이지에서 유저가 받은 알림관련 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box/{idx}")
+    public ResponseEntity getTargetContents(@RequestHeader(value = "Authorization") final String token,
+                                            @ApiParam(value = "알림 idx", required = true) @PathVariable Long idx,
+                                            HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+
+        Notification notification = notificationService.updateIsChecked(idx, loginUser);
+
+        if (notification.getTargetType().equals(RequestType.CAREPOST))
+            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(notification.getTargetIdx(),loginUser));
+        if(notification.getTargetType().equals(RequestType.FUNDING))
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx()));
+
+        //target이 없는 경우
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
     @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "삭제 성공"),
@@ -339,5 +388,4 @@ public class ApiUserController {
         userService.editUserRegion(user, receivedRegions);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

@@ -14,4 +14,6 @@ public class UserLoginDto {
     private String id;
     @ApiModelProperty(example = "ttmom1234", position = 2)
     private String password;
+    @ApiModelProperty(example = "deviceToken", position = 3)
+    private String deviceToken;
 }

@@ -1,8 +1,11 @@
 package com.sopt.rescat.web.api;
 
+import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.CarePostService;
 import com.sopt.rescat.service.FundingService;
@@ -16,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @Api(value = "ApiAdminController", description = "관리자페이지 관련 api")
 @RestController
 @RequestMapping("/api/admin")
@@ -27,7 +32,6 @@ public class ApiAdminController {
     private CarePostService carePostService;
     private MapService mapService;
 
-
     public ApiAdminController(final UserService userService,
                               final FundingService fundingService,
                               final CarePostService carePostService,
@@ -36,6 +40,24 @@ public class ApiAdminController {
         this.fundingService = fundingService;
         this.carePostService = carePostService;
         this.mapService = mapService;
+    }
+
+    @ApiOperation(value = "홈화면 요청 개수 리스트 api", notes = "홈화면 요청 개수 리스트를 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "홈화면 요청 개수 리스트 반환 성공"),
+            @ApiResponse(code = 401, message = "권한 미보유"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @AdminAuth
+    @GetMapping("/home/counts")
+    public ResponseEntity<Map<String, Integer>> getRequestCounts() {
+        Map<String, Integer> body = new HashMap<>();
+        body.put("careTakerRequest", userService.getCareTakerRequestCount());
+        body.put("carePostRequest", carePostService.getCarePostRequestCount());
+        body.put("fundingRequest", fundingService.getFundingCount());
+        body.put("mapMarkerRequest", mapService.getMarkerRequestCount());
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @ApiOperation(value = "케어테이커 인증요청, 마이페이지에서의 지역 추가요청 리스트 api", notes = "케어테이커 인증요청, 지역 추가요청 리스트를 반환합니다.")
@@ -113,7 +135,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getFundingRequests());
     }
 
-    @ApiOperation(value = "크라우드 펀딩 글 게시 승인 api", notes = "idx 에 따른 크라우드 펀딩 글 게시를 승인/거절합니다.")
+    @ApiOperation(value = "크라우드 펀딩 글 승인/거절 api", notes = "idx 에 따른 크라우드 펀딩 글 게시를 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "크라우드 펀딩 글 게시요청 처리 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
@@ -123,7 +145,7 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @PutMapping("/funding-requests/{idx}")
-    public ResponseEntity<Void> confirmFundingPost(
+    public ResponseEntity<FundingResponseDto> confirmFundingPost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
@@ -132,8 +154,8 @@ public class ApiAdminController {
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        fundingService.confirmFunding(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(fundingService.confirmFunding(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
 
 
@@ -146,11 +168,11 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @GetMapping("/care-post-requests")
-    public ResponseEntity showCarePostRequest() {
+    public ResponseEntity<Iterable<CarePost>> showCarePostRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
     }
 
-    @ApiOperation(value = "입양/임시보호 글 게시 api", notes = "idx 에 따른 입양/임시보호 글 게시를 승인/거절합니다.")
+    @ApiOperation(value = "입양/임시보호 글 승인/거절 api", notes = "idx 에 따른 입양/임시보호 글 게시를 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 게시요청 처리 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
@@ -160,7 +182,7 @@ public class ApiAdminController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @AdminAuth
     @PutMapping("/care-post-requests/{idx}")
-    public ResponseEntity<Void> confirmCarePost(
+    public ResponseEntity<CarePostResponseDto> confirmCarePost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
@@ -169,8 +191,8 @@ public class ApiAdminController {
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        carePostService.confirmCarePost(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(carePostService.confirmCarePost(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
 
 
@@ -201,8 +223,8 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @PostMapping("/map-request/{idx}")
-    public ResponseEntity approveMapRequest(
+    @PutMapping("/map-request/{idx}")
+    public ResponseEntity<MapRequest> approveMapRequest(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
@@ -211,7 +233,7 @@ public class ApiAdminController {
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        mapService.approveMap(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(mapService.approveMap(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
 }
