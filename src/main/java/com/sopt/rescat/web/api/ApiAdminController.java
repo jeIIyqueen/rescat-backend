@@ -206,7 +206,7 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @GetMapping("/map-request")
+    @GetMapping("/map-requests")
     public ResponseEntity<Iterable<MapRequest>> showMapRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMapRequest());
     }
@@ -223,7 +223,7 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @PutMapping("/map-request/{idx}")
+    @PutMapping("/map-requests/{idx}")
     public ResponseEntity<MapRequest> approveMapRequest(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")

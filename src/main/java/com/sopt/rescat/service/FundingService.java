@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,8 +56,9 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Funding> findAllBy(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    public Iterable<FundingResponseDto> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue())
+                .stream().map(Funding::toFundingDto).collect(Collectors.toList());
     }
 
     public Funding findBy(Long idx) {
@@ -92,8 +92,9 @@ public class FundingService {
 
 
     public Iterable<Funding> getFundingRequests() {
-        return new ArrayList<>(fundingRepository
-                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+        return fundingRepository
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
+                .stream().map(funding -> funding.setWriterNickname()).collect(Collectors.toList());
     }
 
     @Transactional
@@ -103,7 +104,7 @@ public class FundingService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
         }
 

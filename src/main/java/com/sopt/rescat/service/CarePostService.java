@@ -16,7 +16,10 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -98,8 +101,9 @@ public class CarePostService {
     }
 
 
-    public Iterable<CarePost> findAllByUser(User user) {
-        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    public Iterable<CarePostResponseDto> findAllBy(User user) {
+        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue())
+                .stream().map(CarePost::toCarePostDto).collect(Collectors.toList());
     }
 
     public Integer getCarePostRequestCount() {
@@ -157,7 +161,7 @@ public class CarePostService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
         }
 

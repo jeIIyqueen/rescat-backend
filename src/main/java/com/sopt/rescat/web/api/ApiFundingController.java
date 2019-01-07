@@ -30,7 +30,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "치료비 모금/ 프로젝트 모금 리스트 조회", notes = "category에 따라 펀딩 글 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "치료비 모금/ 프로젝트 모금 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "치료비 모금/ 프로젝트 모금 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("")
@@ -59,7 +59,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글 조회", notes = "idx 에 따른 크라우드 펀딩 글을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글 반환 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글 반환 성공", response = Funding.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -72,7 +72,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 조회", notes = "idx 에 따른 크라우드 펀딩 글의 댓글 리스트를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 리스트 반환 성공", response = FundingComment.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -85,7 +85,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 등록", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 등록합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 등록 성공"),
+            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 등록 성공", response = FundingComment.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 401, message = "댓글 작성 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -146,7 +146,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("/main")

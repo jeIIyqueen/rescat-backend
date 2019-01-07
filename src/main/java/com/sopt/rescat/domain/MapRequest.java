@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 @Slf4j
 @ToString
