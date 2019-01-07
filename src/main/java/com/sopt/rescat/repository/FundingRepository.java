@@ -16,4 +16,7 @@ public interface FundingRepository extends CrudRepository<Funding, Long> {
 
     List<Funding> findByWriterAndIsConfirmedOrderByCreatedAtDesc(User writer, Integer isConfirmed);
 
+    List<Funding> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
+
+    Integer countByIsConfirmed(Integer inConfirmed);
 }

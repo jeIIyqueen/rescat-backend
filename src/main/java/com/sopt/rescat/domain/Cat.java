@@ -1,17 +1,14 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Builder
 @Getter
 @ToString
 @Entity
+@NoArgsConstructor
 public class Cat extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +52,21 @@ public class Cat extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
 
+    @Builder
+    public Cat(User writer, String name, @NonNull Double lat, @NonNull Double lng, @NonNull Integer radius, @NonNull Integer sex, String age, Integer tnr, String etc, String photoUrl, @NonNull Region region) {
+        super(writer);
+        this.name = name;
+        this.lat = lat;
+        this.lng = lng;
+        this.radius = radius;
+        this.sex = sex;
+        this.age = age;
+        this.tnr = tnr;
+        this.etc = etc;
+        this.photoUrl = photoUrl;
+        this.region = region;
+    }
+
     public MarkerDto toMarkerDto() {
         return MarkerDto.builder()
                 .category(2)
@@ -62,5 +74,19 @@ public class Cat extends BaseEntity {
                 .name(name).photoUrl(photoUrl).radius(radius)
                 .region(region.toRegionDto()).sex(sex).tnr(tnr)
                 .build();
+    }
+
+    public void update(MapRequest mapRequest) {
+        this.age = mapRequest.getAge();
+        this.etc = mapRequest.getEtc();
+        this.lat = mapRequest.getLat();
+        this.lng = mapRequest.getLng();
+        this.name = mapRequest.getName();
+        this.photoUrl = mapRequest.getPhotoUrl();
+        this.radius = mapRequest.getRadius();
+        this.region = mapRequest.getRegion();
+        this.sex = mapRequest.getSex();
+        this.tnr = mapRequest.getTnr();
+        initWriter(mapRequest.getWriter());
     }
 }

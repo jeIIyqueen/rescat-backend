@@ -32,4 +32,8 @@ public enum Breed {
                 .anyMatch((breed) -> breed.name()
                         .equals(value));
     }
+
+    public String getValue() {
+        return value;
+    }
 }

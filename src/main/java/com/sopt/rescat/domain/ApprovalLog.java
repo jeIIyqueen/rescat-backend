@@ -2,12 +2,16 @@ package com.sopt.rescat.domain;
 
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApprovalLog extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
