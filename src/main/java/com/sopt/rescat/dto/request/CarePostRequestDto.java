@@ -7,6 +7,7 @@ import com.sopt.rescat.domain.photo.CarePostPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -37,7 +38,7 @@ public class CarePostRequestDto {
     @Size(min = 1, max = 3)
     @ApiModelProperty(notes = "사진 url 리스트")
     @NotNull
-    private List<String> photoUrls;
+    private List<@URL String> photoUrls;
 
     @ApiModelProperty(example = "2살 추정", notes = "나이")
     @NotNull

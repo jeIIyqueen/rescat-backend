@@ -13,6 +13,7 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -264,7 +265,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveAddRegionRequest(final User user, Integer emdCode, String authenticationPhotoUrl, Integer type) {
+    public void saveAddRegionRequest(final User user, Integer emdCode, @URL String authenticationPhotoUrl, Integer type) {
 
         Region region = regionRepository.findByEmdCode(emdCode)
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
