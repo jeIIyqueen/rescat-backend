@@ -22,7 +22,6 @@ public class FundingPhoto extends BaseTime {
 
     @Column
     @NonNull
-//    @URL(message = "url형식이 아닙니다.")
     private String url;
 
     @ManyToOne
@@ -32,7 +31,7 @@ public class FundingPhoto extends BaseTime {
 
     @Column
     @NonNull
-    private boolean isCertification;
+    private Boolean isCertification;
 
     public FundingPhoto() {
         this.isCertification = false;

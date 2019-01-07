@@ -96,11 +96,19 @@ public class ApiCarePostController {
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
     @GetMapping("/{idx}/comments")
     public ResponseEntity<Iterable<CarePostComment>> getComments(
+            @RequestHeader(value = "Authorization") final Optional<String> token,
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCommentsBy(idx));
+        if (token.isPresent()) {
+            User loginUser = userService.getUserBy(jwtService.decode(token.get()).getIdx());
+            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCommentsBy(idx, loginUser));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCommentsBy(idx, null));
     }
 
     @ApiOperation(value = "입양/임시보호 글의 댓글 등록", notes = "idx 에 따른 입양/임시보호 글의 댓글을 등록합니다.")

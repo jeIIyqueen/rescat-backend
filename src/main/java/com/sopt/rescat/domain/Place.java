@@ -1,8 +1,11 @@
 package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -15,6 +18,7 @@ import javax.validation.constraints.Pattern;
 public class Place extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
     @Column
@@ -29,10 +33,12 @@ public class Place extends BaseEntity {
 
     @Column
     @NonNull
+    @Range(min = 33, max = 43)
     private Double lat;
 
     @Column
     @NonNull
+    @Range(min = 124, max = 132)
     private Double lng;
 
     @Column
@@ -44,16 +50,20 @@ public class Place extends BaseEntity {
 
     @Column
     @Length(max = 13)
-    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
+    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$")
     private String phone;
 
+    @URL
     @Column
     private String photoUrl;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @NonNull
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_place_region_idx"))
     private Region region;
+
+    @Transient
+    private String regionFullName;
 
     @Builder
     public Place(User writer, @NonNull Integer category, @NonNull @Length(max = 50) String name, @NonNull Double lat, @NonNull Double lng, String etc, @NonNull String address, @Length(max = 13) @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$") String phone, String photoUrl, @NonNull Region region) {

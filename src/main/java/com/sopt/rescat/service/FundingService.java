@@ -7,10 +7,7 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.FundingCommentRepository;
-import com.sopt.rescat.repository.FundingRepository;
-import com.sopt.rescat.repository.ProjectFundingLogRepository;
+import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +22,25 @@ public class FundingService {
     private FundingCommentRepository fundingCommentRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationRepository notificationRepository;
+    private UserNotificationLogRepository userNotificationLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
+                          final NotificationRepository notificationRepository,
+                          final UserNotificationLogRepository userNotificationLogRepository,
                           FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                           final ApprovalLogRepository approvalLogRepository) {
         this.fundingRepository = fundingRepository;
         this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.userNotificationLogRepository = userNotificationLogRepository;
     }
 
     @Transactional
     public void create(FundingRequestDto fundingRequestDto, User loginUser) {
+
         Funding funding = fundingRepository.save(fundingRequestDto.toFunding()
                 .setWriter(loginUser));
 
@@ -61,15 +65,16 @@ public class FundingService {
                 .stream().map(Funding::toFundingDto).collect(Collectors.toList());
     }
 
-    public Funding findBy(Long idx) {
-        return getFundingBy(idx).setWriterNickname();
+    public Funding findBy(Long idx, User loginUser) {
+        return getFundingBy(idx).setWriterNickname().setStatus(loginUser);
     }
 
-    public List<FundingComment> findCommentsBy(Long idx) {
+    public List<FundingComment> findCommentsBy(Long idx, User loginUser) {
         return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();
+                    fundingComment.setStatus(loginUser);
                 }).collect(Collectors.toList());
     }
 
@@ -90,11 +95,10 @@ public class FundingService {
         funding.updateCurrentAmount(mileage);
     }
 
-
     public Iterable<Funding> getFundingRequests() {
         return fundingRepository
                 .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream().map(funding -> funding.setWriterNickname()).collect(Collectors.toList());
+                .stream().map(Funding::setWriterNickname).collect(Collectors.toList());
     }
 
     @Transactional
@@ -104,10 +108,35 @@ public class FundingService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
+
+            Notification notification = Notification.builder()
+                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+            notificationRepository.save(notification);
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(funding.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
+
         } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
-        }
+            Notification notification = Notification.builder()
+                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                    .targetType(RequestType.FUNDING)
+                    .targetIdx(funding.getIdx())
+                    .build();
+            notificationRepository.save(notification);
 
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(funding.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
+        }
         return funding.toFundingDto();
     }
 

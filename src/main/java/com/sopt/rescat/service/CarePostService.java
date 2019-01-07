@@ -7,10 +7,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.*;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.CareApplicationRepository;
-import com.sopt.rescat.repository.CarePostCommentRepository;
-import com.sopt.rescat.repository.CarePostRepository;
+import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
@@ -30,16 +27,22 @@ public class CarePostService {
     private CarePostCommentRepository carePostCommentRepository;
     private CareApplicationRepository careApplicationRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationRepository notificationRepository;
+    private UserNotificationLogRepository userNotificationLogRepository;
 
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
-                           final ApprovalLogRepository approvalLogRepository) {
+                           final ApprovalLogRepository approvalLogRepository,
+                           final NotificationRepository notificationRepository,
+                           final UserNotificationLogRepository userNotificationLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationRepository = notificationRepository;
+        this.userNotificationLogRepository = userNotificationLogRepository;
     }
 
     @Transactional
@@ -76,16 +79,15 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        if (loginUser != null)
-            return findBy(idx).setSubmitStatus(loginUser);
-        return findBy(idx);
+        return findBy(idx).setStatus(loginUser);
     }
 
-    public List<CarePostComment> findCommentsBy(Long idx) {
+    public List<CarePostComment> findCommentsBy(Long idx, User loginUser) {
         return carePostCommentRepository.findByCarePostIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((carePostComment) -> {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
+                    carePostComment.setStatus(loginUser);
                 }).collect(Collectors.toList());
     }
 
@@ -157,12 +159,40 @@ public class CarePostService {
     @Transactional
     public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
+        String category = (carePost.getType() == 0) ? "입양" : "임시보호";
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
+
+            Notification notification = Notification.builder()
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+            notificationRepository.save(notification);
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(carePost.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
+
         } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
+
+            Notification notification = Notification.builder()
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
+                    .targetType(RequestType.CAREPOST)
+                    .targetIdx(carePost.getIdx())
+                    .build();
+            notificationRepository.save(notification);
+
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(carePost.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
         }
 
         return carePost.toCarePostDto();

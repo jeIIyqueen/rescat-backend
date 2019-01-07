@@ -72,6 +72,9 @@ public class User extends BaseTime {
     @Column
     private Long mileage;
 
+    @Column
+    private String deviceToken;
+
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
@@ -132,6 +135,12 @@ public class User extends BaseTime {
         this.phone = phone;
     }
 
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken=deviceToken;
+    }
+
+
     public void deleteMainRegion(Region subRegion1, Region subRegion2) {
         this.mainRegion = subRegion1;
         this.subRegion1 = subRegion2;
@@ -160,5 +169,4 @@ public class User extends BaseTime {
     public void addSubRegion2(Region subRegion2) {
         this.subRegion2 = subRegion2;
     }
-
 }

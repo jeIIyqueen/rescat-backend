@@ -70,16 +70,12 @@ public class MapService {
                 throw new NotFoundException("markerIdx", "존재하지 않는 마커입니다.");
         }
 
-        String[] fullName = mapRequest.getRegionFullName().split(" ");
-        if (fullName.length != 3)
-            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
-        Region region = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
-                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+        Region region = convertFullNameToRegion(mapRequest.getRegionFullName());
 
         user.isAuthenticatedRegion(region.getEmdCode());
 
         mapRequestRepository.save(MapRequest.builder().age(mapRequest.getAge()).etc(mapRequest.getEtc())
-                .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl()).radius(mapRequest.getRadius())
+                .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl())
                 .registerType(mapRequest.getRegisterType()).requestType(mapRequest.getRequestType()).sex(mapRequest.getSex()).tnr(mapRequest.getTnr()).region(region)
                 .address(mapRequest.getAddress()).writer(user).markerIdx(mapRequest.getMarkerIdx()).phone(mapRequest.getPhone()).build());
     }
@@ -173,5 +169,28 @@ public class MapService {
                 .requestStatus(RequestStatus.REFUSE)
                 .build()
                 .setApprover(approver));
+    }
+
+    public void create(Cat cat, User admin) {
+        catRepository.save(
+        Cat.builder().tnr(cat.getTnr()).sex(cat.getSex()).region(convertFullNameToRegion(cat.getRegionFullName())).photoUrl(cat.getPhotoUrl())
+                .name(cat.getName()).lng(cat.getLng()).lat(cat.getLat()).etc(cat.getEtc()).age(cat.getAge())
+                .writer(admin).build());
+    }
+
+    public void create(Place place, User admin) {
+        placeRepository.save(
+        Place.builder().region(convertFullNameToRegion(place.getRegionFullName())).photoUrl(place.getPhotoUrl())
+                .name(place.getName()).lat(place.getLat()).etc(place.getEtc()).category(place.getCategory()).address(place.getAddress())
+                .lng(place.getLng()).phone(place.getPhone()).writer(admin).build());
+    }
+
+    private Region convertFullNameToRegion(String regionFullName) {
+        String[] fullName = regionFullName.split(" ");
+        if (fullName.length != 3)
+            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
+        Region region = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
+                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+        return region;
     }
 }
