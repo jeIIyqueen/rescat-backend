@@ -12,7 +12,6 @@ import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -148,6 +147,11 @@ public class UserService {
 
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
+
+        if (careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user, RequestStatus.DEFER.getValue()))
+            throw new AlreadyExistsException("careTakerRequest", "아직 완료되지 않은 케어테이커 신청이 있습니다.");
+        if(careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user,RequestStatus.CONFIRM.getValue()))
+            throw new AlreadyExistsException("careTakerRequest", "이미 케어테이커 인증이 완료됐습니다.");
 
         String[] fullName = careTakerRequest.getRegionFullName().split(" ");
         if (fullName.length != 3)

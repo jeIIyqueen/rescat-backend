@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -88,10 +89,10 @@ public class CarePost extends BaseEntity {
     private Integer viewCount = 0;
 
     @Column
-    private LocalDateTime startProtectionPeriod;
+    private LocalDate startProtectionPeriod;
 
     @Column
-    private LocalDateTime endProtectionPeriod;
+    private LocalDate endProtectionPeriod;
 
     @Column
     @NonNull
