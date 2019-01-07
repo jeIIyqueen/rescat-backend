@@ -5,21 +5,13 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.FundingCommentRepository;
-import com.sopt.rescat.repository.FundingRepository;
-import com.sopt.rescat.repository.ProjectFundingLogRepository;
-import com.sopt.rescat.repository.UserNotificationLogRepository;
-import com.sopt.rescat.repository.NotificationRepository;
-import org.hibernate.InvalidMappingException;
+import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,8 +60,9 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Funding> findAllBy(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    public Iterable<FundingResponseDto> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue())
+                .stream().map(Funding::toFundingDto).collect(Collectors.toList());
     }
 
     public Funding findBy(Long idx) {
@@ -102,8 +95,9 @@ public class FundingService {
     }
 
     public Iterable<Funding> getFundingRequests() {
-        return new ArrayList<>(fundingRepository
-                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+        return fundingRepository
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
+                .stream().map(funding -> funding.setWriterNickname()).collect(Collectors.toList());
     }
 
     @Transactional
@@ -126,21 +120,21 @@ public class FundingService {
                             .isChecked(RequestStatus.DEFER.getValue())
                             .build());
 
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
-        Notification notification = Notification.builder()
-                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
-                .targetType(RequestType.FUNDING)
-                .targetIdx(funding.getIdx())
-                .build();
-        notificationRepository.save(notification);
+            Notification notification = Notification.builder()
+                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                    .targetType(RequestType.FUNDING)
+                    .targetIdx(funding.getIdx())
+                    .build();
+            notificationRepository.save(notification);
 
-        userNotificationLogRepository.save(
-                UserNotificationLog.builder()
-                        .receivingUser(funding.getWriter())
-                        .notification(notification)
-                        .isChecked(RequestStatus.DEFER.getValue())
-                        .build());
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(funding.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
         }
         return funding.toFundingDto();
     }

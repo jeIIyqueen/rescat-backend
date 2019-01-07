@@ -7,18 +7,16 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.*;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.CareApplicationRepository;
-import com.sopt.rescat.repository.CarePostCommentRepository;
-import com.sopt.rescat.repository.CarePostRepository;
-import com.sopt.rescat.repository.NotificationRepository;
-import com.sopt.rescat.repository.UserNotificationLogRepository;
+import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -106,8 +104,9 @@ public class CarePostService {
     }
 
 
-    public Iterable<CarePost> findAllByUser(User user) {
-        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    public Iterable<CarePostResponseDto> findAllBy(User user) {
+        return carePostRepository.findByWriterAndIsConfirmedOrderByUpdatedAtDesc(user, RequestStatus.CONFIRM.getValue())
+                .stream().map(CarePost::toCarePostDto).collect(Collectors.toList());
     }
 
     public Integer getCarePostRequestCount() {
@@ -161,14 +160,14 @@ public class CarePostService {
     @Transactional
     public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
-        String category = (carePost.getType()==0) ? "입양" : "임시보호";
+        String category = (carePost.getType() == 0) ? "입양" : "임시보호";
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
 
             Notification notification = Notification.builder()
-                    .contents(carePost.getWriter().getNickname() + "님의 " + category +" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
 
@@ -179,22 +178,22 @@ public class CarePostService {
                             .isChecked(RequestStatus.DEFER.getValue())
                             .build());
 
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
 
-        Notification notification = Notification.builder()
-                .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
-                .targetType(RequestType.CAREPOST)
-                .targetIdx(carePost.getIdx())
-                .build();
-        notificationRepository.save(notification);
+            Notification notification = Notification.builder()
+                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
+                    .targetType(RequestType.CAREPOST)
+                    .targetIdx(carePost.getIdx())
+                    .build();
+            notificationRepository.save(notification);
 
-        userNotificationLogRepository.save(
-                UserNotificationLog.builder()
-                        .receivingUser(carePost.getWriter())
-                        .notification(notification)
-                        .isChecked(RequestStatus.DEFER.getValue())
-                        .build());
+            userNotificationLogRepository.save(
+                    UserNotificationLog.builder()
+                            .receivingUser(carePost.getWriter())
+                            .notification(notification)
+                            .isChecked(RequestStatus.DEFER.getValue())
+                            .build());
         }
 
         return carePost.toCarePostDto();

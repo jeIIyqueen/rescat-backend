@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
+import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.*;
 import com.sopt.rescat.repository.*;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
@@ -179,14 +180,14 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public List<Funding> getSupportingFundings(User user) {
+    public List<FundingResponseDto> getSupportingFundings(User user) {
         List<ProjectFundingLog> projectFundingLogs = projectFundingLogRepository.findBySponsorOrderByCreatedAtDesc(user);
-        return getFundingsByLogs(projectFundingLogs);
+        return getFundingsBy(projectFundingLogs);
     }
 
-    private List<Funding> getFundingsByLogs(List<ProjectFundingLog> projectFundingLogs) {
+    private List<FundingResponseDto> getFundingsBy(List<ProjectFundingLog> projectFundingLogs) {
         return projectFundingLogs.stream()
-                .map(ProjectFundingLog::getFunding)
+                .map(projectFundingLog -> projectFundingLog.getFunding().toFundingDto())
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -209,7 +210,7 @@ public class UserService {
 
     @Transactional
     public void editUserPhone(User user, String phone) {
-            user.updatePhone(phone);
+        user.updatePhone(phone);
     }
 
     @Transactional
@@ -313,7 +314,7 @@ public class UserService {
         regions.add(user.getSubRegion1());
         regions.add(user.getSubRegion2());
 
-        if(regions.contains(region))
+        if (regions.contains(region))
             throw new AlreadyExistsException("emdCode", "이미 존재하는 지역입니다.");
 
         if (user.getSubRegion1() == null) {
@@ -341,13 +342,13 @@ public class UserService {
         }
     }
 
-    public void editUserRegion(User user, List<Region> receivedRegions){
+    public void editUserRegion(User user, List<Region> receivedRegions) {
         List<Region> regions = new ArrayList<>();
         regions.add(user.getMainRegion());
         regions.add(user.getSubRegion1());
         regions.add(user.getSubRegion2());
 
-        if(regions.equals(receivedRegions)){
+        if (regions.equals(receivedRegions)) {
             user.updateRegions(receivedRegions);
         }
     }
@@ -379,10 +380,9 @@ public class UserService {
 
     private void approveAddRegionRequest(CareTakerRequest careTakerRequest, User approver) {
         careTakerRequest.approve();
-        if(careTakerRequest.getSubRegion1() != null){
+        if (careTakerRequest.getSubRegion1() != null) {
             careTakerRequest.getWriter().addSubRegion1(careTakerRequest.getSubRegion1());
-        }
-        else if(careTakerRequest.getSubRegion2() != null){
+        } else if (careTakerRequest.getSubRegion2() != null) {
             careTakerRequest.getWriter().addSubRegion2(careTakerRequest.getSubRegion2());
         }
         approvalLogRepository.save(ApprovalLog.builder()
