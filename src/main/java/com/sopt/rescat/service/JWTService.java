@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.sopt.rescat.vo.JwtTokenVO;
 import lombok.extern.slf4j.Slf4j;
@@ -71,10 +70,8 @@ public class JWTService {
             final JWTVerifier jwtVerifier = require(Algorithm.HMAC256(SECRET)).withIssuer(ISSUER).build();
             //토큰 검증
             DecodedJWT decodedJWT = jwtVerifier.verify(token);
-            //토큰 payload 반환, 정상적인 토큰이라면 토큰 주인(사용자) 고유 ID, 아니라면 -1
+            //토큰 payload 반환, 정상적인 토큰이라면 토큰 주인(사용자) 고유 IDX, 아니라면 -1
             return new JwtTokenVO(decodedJWT.getClaim("user_idx").asLong());
-        } catch (JWTVerificationException jve) {
-            log.error(jve.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         }

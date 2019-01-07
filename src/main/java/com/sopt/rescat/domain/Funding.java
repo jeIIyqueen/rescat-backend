@@ -1,25 +1,35 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
-import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
-import com.sopt.rescat.dto.response.FundingDto;
-import lombok.NonNull;
+import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.NotExistException;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Funding extends BaseEntity {
+    @Transient
     private final static int MAIN_PHOTO_INDEX = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
-    private List<FundingComment> fundingComments;
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<FundingComment> comments;
 
     @Column(length = 100)
     @NonNull
@@ -38,7 +48,8 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
-    private Long currentAmount;
+    @Builder.Default
+    private Long currentAmount = 0L;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -51,25 +62,38 @@ public class Funding extends BaseEntity {
 
     @Column
     @NonNull
-    private String mainRigion;
+    private String mainRegion;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
-    @NonNull
-    private List<CertificationPhoto> certifications;
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FundingPhoto> certifications;
 
     @Column
     // 0: 치료비 모금, 1: 프로젝트 후원
     private Integer category;
 
-    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FundingPhoto> photos;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date limitAt;
 
-    public FundingDto toFundingDto() {
-        return FundingDto.builder()
+    @Column
+    @Range(min = 0, max = 2)
+    private Integer isConfirmed;
+
+    @Transient
+    private String nickname;
+
+    public Funding setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
+    }
+
+    public FundingResponseDto toFundingDto() {
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+
+        return FundingResponseDto.builder()
                 .idx(idx)
                 .category(category)
                 .currentAmount(currentAmount)
@@ -79,5 +103,28 @@ public class Funding extends BaseEntity {
                 .title(title)
                 .mainPhoto(photos.get(MAIN_PHOTO_INDEX))
                 .build();
+    }
+
+    public void updateCurrentAmount(Long amount) {
+        this.currentAmount += amount;
+    }
+
+    public Funding setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public Funding initCertifications(List<FundingPhoto> certificationPhotos) {
+        this.certifications = certificationPhotos;
+        return this;
+    }
+
+    public Funding initPhotos(List<FundingPhoto> photos) {
+        this.photos = photos;
+        return this;
+    }
+
+    public void updateConfirmStatus(Integer isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 }

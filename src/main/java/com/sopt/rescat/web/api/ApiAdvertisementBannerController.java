@@ -1,7 +1,5 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.AdvertisementBanner;
-import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.response.BannerDto;
 import com.sopt.rescat.service.AdvertisementBannerService;
 import io.swagger.annotations.Api;
@@ -14,13 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Api(value = "AdvertisementBannerController", description = "광고 배너 api")
+@Api(value = "ApiAdvertisementBannerController", description = "광고 배너 api")
 @Controller
 @RequestMapping("/api/banners/advertisement-banners")
-public class AdvertisementBannerController {
+public class ApiAdvertisementBannerController {
     private AdvertisementBannerService advertisementBannerService;
 
-    public AdvertisementBannerController(final AdvertisementBannerService advertisementBannerService) {
+    public ApiAdvertisementBannerController(final AdvertisementBannerService advertisementBannerService) {
         this.advertisementBannerService = advertisementBannerService;
     }
 
@@ -30,7 +28,7 @@ public class AdvertisementBannerController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("")
-    public ResponseEntity<Iterable<AdvertisementBanner>> list() {
+    public ResponseEntity<Iterable<BannerDto>> list() {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.gets());
     }
 

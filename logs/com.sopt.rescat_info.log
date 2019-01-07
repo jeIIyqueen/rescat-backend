@@ -1633,6 +1633,52 @@
 2018-12-28 15:11:44.515 INFO  288071 --- [ Thread-32 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 15:11:44.518 INFO  288074 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2018-12-28 15:11:44.527 INFO  288083 --- [ Thread-32 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+<<<<<<< HEAD
+2018-12-28 16:23:19.929 INFO  982  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on crystal-rimui-MacBook-Pro.local with PID 56963 (/Users/crystal_rim/my_project/rescat/out/production/classes started by crystal_rim in /Users/crystal_rim/my_project/rescat)
+2018-12-28 16:23:19.935 INFO  988  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
+2018-12-28 16:23:20.019 INFO  1072 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2018-12-28 16:23:20.020 INFO  1073 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2018-12-28 16:23:24.172 INFO  5225 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data repositories in DEFAULT mode.
+2018-12-28 16:23:24.257 INFO  5310 --- [ restartedMain ] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 76ms. Found 6 repository interfaces.
+2018-12-28 16:23:24.550 INFO  5603 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#2e282e7e' of type [com.amazonaws.auth.BasicAWSCredentials] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:24.552 INFO  5605 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#4a4f5135' of type [com.amazonaws.auth.AWSStaticCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:24.560 INFO  5613 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean '(inner bean)#13ac9e34' of type [com.amazonaws.auth.profile.ProfileCredentialsProvider] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:24.563 INFO  5616 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [org.springframework.cloud.aws.core.credentials.CredentialsProviderFactoryBean] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:24.564 INFO  5617 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'credentialsProvider' of type [com.amazonaws.auth.AWSCredentialsProviderChain] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:24.633 INFO  5686 --- [ restartedMain ] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$c18de288] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2018-12-28 16:23:25.150 INFO  6203 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2018-12-28 16:23:25.168 INFO  6221 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2018-12-28 16:23:25.178 INFO  6231 --- [ restartedMain ] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2018-12-28 16:23:25.178 INFO  6231 --- [ restartedMain ] o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/9.0.13
+2018-12-28 16:23:25.186 INFO  6239 --- [ restartedMain ] o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/crystal_rim/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+2018-12-28 16:23:25.393 INFO  6446 --- [ restartedMain ] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2018-12-28 16:23:25.393 INFO  6446 --- [ restartedMain ] o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 5373 ms
+2018-12-28 16:23:25.580 INFO  6633 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2018-12-28 16:23:25.869 INFO  6922 --- [ restartedMain ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2018-12-28 16:23:25.932 INFO  6985 --- [ restartedMain ] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-12-28 16:23:26.050 INFO  7103 --- [ restartedMain ] org.hibernate.Version - HHH000412: Hibernate Core {5.3.7.Final}
+2018-12-28 16:23:26.052 INFO  7105 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+2018-12-28 16:23:26.313 INFO  7366 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
+2018-12-28 16:23:26.542 INFO  7595 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-12-28 16:23:27.113 INFO  8166 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:23:28.732 INFO  9785 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 16:23:28.788 INFO  9841 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2018-12-28 16:23:30.342 INFO  11395 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
+2018-12-28 16:23:30.495 INFO  11548 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2018-12-28 16:23:30.729 INFO  11782 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Context refreshed
+2018-12-28 16:23:30.756 INFO  11809 --- [ restartedMain ] s.d.s.w.p.DocumentationPluginsBootstrapper - Found 1 custom documentation plugin(s)
+2018-12-28 16:23:30.790 INFO  11843 --- [ restartedMain ] s.d.s.w.s.ApiListingReferenceScanner - Scanning for api listing references
+2018-12-28 16:23:30.972 INFO  12025 --- [ restartedMain ] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2018-12-28 16:23:30.996 INFO  12049 --- [ restartedMain ] o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+2018-12-28 16:23:31.012 INFO  12065 --- [ restartedMain ] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2018-12-28 16:23:31.015 INFO  12068 --- [ restartedMain ] com.sopt.rescat.RescatApplication - Started RescatApplication in 11.577 seconds (JVM running for 13.014)
+2018-12-28 16:23:39.722 INFO  20775 --- [ Thread-33 ] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'
+2018-12-28 16:23:39.726 INFO  20779 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2018-12-28 16:23:39.729 INFO  20782 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2018-12-28 16:23:39.738 INFO  20791 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+=======
 2018-12-28 16:41:09.195 INFO  979  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 95435 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
 2018-12-28 16:41:09.201 INFO  985  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
 2018-12-28 16:41:09.308 INFO  1092 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
@@ -2209,6 +2255,12 @@
 2018-12-28 17:30:15.899 INFO  27632 --- [ Thread-33 ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:30:15.903 INFO  27636 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2018-12-28 17:30:15.908 INFO  27641 --- [ Thread-33 ] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 141e27f27ab3713d5706e2efbea0c9f3a770fee3
+=======
+>>>>>>> e23564bc0cbd79879659157bc17872b75d3c1efa
 2018-12-28 17:54:53.934 INFO  931  --- [ restartedMain ] com.sopt.rescat.RescatApplication - Starting RescatApplication on gwonhyeon-aui-MacBook-Pro.local with PID 34496 (/Users/gwonhyeon-a/Documents/rescat/out/production/classes started by gwonhyeon-a in /Users/gwonhyeon-a/Documents/rescat)
 2018-12-28 17:54:53.946 INFO  943  --- [ restartedMain ] com.sopt.rescat.RescatApplication - No active profile set, falling back to default profiles: default
 2018-12-28 17:54:54.008 INFO  1005 --- [ restartedMain ] o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable

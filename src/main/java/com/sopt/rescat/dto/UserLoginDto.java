@@ -7,16 +7,13 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserLoginDto {
 
     @ApiModelProperty(example = "ttmom96", position = 1)
     private String id;
     @ApiModelProperty(example = "ttmom1234", position = 2)
     private String password;
-
-    @Builder
-    public UserLoginDto(String id, String password) {
-        this.id = id;
-        this.password = password;
-    }
+    @ApiModelProperty(example = "deviceToken", position = 3)
+    private String deviceToken;
 }

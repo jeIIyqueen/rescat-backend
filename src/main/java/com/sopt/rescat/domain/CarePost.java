@@ -1,19 +1,37 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.Vaccination;
 import com.sopt.rescat.domain.photo.CarePostPhoto;
-import com.sopt.rescat.dto.response.CarePostDto;
-import lombok.NonNull;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
+import com.sopt.rescat.exception.NotExistException;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
+
+@Slf4j
+@Getter
+@Builder
 @Entity
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarePost extends BaseEntity {
-    private final Integer MAIN_PHOTO_INDEX = 0;
+    private static final Integer SECONDS_OF_3DAYS = 259200;
+    private static final Integer MAIN_PHOTO_INDEX = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +39,13 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    @Length(max = 500)
     private String contents;
 
-    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CarePostPhoto> photos;
 
-    @OneToMany
-    @JoinColumn(name = "care_post_idx")
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<CarePostComment> comments;
 
     @Column
@@ -43,7 +60,7 @@ public class CarePost extends BaseEntity {
 
     @Column
     @NonNull
-    private LocalDateTime birth;
+    private String age;
 
     @Column
     @NonNull
@@ -67,7 +84,8 @@ public class CarePost extends BaseEntity {
     private String etc;
 
     @Column
-    private int viewCount = 0;
+    @Builder.Default
+    private Integer viewCount = 0;
 
     @Column
     private LocalDateTime startProtectionPeriod;
@@ -75,14 +93,100 @@ public class CarePost extends BaseEntity {
     @Column
     private LocalDateTime endProtectionPeriod;
 
-    public CarePostDto toCarePostDto() {
-        return CarePostDto.builder()
+    @Column
+    @NonNull
+    @Range(min = 0, max = 2)
+    private Integer isConfirmed;
+
+    @Column
+    @NonNull
+    private Boolean isFinished;
+
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<CareApplication> careApplications;
+
+    @ApiModelProperty(readOnly = true)
+    @LastModifiedDate
+    @Column
+    private LocalDateTime updatedAt;
+
+    @Transient
+    private String nickname;
+
+    @Transient
+    private Boolean isSubmitted;
+
+    @Transient
+    private Boolean isWriter;
+
+    public CarePost setWriterNickname() {
+        this.nickname = getWriter().getNickname();
+        return this;
+    }
+
+    public CarePostResponseDto toCarePostDto() {
+        if (photos.size() == MAIN_PHOTO_INDEX) throw new NotExistException("photo", "해당 글의 사진이 등록되어 있지 않습니다.");
+
+        return CarePostResponseDto.builder()
                 .idx(idx)
                 .name(name)
+                .type(type)
                 .contents(contents)
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
+                .updatedAt(updatedAt)
+                .isFinished(isFinished)
                 .build();
+    }
+
+    public CarePost initPhotos(List<CarePostPhoto> carePostPhotos) {
+        this.photos = carePostPhotos;
+        return this;
+    }
+
+    public CarePost setWriter(User writer) {
+        initWriter(writer);
+        return this;
+    }
+
+    public void updateConfirmStatus(Integer isConfirmed) {
+        this.isConfirmed = isConfirmed;
+    }
+
+    public CarePost addViewCount() {
+        ++this.viewCount;
+        return this;
+    }
+
+    @JsonIgnore
+    public void finish() {
+        this.isFinished = true;
+    }
+
+    public boolean isSubmitted(User loginUser) {
+        return careApplications.stream().anyMatch(careApplication -> careApplication.isMyApplication(loginUser));
+    }
+
+    public boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public CarePost setSubmitStatus(User loginUser) {
+        this.isSubmitted = this.isSubmitted(loginUser);
+        this.isWriter = this.equalsWriter(loginUser);
+        return this;
+    }
+
+    public boolean equalsType(Integer type) {
+        return this.type.equals(type);
+    }
+
+    public void updateUpdatedAt() {
+        if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < SECONDS_OF_3DAYS)
+            throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
+
+        this.updatedAt = now();
     }
 }
