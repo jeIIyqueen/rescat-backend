@@ -101,6 +101,10 @@ public class Funding extends BaseEntity {
     @Transient
     private String nickname;
 
+    @ApiModelProperty(notes = "작성자 일치 여부", readOnly = true)
+    @Transient
+    private Boolean isWriter;
+
     public Funding setWriterNickname() {
         this.nickname = getWriter().getNickname();
         return this;
@@ -142,5 +146,14 @@ public class Funding extends BaseEntity {
 
     public void updateConfirmStatus(Integer isConfirmed) {
         this.isConfirmed = isConfirmed;
+    }
+
+    private boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public Funding setStatus(User loginUser) {
+        this.isWriter = this.equalsWriter(loginUser);
+        return this;
     }
 }

@@ -16,6 +16,7 @@ public class CarePostComment extends BaseEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(readOnly = true)
     private Long idx;
 
     @Column
@@ -32,12 +33,16 @@ public class CarePostComment extends BaseEntity {
     private CarePost carePost;
 
     @Transient
-    @ApiModelProperty(readOnly = true)
+    @ApiModelProperty(readOnly = true, notes = "닉네임")
     private String nickname;
 
     @Transient
-    @ApiModelProperty(readOnly = true)
+    @ApiModelProperty(readOnly = true, notes = "유저 등급")
     private Role userRole;
+
+    @Transient
+    @ApiModelProperty(readOnly = true, notes = "작성자 일치 여부")
+    private Boolean isWriter;
 
     public CarePostComment setWriterNickname() {
         this.nickname = getWriter().getNickname();
@@ -56,6 +61,15 @@ public class CarePostComment extends BaseEntity {
 
     public CarePostComment initCarePost(CarePost carePost) {
         this.carePost = carePost;
+        return this;
+    }
+
+    private boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public CarePostComment setStatus(User loginUser) {
+        this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
 }

@@ -66,15 +66,16 @@ public class FundingService {
                 .stream().map(Funding::toFundingDto).collect(Collectors.toList());
     }
 
-    public Funding findBy(Long idx) {
-        return getFundingBy(idx).setWriterNickname();
+    public Funding findBy(Long idx, User loginUser) {
+        return getFundingBy(idx).setWriterNickname().setStatus(loginUser);
     }
 
-    public List<FundingComment> findCommentsBy(Long idx) {
+    public List<FundingComment> findCommentsBy(Long idx, User loginUser) {
         return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();
+                    fundingComment.setStatus(loginUser);
                 }).collect(Collectors.toList());
     }
 

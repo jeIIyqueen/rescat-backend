@@ -32,12 +32,16 @@ public class FundingComment extends BaseEntity {
     private Funding funding;
 
     @Transient
-    @ApiModelProperty(readOnly = true)
+    @ApiModelProperty(readOnly = true, notes = "닉네임")
     private String nickname;
 
     @Transient
-    @ApiModelProperty(readOnly = true)
+    @ApiModelProperty(readOnly = true, notes = "유저 등급")
     private Role userRole;
+
+    @Transient
+    @ApiModelProperty(readOnly = true, notes = "작성자 일치 여부")
+    private Boolean isWriter;
 
     public FundingComment setWriterNickname() {
         this.nickname = getWriter().getNickname();
@@ -56,6 +60,15 @@ public class FundingComment extends BaseEntity {
 
     public FundingComment initFunding(Funding funding) {
         this.funding = funding;
+        return this;
+    }
+
+    private boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public FundingComment setStatus(User loginUser) {
+        this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
 }

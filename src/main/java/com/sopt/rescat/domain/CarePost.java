@@ -196,7 +196,7 @@ public class CarePost extends BaseEntity {
         return this.getWriter().equals(loginUser);
     }
 
-    public CarePost setSubmitStatus(User loginUser) {
+    public CarePost setStatus(User loginUser) {
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;

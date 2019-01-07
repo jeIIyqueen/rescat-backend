@@ -50,11 +50,13 @@ public class MapRequest extends BaseEntity {
     @NonNull
     @Column
     @ApiModelProperty(notes = "위도 좌표", position = 5, required = true)
+    @Range(min = 33, max = 43)
     private Double lat;
 
     @NonNull
     @Column
     @ApiModelProperty(notes = "경도 좌표", position = 6, required = true)
+    @Range(min = 124, max = 132)
     private Double lng;
 
     @ApiModelProperty(hidden = true)
