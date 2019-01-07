@@ -75,9 +75,6 @@ public class User extends BaseTime {
     @Column
     private String deviceToken;
 
-    //@OneToMany(mappedBy = "user")
-//    private List<UserNotificationLog> userNotificationLogs = new ArrayList<>();
-
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;

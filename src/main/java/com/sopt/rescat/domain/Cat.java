@@ -2,6 +2,8 @@ package com.sopt.rescat.domain;
 
 import com.sopt.rescat.dto.MarkerDto;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
@@ -19,10 +21,12 @@ public class Cat extends BaseEntity {
 
     @Column
     @NonNull
+    @Range(min = 33, max = 43)
     private Double lat;
 
     @Column
     @NonNull
+    @Range(min = 124, max = 132)
     private Double lng;
 
     @Column
@@ -40,13 +44,17 @@ public class Cat extends BaseEntity {
     @Column
     private String etc;
 
+    @URL
     @Column
     private String photoUrl;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @NonNull
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_cat_region_idx"))
     private Region region;
+
+    @Transient
+    private String regionFullName;
 
     @Builder
     public Cat(User writer, String name, @NonNull Double lat, @NonNull Double lng, @NonNull Integer sex, String age, Integer tnr, String etc, String photoUrl, @NonNull Region region) {

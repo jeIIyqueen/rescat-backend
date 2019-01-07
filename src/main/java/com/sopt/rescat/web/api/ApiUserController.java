@@ -315,7 +315,7 @@ public class ApiUserController {
         if (notification.getTargetType().equals(RequestType.CAREPOST))
             return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(notification.getTargetIdx(),loginUser));
         if(notification.getTargetType().equals(RequestType.FUNDING))
-            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx()));
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx(), loginUser));
 
         //target이 없는 경우
         return ResponseEntity.status(HttpStatus.OK).body(null);

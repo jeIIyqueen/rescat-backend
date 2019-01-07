@@ -79,16 +79,15 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        if (loginUser != null)
-            return findBy(idx).setSubmitStatus(loginUser);
-        return findBy(idx);
+        return findBy(idx).setStatus(loginUser);
     }
 
-    public List<CarePostComment> findCommentsBy(Long idx) {
+    public List<CarePostComment> findCommentsBy(Long idx, User loginUser) {
         return carePostCommentRepository.findByCarePostIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((carePostComment) -> {
                     carePostComment.setUserRole();
                     carePostComment.setWriterNickname();
+                    carePostComment.setStatus(loginUser);
                 }).collect(Collectors.toList());
     }
 
