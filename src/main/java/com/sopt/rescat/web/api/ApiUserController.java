@@ -229,7 +229,6 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-
     @GetMapping("/mypage/care-posts")
     public ResponseEntity<Iterable<CarePost>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
                                                                    HttpServletRequest httpServletRequest) {

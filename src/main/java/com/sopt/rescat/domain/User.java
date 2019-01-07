@@ -74,7 +74,7 @@ public class User extends BaseTime {
     private Long mileage;
 
     @Column
-    private String deviceToken;
+    private String InstanceToken;
 
     //@OneToMany(mappedBy = "user")
 //    private List<UserNotificationLog> userNotificationLogs = new ArrayList<>();
@@ -140,8 +140,8 @@ public class User extends BaseTime {
     }
 
 
-    public void updateDeviceToken(String deviceToken) {
-        this.deviceToken=deviceToken;
+    public void updateInstanceToken(String InstanceToken) {
+        this.InstanceToken = InstanceToken;
     }
 
 
