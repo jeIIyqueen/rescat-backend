@@ -11,6 +11,7 @@ import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,6 +86,9 @@ public class FundingService {
     public void payForMileage(Long idx, Long mileage, User loginUser) {
         Funding funding = getFundingBy(idx);
 
+        if(loginUser.match(funding.getWriter()))
+            throw new UnAuthenticationException("token", "본인의 펀딩글은 후원할 수 없습니다.");
+
         loginUser.updateMileage(mileage * (-1));
         projectFundingLogRepository.save(ProjectFundingLog.builder()
                 .amount(mileage)
@@ -96,47 +100,49 @@ public class FundingService {
 
     public Iterable<Funding> getFundingRequests() {
         return fundingRepository
-                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream().map(funding -> funding.setWriterNickname()).collect(Collectors.toList());
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()).stream()
+                .map(Funding::setWriterNickname)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public FundingResponseDto confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
-        // 거절일 경우
-        if (status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue()))
             refuseFundingRequest(funding, approver);
+        else if (status.equals(RequestStatus.CONFIRM.getValue()))
+            approveFundingRequest(funding, approver);
 
-            Notification notification = Notification.builder()
+        sendNotification(status, funding);
+        return funding.toFundingDto();
+    }
+
+    private void sendNotification(Integer status, Funding funding) {
+        Notification notification = createNotification(status, funding);
+        notificationRepository.save(notification);
+
+        userNotificationLogRepository.save(
+                UserNotificationLog.builder()
+                        .receivingUser(funding.getWriter())
+                        .notification(notification)
+                        .isChecked(status)
+                        .build());
+    }
+
+    private Notification createNotification(Integer status, Funding funding) {
+        // 거절일경우,
+        if(status.equals(RequestStatus.DEFER.getValue()))
+            return Notification.builder()
                     .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
-            notificationRepository.save(notification);
 
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(funding.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
-
-        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
-            approveFundingRequest(funding, approver);
-            Notification notification = Notification.builder()
-                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
-                    .targetType(RequestType.FUNDING)
-                    .targetIdx(funding.getIdx())
-                    .build();
-            notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(funding.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
-        }
-        return funding.toFundingDto();
+        // 승인일경우,
+        return Notification.builder()
+                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                .targetType(RequestType.FUNDING)
+                .targetIdx(funding.getIdx())
+                .build();
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {
