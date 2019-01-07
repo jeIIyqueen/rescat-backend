@@ -15,7 +15,6 @@ import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.repository.UserNotificationLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

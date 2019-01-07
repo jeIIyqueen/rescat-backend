@@ -9,6 +9,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,8 +39,8 @@ public class CarePostRequestDto {
     private Breed breed;
     private Vaccination vaccination;
     private String etc;
-    private LocalDateTime startProtectionPeriod;
-    private LocalDateTime endProtectionPeriod;
+    private LocalDate startProtectionPeriod;
+    private LocalDate endProtectionPeriod;
 
     public CarePost toCarePost(Boolean isFinished) {
         return CarePost.builder()
