@@ -8,7 +8,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.URL;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -31,14 +33,12 @@ public class FundingRequestDto {
     @ApiModelProperty(notes = "증빙서류 사진 url 리스트", required = true)
     @Size(min = 1, max = 3)
     @NonNull
-//    @URL
-    private List<String> certificationUrls;
+    private List<@URL String> certificationUrls;
 
     @ApiModelProperty(notes = "사진 url 리스트")
     @Size(min = 1, max = 3)
     @NonNull
-//    @URL
-    private List<String> photoUrls;
+    private List<@URL String> photoUrls;
 
     @ApiModelProperty(notes = "글 제목", required = true)
     @NonNull

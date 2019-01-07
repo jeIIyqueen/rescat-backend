@@ -6,6 +6,7 @@ import com.sopt.rescat.domain.BaseTime;
 import com.sopt.rescat.domain.Funding;
 import lombok.Getter;
 import lombok.NonNull;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
