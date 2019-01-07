@@ -31,7 +31,7 @@ public class FundingPhoto extends BaseTime {
 
     @Column
     @NonNull
-    private boolean isCertification;
+    private Boolean isCertification;
 
     public FundingPhoto() {
         this.isCertification = false;

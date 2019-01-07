@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.Role;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NonNull;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
@@ -20,6 +21,7 @@ public class CarePostComment extends BaseEntity {
     private String contents;
 
     @Column
+    @URL
     private String photoUrl;
 
     @ManyToOne

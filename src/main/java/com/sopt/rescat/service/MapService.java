@@ -79,7 +79,7 @@ public class MapService {
         user.isAuthenticatedRegion(region.getEmdCode());
 
         mapRequestRepository.save(MapRequest.builder().age(mapRequest.getAge()).etc(mapRequest.getEtc())
-                .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl()).radius(mapRequest.getRadius())
+                .isConfirmed(RequestStatus.DEFER.getValue()).lat(mapRequest.getLat()).lng(mapRequest.getLng()).name(mapRequest.getName()).photoUrl(mapRequest.getPhotoUrl())
                 .registerType(mapRequest.getRegisterType()).requestType(mapRequest.getRequestType()).sex(mapRequest.getSex()).tnr(mapRequest.getTnr()).region(region)
                 .address(mapRequest.getAddress()).writer(user).markerIdx(mapRequest.getMarkerIdx()).phone(mapRequest.getPhone()).build());
     }

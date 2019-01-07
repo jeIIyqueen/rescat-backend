@@ -78,10 +78,6 @@ public class MapRequest extends BaseEntity {
     private String phone;
 
     @Column
-    @ApiModelProperty(notes = "(only길고양이)활동반경", position = 8)
-    private Integer radius;
-
-    @Column
     @Range(min = 0, max = 1)
     @ApiModelProperty(notes = "(only길고양이)성별(0: 남, 1: 여)", position = 9)
     // 0: 남, 1: 여
@@ -117,7 +113,7 @@ public class MapRequest extends BaseEntity {
     private String writerName;
 
     @Builder
-    public MapRequest(User writer, @NonNull @Range(min = 0, max = 1) Integer requestType, @NonNull @Range(min = 0, max = 2) Integer registerType, @NonNull @Length(max = 50) String name, String etc, @NonNull Double lat, @NonNull Double lng, String address, @NonNull Region region, @URL String photoUrl, Integer radius, @Range(min = 0, max = 1) Integer sex, @Length(max = 5) String age, @Range(min = 0, max = 1) Integer tnr, @Range(min = 0, max = 2) Integer isConfirmed, Long markerIdx, @Length(max = 13) String phone) {
+    public MapRequest(User writer, @NonNull @Range(min = 0, max = 1) Integer requestType, @NonNull @Range(min = 0, max = 2) Integer registerType, @NonNull @Length(max = 50) String name, String etc, @NonNull Double lat, @NonNull Double lng, String address, @NonNull Region region, @URL String photoUrl, @Range(min = 0, max = 1) Integer sex, @Length(max = 5) String age, @Range(min = 0, max = 1) Integer tnr, @Range(min = 0, max = 2) Integer isConfirmed, Long markerIdx, @Length(max = 13) String phone) {
         super(writer);
         this.requestType = requestType;
         this.registerType = registerType;
@@ -128,7 +124,6 @@ public class MapRequest extends BaseEntity {
         this.address = address;
         this.region = region;
         this.photoUrl = photoUrl;
-        this.radius = radius;
         this.sex = sex;
         this.age = age;
         this.tnr = tnr;
@@ -178,6 +173,6 @@ public class MapRequest extends BaseEntity {
     @ApiModelProperty(hidden = true)
     public Cat toCat() {
         return Cat.builder().age(this.age).etc(this.etc).lat(this.lat).lng(this.lng).name(this.name)
-                .photoUrl(this.photoUrl).radius(this.radius).region(this.region).sex(this.sex).tnr(this.tnr).writer(this.getWriter()).build();
+                .photoUrl(this.photoUrl).region(this.region).sex(this.sex).tnr(this.tnr).writer(this.getWriter()).build();
     }
 }
