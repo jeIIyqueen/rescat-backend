@@ -176,7 +176,7 @@ public class UserService {
     }
 
     public Iterable<CareTakerRequest> getCareTakerRequest() {
-        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
+        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAtDesc(RequestStatus.DEFER.getValue())
                 .stream().peek(careTakerRequest -> {
                     careTakerRequest.fillUserNickname();
                     careTakerRequest.fillRegionFullName();
