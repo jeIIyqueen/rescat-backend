@@ -97,6 +97,11 @@ public class Funding extends BaseEntity {
     @Range(min = 0, max = 2)
     private Integer isConfirmed;
 
+    @ApiModelProperty(notes = "신고")
+    @Column
+    @Builder.Default
+    private int warning = 0;
+
     @ApiModelProperty(notes = "작성자 닉네임", readOnly = true)
     @Transient
     private String nickname;
@@ -156,4 +161,9 @@ public class Funding extends BaseEntity {
         this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
+
+    public void warningCount() {
+        ++this.warning;
+    }
+
 }

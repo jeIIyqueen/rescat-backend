@@ -163,7 +163,7 @@ public class UserService {
         careTakerRequestRepository.save(CareTakerRequest.builder()
                 .authenticationPhotoUrl(careTakerRequest.getAuthenticationPhotoUrl())
                 .isConfirmed(RequestStatus.DEFER.getValue())
-                .mainRegion(region)
+                .region(region)
                 .name(careTakerRequest.getName())
                 .phone(careTakerRequest.getPhone())
                 .writer(user)
@@ -184,8 +184,11 @@ public class UserService {
     }
 
     public Iterable<CareTakerRequest> getCareTakerRequest() {
-        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream().peek(CareTakerRequest::fillUserNickname)
+        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAtDesc(RequestStatus.DEFER.getValue())
+                .stream().peek(careTakerRequest -> {
+                    careTakerRequest.fillUserNickname();
+                    careTakerRequest.fillRegionFullName();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -266,7 +269,7 @@ public class UserService {
 
     private void approveCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
         careTakerRequest.approve();
-        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName(), careTakerRequest.getMainRegion());
+        careTakerRequest.getWriter().grantCareTakerAuth(careTakerRequest.getPhone(), careTakerRequest.getName(), careTakerRequest.getRegion());
         approvalLogRepository.save(ApprovalLog.builder()
                 .requestIdx(careTakerRequest.getIdx())
                 .requestType(RequestType.CARETAKER)
@@ -295,7 +298,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveAddRegionRequest(final User user, Integer emdCode, @URL String authenticationPhotoUrl, Integer type) {
+    public void saveAddRegionRequest(final User user, Integer emdCode, @URL String authenticationPhotoUrl) {
 
         Region region = regionRepository.findByEmdCode(emdCode)
                 .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
@@ -308,29 +311,15 @@ public class UserService {
         if (regions.contains(region))
             throw new AlreadyExistsException("emdCode", "이미 존재하는 지역입니다.");
 
-        if (user.getSubRegion1() == null) {
-            careTakerRequestRepository.save(CareTakerRequest.builder()
+        careTakerRequestRepository.save(CareTakerRequest.builder()
                     .authenticationPhotoUrl(authenticationPhotoUrl)
                     .isConfirmed(RequestStatus.DEFER.getValue())
-                    .mainRegion(user.getMainRegion())
-                    .subRegion1(region)
+                    .region(region)
                     .name(user.getName())
                     .phone(user.getPhone())
                     .writer(user)
-                    .type(type)
+                    .type(1)
                     .build());
-        } else if (user.getSubRegion1() != null) {
-            careTakerRequestRepository.save(CareTakerRequest.builder()
-                    .authenticationPhotoUrl(authenticationPhotoUrl)
-                    .isConfirmed(RequestStatus.DEFER.getValue())
-                    .mainRegion(user.getMainRegion())
-                    .subRegion2(region)
-                    .name(user.getName())
-                    .phone(user.getPhone())
-                    .writer(user)
-                    .type(type)
-                    .build());
-        }
     }
 
     public void editUserRegion(User user, List<Region> receivedRegions) {
@@ -371,10 +360,12 @@ public class UserService {
 
     private void approveAddRegionRequest(CareTakerRequest careTakerRequest, User approver) {
         careTakerRequest.approve();
-        if (careTakerRequest.getSubRegion1() != null) {
-            careTakerRequest.getWriter().addSubRegion1(careTakerRequest.getSubRegion1());
-        } else if (careTakerRequest.getSubRegion2() != null) {
-            careTakerRequest.getWriter().addSubRegion2(careTakerRequest.getSubRegion2());
+        if (careTakerRequest.getWriter().getMainRegion() == null) {
+            careTakerRequest.getWriter().addMainRegion(careTakerRequest.getRegion());
+        } else if (careTakerRequest.getWriter().getMainRegion() != null && careTakerRequest.getWriter().getSubRegion1() == null) {
+            careTakerRequest.getWriter().addSubRegion1(careTakerRequest.getRegion());
+        } else if (careTakerRequest.getWriter().getMainRegion() != null && careTakerRequest.getWriter().getSubRegion1() != null && careTakerRequest.getWriter().getSubRegion2() == null) {
+            careTakerRequest.getWriter().addSubRegion2(careTakerRequest.getRegion());
         }
         approvalLogRepository.save(ApprovalLog.builder()
                 .requestIdx(careTakerRequest.getIdx())

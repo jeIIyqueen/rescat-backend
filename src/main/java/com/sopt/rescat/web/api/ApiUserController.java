@@ -352,15 +352,14 @@ public class ApiUserController {
     @CareTakerAuth
     @PostMapping("/mypage/region")
     public ResponseEntity requestAddRegion(
-            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url, \n\"type\": 1\n}")
+            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url\n}")
             @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
-        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl") && !body.containsKey("type"))
-            throw new InvalidValueException("emdCode or authenticationPhoto or type", "emdCode 또는 authenticationPhoto, type field 가 body에 존재하지 않습니다.");
+        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
+            throw new InvalidValueException("emdCode or authenticationPhoto", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
 
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))),
-                String.valueOf(body.get("authenticationPhotoUrl")), Integer.parseInt(String.valueOf(body.get("type"))));
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))), String.valueOf(body.get("authenticationPhotoUrl")));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

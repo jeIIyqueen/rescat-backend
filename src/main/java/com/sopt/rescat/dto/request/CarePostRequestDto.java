@@ -67,7 +67,6 @@ public class CarePostRequestDto {
     @ApiModelProperty(notes = "임시보호 시작기간(글 타입 1일 경우 필수)")
     private LocalDate startProtectionPeriod;
 
-
     @ApiModelProperty(notes = "임시보호 종료기간(글 타입 1일 경우 필수)")
     private LocalDate endProtectionPeriod;
 

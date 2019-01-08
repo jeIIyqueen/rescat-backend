@@ -163,6 +163,10 @@ public class User extends BaseTime {
         this.subRegion2 = receivedRegions.get(3);
     }
 
+    public void addMainRegion(Region mainRegion) {
+        this.mainRegion = mainRegion;
+    }
+
     public void addSubRegion1(Region subRegion1) {
         this.subRegion1 = subRegion1;
     }
