@@ -138,6 +138,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .regions(regions)
+                .isFinished(!careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user,RequestStatus.DEFER.getValue()))
                 .build();
     }
 
@@ -270,6 +271,7 @@ public class UserService {
                 .notification(notification)
                 .isChecked(RequestStatus.DEFER.getValue())
                 .build());
+
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {

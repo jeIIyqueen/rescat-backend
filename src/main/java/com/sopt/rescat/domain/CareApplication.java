@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Getter
@@ -47,7 +48,7 @@ public class CareApplication extends BaseEntity {
     private String name;
 
     @Column
-    @Length(max = 11)
+    @Pattern(regexp = "^01[0|1|6-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     @NonNull
     @NotNull
     @ApiModelProperty(notes = "신청자 연락처", position = 3, required = true)
@@ -55,9 +56,7 @@ public class CareApplication extends BaseEntity {
 
     @Column
     @Past
-    @NonNull
-    @NotNull
-    @ApiModelProperty(notes = "신청자 생년월일", position = 4, required = true)
+    @ApiModelProperty(notes = "신청자 생년월일", position = 4)
     private LocalDate birth;
 
     @Column
@@ -100,7 +99,7 @@ public class CareApplication extends BaseEntity {
     private String title;
 
     @Builder
-    public CareApplication(User writer, CarePost carePost, @NonNull @Range(min = 0, max = 1) Integer type, @Length(max = 10) @NonNull String name, @Length(max = 11) @NonNull String phone, @Past @NonNull LocalDate birth, @Length(max = 20) @NonNull String job, @Length(max = 50) @NonNull String address, @NonNull HouseType houseType, @NonNull Boolean companionExperience, String finalWord, Boolean isAccepted) {
+    public CareApplication(User writer, CarePost carePost, @NonNull @Range(min = 0, max = 1) Integer type, @Length(max = 10) @NonNull String name, @Length(max = 13) @NonNull String phone, @Past LocalDate birth, @Length(max = 20) @NonNull String job, @Length(max = 50) @NonNull String address, @NonNull HouseType houseType, @NonNull Boolean companionExperience, String finalWord, Boolean isAccepted) {
         super(writer);
         this.carePost = carePost;
         this.type = type;
