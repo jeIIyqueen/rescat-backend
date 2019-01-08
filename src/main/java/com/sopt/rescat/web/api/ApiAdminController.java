@@ -1,9 +1,7 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.MapRequest;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
+import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
@@ -19,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -206,7 +205,7 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @GetMapping("/map-request")
+    @GetMapping("/map-requests")
     public ResponseEntity<Iterable<MapRequest>> showMapRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMapRequest());
     }
@@ -223,7 +222,7 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @PutMapping("/map-request/{idx}")
+    @PutMapping("/map-requests/{idx}")
     public ResponseEntity<MapRequest> approveMapRequest(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
@@ -235,5 +234,43 @@ public class ApiAdminController {
         User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mapService.approveMap(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
+    }
+
+    @ApiOperation(value = "고양이 마커 생성", notes = "고양이 마커를 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "마커 생성 성공"),
+            @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @AdminAuth
+    @PostMapping("/cats")
+    public ResponseEntity<Void> create(
+            @Valid @RequestBody Cat cat,
+            HttpServletRequest httpServletRequest) {
+        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        mapService.create(cat, admin);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiOperation(value = "배식소 또는 병원 마커 생성", notes = "배식소 또는 병원 마커를 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "마커 생성 성공"),
+            @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @AdminAuth
+    @PostMapping("/places")
+    public ResponseEntity<Void> create(
+            @Valid @RequestBody Place place,
+            HttpServletRequest httpServletRequest) {
+        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        mapService.create(place, admin);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

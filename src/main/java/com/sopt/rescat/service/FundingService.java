@@ -5,21 +5,14 @@ import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import com.sopt.rescat.repository.ApprovalLogRepository;
-import com.sopt.rescat.repository.FundingCommentRepository;
-import com.sopt.rescat.repository.FundingRepository;
-import com.sopt.rescat.repository.ProjectFundingLogRepository;
-import com.sopt.rescat.repository.UserNotificationLogRepository;
-import com.sopt.rescat.repository.NotificationRepository;
-import org.hibernate.InvalidMappingException;
+import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,19 +61,21 @@ public class FundingService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Funding> findAllBy(User user) {
-        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue());
+    public Iterable<FundingResponseDto> findAllBy(User user) {
+        return fundingRepository.findByWriterAndIsConfirmedOrderByCreatedAtDesc(user, RequestStatus.CONFIRM.getValue())
+                .stream().map(Funding::toFundingDto).collect(Collectors.toList());
     }
 
-    public Funding findBy(Long idx) {
-        return getFundingBy(idx).setWriterNickname();
+    public Funding findBy(Long idx, User loginUser) {
+        return getFundingBy(idx).setWriterNickname().setStatus(loginUser);
     }
 
-    public List<FundingComment> findCommentsBy(Long idx) {
+    public List<FundingComment> findCommentsBy(Long idx, User loginUser) {
         return fundingCommentRepository.findByFundingIdxOrderByCreatedAtAsc(idx).stream()
                 .peek((fundingComment) -> {
                     fundingComment.setUserRole();
                     fundingComment.setWriterNickname();
+                    fundingComment.setStatus(loginUser);
                 }).collect(Collectors.toList());
     }
 
@@ -92,6 +87,9 @@ public class FundingService {
     public void payForMileage(Long idx, Long mileage, User loginUser) {
         Funding funding = getFundingBy(idx);
 
+        if(loginUser.match(funding.getWriter()))
+            throw new UnAuthenticationException("token", "본인의 펀딩글은 후원할 수 없습니다.");
+
         loginUser.updateMileage(mileage * (-1));
         projectFundingLogRepository.save(ProjectFundingLog.builder()
                 .amount(mileage)
@@ -102,47 +100,50 @@ public class FundingService {
     }
 
     public Iterable<Funding> getFundingRequests() {
-        return new ArrayList<>(fundingRepository
-                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()));
+        return fundingRepository
+                .findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue()).stream()
+                .map(Funding::setWriterNickname)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public FundingResponseDto confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
-        // 거절일 경우
-        if (status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue()))
             refuseFundingRequest(funding, approver);
-
-            Notification notification = Notification.builder()
-                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-            notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(funding.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
-
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        else if (status.equals(RequestStatus.CONFIRM.getValue()))
             approveFundingRequest(funding, approver);
-        Notification notification = Notification.builder()
-                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
-                .targetType(RequestType.FUNDING)
-                .targetIdx(funding.getIdx())
-                .build();
+
+        sendNotification(status, funding);
+        return funding.toFundingDto();
+    }
+
+    private void sendNotification(Integer status, Funding funding) {
+        Notification notification = createNotification(status, funding);
         notificationRepository.save(notification);
 
         userNotificationLogRepository.save(
                 UserNotificationLog.builder()
                         .receivingUser(funding.getWriter())
                         .notification(notification)
-                        .isChecked(RequestStatus.DEFER.getValue())
+                        .isChecked(status)
                         .build());
-        }
-        return funding.toFundingDto();
+    }
+
+    private Notification createNotification(Integer status, Funding funding) {
+        // 거절일경우,
+        if(status.equals(RequestStatus.DEFER.getValue()))
+            return Notification.builder()
+                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+
+        // 승인일경우,
+        return Notification.builder()
+                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                .targetType(RequestType.FUNDING)
+                .targetIdx(funding.getIdx())
+                .build();
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {

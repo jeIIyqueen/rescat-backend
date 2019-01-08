@@ -7,6 +7,8 @@ import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.FundingService;
+import com.sopt.rescat.service.JWTService;
+import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
@@ -17,20 +19,25 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
 @RestController
 @RequestMapping("/api/fundings")
 public class ApiFundingController {
     private FundingService fundingService;
+    private UserService userService;
+    private JWTService jwtService;
 
-    public ApiFundingController(final FundingService fundingService) {
+    public ApiFundingController(final FundingService fundingService, final UserService userService, final JWTService jwtService) {
         this.fundingService = fundingService;
+        this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @ApiOperation(value = "치료비 모금/ 프로젝트 모금 리스트 조회", notes = "category에 따라 펀딩 글 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "치료비 모금/ 프로젝트 모금 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "치료비 모금/ 프로젝트 모금 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("")
@@ -59,33 +66,49 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글 조회", notes = "idx 에 따른 크라우드 펀딩 글을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글 반환 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글 반환 성공", response = Funding.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
     @GetMapping("/{idx}")
     public ResponseEntity<Funding> getFundingByIdx(
+            @RequestHeader(value = "Authorization") final Optional<String> token,
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(idx));
+        if (token.isPresent()) {
+            User loginUser = userService.getUserBy(jwtService.decode(token.get()).getIdx());
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(idx, loginUser));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(idx, null));
     }
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 조회", notes = "idx 에 따른 크라우드 펀딩 글의 댓글 리스트를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 리스트 반환 성공", response = FundingComment.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
     @GetMapping("/{idx}/comments")
     public ResponseEntity<Iterable<FundingComment>> getComments(
+            @RequestHeader(value = "Authorization") final Optional<String> token,
             @ApiParam(value = "글 번호", required = true)
             @PathVariable Long idx) {
-        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findCommentsBy(idx));
+        if (token.isPresent()) {
+            User loginUser = userService.getUserBy(jwtService.decode(token.get()).getIdx());
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findCommentsBy(idx, loginUser));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findCommentsBy(idx, null));
     }
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 등록", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 등록합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 등록 성공"),
+            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 등록 성공", response = FundingComment.class),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 401, message = "댓글 작성 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -146,7 +169,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공"),
+            @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("/main")
