@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class CarePostComment extends BaseEntity {
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(readOnly = true)
