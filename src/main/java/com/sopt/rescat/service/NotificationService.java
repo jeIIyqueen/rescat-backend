@@ -3,7 +3,9 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.Notification;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.UserNotificationLog;
+import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.NotMatchException;
+import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.repository.UserNotificationLogRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +44,13 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 알림이 존재하지 않습니다."));
 
-        userNotificationLogRepository.findByNotificationAndReceivingUser(notification,user).updateIsChecked();
+
+        UserNotificationLog notificationLog =userNotificationLogRepository.findByNotificationAndReceivingUser(notification,user);
+
+        if (notificationLog==null)
+            throw new NotMatchException("idx", "해당 idx 알림은 사용자가 받은 알림이 아닙니다.");
+
+        notificationLog.updateIsChecked();
 
         return notification;
     }
