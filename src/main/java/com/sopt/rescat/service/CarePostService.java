@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.domain.enums.WarningType;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.*;
@@ -29,20 +30,22 @@ public class CarePostService {
     private ApprovalLogRepository approvalLogRepository;
     private NotificationRepository notificationRepository;
     private UserNotificationLogRepository userNotificationLogRepository;
-
+    private WarningLogRepository warningLogRepository;
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
                            final ApprovalLogRepository approvalLogRepository,
                            final NotificationRepository notificationRepository,
-                           final UserNotificationLogRepository userNotificationLogRepository) {
+                           final UserNotificationLogRepository userNotificationLogRepository,
+                           WarningLogRepository warningLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationRepository = notificationRepository;
         this.userNotificationLogRepository = userNotificationLogRepository;
+        this.warningLogRepository = warningLogRepository;
     }
 
     @Transactional
@@ -251,5 +254,36 @@ public class CarePostService {
         return carePostRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 글이 존재하지 않습니다."));
     }
+
+    @Transactional
+    public void warningCarePost(Long idx, User user){
+        CarePost carePost = getCarePostBy(idx);
+        carePost.warningCount();
+
+        if(carePost.getWriter().getIdx().equals(user.getIdx()))
+            throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
+
+        warningLogRepository.save(WarningLog.builder()
+                .warningIdx(idx)
+                .warningType(WarningType.CAREPOST)
+                .warningUser(user)
+                .build());
+    }
+
+    @Transactional
+    public void warningCarePostComment(Long commentIdx, User user){
+        CarePostComment carePostComment = getCommentBy(commentIdx);
+        carePostComment.warningCount();
+
+        if(carePostComment.getWriter().getIdx().equals(user.getIdx()))
+            throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
+
+        warningLogRepository.save(WarningLog.builder()
+                .warningIdx(commentIdx)
+                .warningType(WarningType.CAREPOSTCOMMENT)
+                .warningUser(user)
+                .build());
+    }
+
 }
 
