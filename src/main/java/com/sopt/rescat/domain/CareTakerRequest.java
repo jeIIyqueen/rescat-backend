@@ -43,15 +43,7 @@ public class CareTakerRequest extends BaseEntity {
     @OneToOne
     @NonNull
     @ApiModelProperty(hidden = true)
-    private Region mainRegion;
-
-    @OneToOne
-    @ApiModelProperty(hidden = true)
-    private Region subRegion1;
-
-    @OneToOne
-    @ApiModelProperty(hidden = true)
-    private Region subRegion2;
+    private Region region;
 
     @Column
     @NonNull
@@ -75,13 +67,11 @@ public class CareTakerRequest extends BaseEntity {
 
     @Builder
     public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone,
-                            Region mainRegion, Region subRegion1, Region subRegion2, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed, Integer type) {
+                            Region region,  @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed, Integer type) {
         super(writer);
         this.name = name;
         this.phone = phone;
-        this.mainRegion = mainRegion;
-        this.subRegion1 = subRegion1;
-        this.subRegion2 = subRegion2;
+        this.region = region;
         this.authenticationPhotoUrl = authenticationPhotoUrl;
         this.isConfirmed = isConfirmed;
         this.type = type;
