@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 
@@ -43,7 +44,7 @@ public class User extends BaseTime {
     private String id;
 
     @Column
-    @Length(max = 11)
+    @Pattern(regexp = "^01[0|1|6-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     private String phone;
 
     @Column

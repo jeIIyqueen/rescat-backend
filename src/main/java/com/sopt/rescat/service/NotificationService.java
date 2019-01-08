@@ -35,8 +35,8 @@ public class NotificationService {
     private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String[] SCOPES = {MESSAGING_SCOPE };
 
-    private static final String TITLE = "FCM Notification";
-    private static final String BODY = "Notification from FCM";
+//    private static final String TITLE = "FCM Notification";
+//    private static final String BODY = "Notification from FCM";
     public static final String MESSAGE_KEY = "message";
 
     private UserNotificationLogRepository userNotificationLogRepository;
@@ -88,12 +88,15 @@ public class NotificationService {
      * @throws IOException
      */
     private static void sendPush(JsonObject fcmMessage) throws IOException {
-        String sFcmMessage = fcmMessage.toString();
+      //  String sFcmMessage = fcmMessage.toString();
 
         HttpURLConnection connection = getConnection();
         connection.setDoOutput(true);
-        OutputStream outputStream = connection.getOutputStream();
-        outputStream.write(sFcmMessage.getBytes("UTF-8"));
+
+        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+        outputStream.writeBytes(fcmMessage.toString());
+//        OutputStream outputStream = connection.getOutputStream();
+//        outputStream.write(sFcmMessage.getBytes("UTF-8"));
         outputStream.flush();
         outputStream.close();
 
@@ -195,18 +198,18 @@ public class NotificationService {
      *
      * @return JSON of notification message.
      */
-    private static JsonObject buildNotificationMessage(String instanceToken, String contents) {
+    private static JsonObject buildNotificationMessage(String instanceToken, String body) {
         JsonObject jNotification = new JsonObject();
 
-        String body = null;
-        try {
-            body = URLEncoder.encode(contents,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        String body = null;
+//        try {
+//            body = URLEncoder.encode(contents,"UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
 
-        //jNotification.addProperty("title", TITLE);
-        jNotification.addProperty("body", body);
+        jNotification.addProperty("title", "rescat");
+        jNotification.addProperty("body", "안녕");
 
         JsonObject jMessage = new JsonObject();
         jMessage.addProperty("token",instanceToken);
@@ -291,7 +294,13 @@ public class NotificationService {
         Notification notification = notificationRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 알림이 존재하지 않습니다."));
 
-        userNotificationLogRepository.findByNotificationAndReceivingUser(notification,user).updateIsChecked();
+
+        UserNotificationLog notificationLog =userNotificationLogRepository.findByNotificationAndReceivingUser(notification,user);
+
+        if (notificationLog==null)
+            throw new NotMatchException("idx", "해당 idx 알림은 사용자가 받은 알림이 아닙니다.");
+
+        notificationLog.updateIsChecked();
 
         return notification;
     }
