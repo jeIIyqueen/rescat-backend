@@ -3,6 +3,7 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.domain.enums.WarningType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotMatchException;
@@ -25,18 +26,20 @@ public class FundingService {
     private ApprovalLogRepository approvalLogRepository;
     private NotificationRepository notificationRepository;
     private UserNotificationLogRepository userNotificationLogRepository;
+    private WarningLogRepository warningLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
                           final NotificationRepository notificationRepository,
                           final UserNotificationLogRepository userNotificationLogRepository,
                           FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
-                          final ApprovalLogRepository approvalLogRepository) {
+                          final ApprovalLogRepository approvalLogRepository, final WarningLogRepository warningLogRepository) {
         this.fundingRepository = fundingRepository;
         this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationRepository = notificationRepository;
         this.userNotificationLogRepository = userNotificationLogRepository;
+        this.warningLogRepository = warningLogRepository;
     }
 
     @Transactional
@@ -192,4 +195,35 @@ public class FundingService {
         return fundingCommentRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
+
+    @Transactional
+    public void warningFunding(Long idx, User user){
+        Funding funding = getFundingBy(idx);
+        funding.warningCount();
+
+        if(funding.getWriter().getIdx().equals(user.getIdx()))
+            throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
+
+        warningLogRepository.save(WarningLog.builder()
+                .warningIdx(idx)
+                .warningType(WarningType.FUNDING)
+                .warningUser(user)
+                .build());
+    }
+
+    @Transactional
+    public void warningFundingComment(Long commentIdx, User user){
+        FundingComment fundingComment = getCommentBy(commentIdx);
+        fundingComment.warningCount();
+
+        if(fundingComment.getWriter().getIdx().equals(user.getIdx()))
+            throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
+
+        warningLogRepository.save(WarningLog.builder()
+                .warningIdx(commentIdx)
+                .warningType(WarningType.FUNDINGCOMMENT)
+                .warningUser(user)
+                .build());
+    }
+    
 }

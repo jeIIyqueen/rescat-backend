@@ -131,6 +131,10 @@ public class CarePost extends BaseEntity {
     @Column
     private LocalDateTime updatedAt;
 
+    @Column
+    @Builder.Default
+    private int warning = 0;
+
     @ApiModelProperty(readOnly = true, notes = "작성자 닉네임")
     @Transient
     private String nickname;
@@ -212,4 +216,9 @@ public class CarePost extends BaseEntity {
 
         this.updatedAt = now();
     }
+
+    public void warningCount() {
+        ++this.warning;
+    }
+
 }

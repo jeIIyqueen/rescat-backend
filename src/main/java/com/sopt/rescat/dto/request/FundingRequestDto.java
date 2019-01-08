@@ -81,6 +81,7 @@ public class FundingRequestDto {
                 .mainRegion(mainRegion)
                 .limitAt(limitAt)
                 .isConfirmed(0)
+                .warning(0)
                 .build();
     }
 

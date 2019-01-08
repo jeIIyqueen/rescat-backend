@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.enums.Role;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.URL;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 public class FundingComment extends BaseEntity {
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -30,6 +31,10 @@ public class FundingComment extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_funding_idx"))
     @JsonIgnore
     private Funding funding;
+
+    @Column
+    @Builder.Default
+    private int warning = 0;
 
     @Transient
     @ApiModelProperty(readOnly = true, notes = "닉네임")
@@ -71,4 +76,9 @@ public class FundingComment extends BaseEntity {
         this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
+
+    public void warningCount() {
+        ++this.warning;
+    }
+
 }
