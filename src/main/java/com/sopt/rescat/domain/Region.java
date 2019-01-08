@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,15 +17,19 @@ public class Region {
     @Id
     private Integer emdCode;
 
+    @JsonIgnore
     @Column
     private Integer sdCode;
 
+    @JsonIgnore
     @Column
     private String sdName;
 
+    @JsonIgnore
     @Column
     private Integer sggCode;
 
+    @JsonIgnore
     @Column
     private String sggName;
 

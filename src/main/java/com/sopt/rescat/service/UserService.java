@@ -177,7 +177,10 @@ public class UserService {
 
     public Iterable<CareTakerRequest> getCareTakerRequest() {
         return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream().peek(CareTakerRequest::fillUserNickname)
+                .stream().peek(careTakerRequest -> {
+                    careTakerRequest.fillUserNickname();
+                    careTakerRequest.fillRegionFullName();
+                })
                 .collect(Collectors.toList());
     }
 
