@@ -15,7 +15,6 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -76,9 +75,6 @@ public class User extends BaseTime {
     @Column
     private String deviceToken;
 
-    //@OneToMany(mappedBy = "user")
-//    private List<UserNotificationLog> userNotificationLogs = new ArrayList<>();
-
     @Builder
     public User(String id, String password, String nickname) {
         this.id = id;
@@ -131,11 +127,11 @@ public class User extends BaseTime {
         this.mainRegion = mainRegion;
     }
 
-    public void updateNickname(String nickname){
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void updatePhone(String phone){
+    public void updatePhone(String phone) {
         this.phone = phone;
     }
 
@@ -160,17 +156,21 @@ public class User extends BaseTime {
         this.subRegion2 = null;
     }
 
-    public void updateRegions(List<Region> receivedRegions){
+    public void updateRegions(List<Region> receivedRegions) {
         this.mainRegion = receivedRegions.get(1);
         this.subRegion2 = receivedRegions.get(2);
         this.subRegion2 = receivedRegions.get(3);
     }
 
-    public void addSubRegion1(Region subRegion1){
+    public void addMainRegion(Region mainRegion) {
+        this.mainRegion = mainRegion;
+    }
+
+    public void addSubRegion1(Region subRegion1) {
         this.subRegion1 = subRegion1;
     }
 
-    public void addSubRegion2(Region subRegion2){
+    public void addSubRegion2(Region subRegion2) {
         this.subRegion2 = subRegion2;
     }
 }

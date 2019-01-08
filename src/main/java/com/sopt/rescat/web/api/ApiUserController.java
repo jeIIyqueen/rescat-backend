@@ -3,31 +3,25 @@ package com.sopt.rescat.web.api;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
-import com.sopt.rescat.service.CarePostService;
-import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.service.JWTService;
-import com.sopt.rescat.service.UserService;
-import com.sopt.rescat.service.NotificationService;
+import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
-import com.sun.deploy.security.AuthKey;
-import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +30,7 @@ import java.util.Map;
 @Api(value = "ApiUserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
+@Validated
 public class ApiUserController {
     private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
 
@@ -138,7 +133,7 @@ public class ApiUserController {
 
     @ApiOperation(value = "유저의 마이페이지 조회", notes = "유저의 마이페이지 목록(아이디, 닉네임, 롤, 지역)을 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = UserMypageDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -152,7 +147,7 @@ public class ApiUserController {
 
     @ApiOperation(value = "케어테이커 유저의 지역 목록 조회", notes = "케어테이커 유저가 인증한 지역 목록을 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = RegionDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -166,7 +161,7 @@ public class ApiUserController {
 
     @ApiOperation(value = "유저의 회원정보 조회", notes = "유저의 회원정보 목록(아이디, 닉네임, 롤, 핸드폰)을 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = UserMypageDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -210,31 +205,30 @@ public class ApiUserController {
 
     @ApiOperation(value = "유저가 후원한 펀딩 목록 조회", notes = "유저가 후원한 펀딩 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 200, message = "조회 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @GetMapping("/mypage/supporting")
-    public ResponseEntity<List<Funding>> getUserSupportingFundings(@RequestHeader(value = "Authorization") final String token,
-                                                                   HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<FundingResponseDto>> getUserSupportingFundings(@RequestHeader(value = "Authorization") final String token,
+                                                                              HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getSupportingFundings(loginUser));
     }
 
     @ApiOperation(value = "유저가 작성한 입양/임시보호 글 리스트 조회", notes = "유저가 작성한 입양/임시보호 글 리스트를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = CarePostResponseDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
-
     @GetMapping("/mypage/care-posts")
-    public ResponseEntity<Iterable<CarePost>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
-                                                                   HttpServletRequest httpServletRequest) {
+    public ResponseEntity<Iterable<CarePostResponseDto>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
+                                                                              HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllByUser(loginUser));
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllBy(loginUser));
     }
 
     @ApiOperation(value = "유저가 작성한 완료되지 않은 입양/임시보호 글 끌올", notes = "유저가 작성한 완료되지 않은 입양/임시보호 글의 작성시간을 최신으로 만듭니다.")
@@ -256,13 +250,13 @@ public class ApiUserController {
 
     @ApiOperation(value = "유저가 작성한 펀딩 글 리스트 조회", notes = "유저가 작성한 펀딩 글 리스트를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @GetMapping("/mypage/fundings")
-    public ResponseEntity<Iterable<Funding>> getUserFundingList(
+    public ResponseEntity<Iterable<FundingResponseDto>> getUserFundingList(
             @RequestHeader(value = "Authorization") final String token,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -271,7 +265,7 @@ public class ApiUserController {
 
     @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "비밀번호 변경 성공", response = Boolean.class),
+            @ApiResponse(code = 200, message = "비밀번호 변경 성공"),
             @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
             @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -321,7 +315,7 @@ public class ApiUserController {
         if (notification.getTargetType().equals(RequestType.CAREPOST))
             return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(notification.getTargetIdx(),loginUser));
         if(notification.getTargetType().equals(RequestType.FUNDING))
-            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx()));
+            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx(), loginUser));
 
         //target이 없는 경우
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -360,15 +354,14 @@ public class ApiUserController {
     @CareTakerAuth
     @PostMapping("/mypage/region")
     public ResponseEntity requestAddRegion(
-            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url, \n\"type\": 1\n}")
+            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url\n}")
             @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
-        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl") && !body.containsKey("type"))
-            throw new InvalidValueException("emdCode or authenticationPhoto or type", "emdCode 또는 authenticationPhoto, type field 가 body에 존재하지 않습니다.");
+        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
+            throw new InvalidValueException("emdCode or authenticationPhoto", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
 
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))),
-                String.valueOf(body.get("authenticationPhotoUrl")), Integer.parseInt(String.valueOf(body.get("type"))));
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))), String.valueOf(body.get("authenticationPhotoUrl")));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
