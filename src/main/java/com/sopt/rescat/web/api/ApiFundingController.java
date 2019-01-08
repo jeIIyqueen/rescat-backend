@@ -193,4 +193,45 @@ public class ApiFundingController {
     public ResponseEntity<List<Map>> getBanks() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getBankList());
     }
+
+    @ApiOperation(value = "크라우드 펀딩 글 신고", notes = "idx에 따른 크라우드 펀딩 글을 신고합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글 신고 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", dataType = "string", paramType = "header")
+    })
+    @Auth
+    @PostMapping("/{idx}/warning")
+    public ResponseEntity<Funding> warningFunding(
+            @ApiParam(value = "글 번호", required = true) @PathVariable Long idx,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        fundingService.warningFunding(idx, loginUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation(value = "크라우드 펀딩 글의 댓글 신고", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 신고합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 신고 성공"),
+            @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "댓글 신고 권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
+            @ApiImplicitParam(name = "idx", value = "carePostIdx", required = true, dataType = "long", paramType = "path")
+    })
+    @Auth
+    @PostMapping("/{idx}/comments/{comment-idx}/warning")
+    public ResponseEntity<Void> warningComment(
+            @ApiParam(value = "댓글 번호", required = true)
+            @PathVariable(name = "comment-idx") Long commentIdx,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        fundingService.warningFundingComment(commentIdx, loginUser);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.enums.Role;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.URL;
@@ -31,6 +32,10 @@ public class CarePostComment extends BaseEntity {
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_comment_care_post_idx"))
     @JsonIgnore
     private CarePost carePost;
+
+    @Column
+    @Builder.Default
+    private int warning = 0;
 
     @Transient
     @ApiModelProperty(readOnly = true, notes = "닉네임")
@@ -72,4 +77,9 @@ public class CarePostComment extends BaseEntity {
         this.isWriter = this.equalsWriter(loginUser);
         return this;
     }
+
+    public void warningCount() {
+        ++this.warning;
+    }
+
 }
