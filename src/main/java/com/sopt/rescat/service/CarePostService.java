@@ -59,10 +59,20 @@ public class CarePostService {
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
-    private CarePost findBy(Long idx) {
-        return getCarePostBy(idx)
-                .setWriterNickname()
-                .addViewCount();
+    // viewCount 올리는 경우
+    private CarePost findCarePostBy(Long idx) {
+        CarePost carePost = getCarePostBy(idx);
+        carePostRepository.save(carePost.addViewCount());
+
+        return carePost.setWriterNickname();
+    }
+
+    public CarePost findCarePostBy(Long idx, User loginUser) {
+        return findCarePostBy(idx).setStatus(loginUser);
+    }
+
+    public Iterable<CarePost> findAll() {
+        return carePostRepository.findByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue());
     }
 
     public Iterable<CarePostResponseDto> findAllBy(Integer type) {
@@ -71,18 +81,10 @@ public class CarePostService {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<CarePost> findAll() {
-        return carePostRepository.findByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue());
-    }
-
     public Iterable<CarePostResponseDto> find5Post() {
         return carePostRepository.findTop5ByIsConfirmedOrderByUpdatedAtDesc(RequestStatus.CONFIRM.getValue()).stream()
                 .map(CarePost::toCarePostDto)
                 .collect(Collectors.toList());
-    }
-
-    public CarePost findCarePostBy(Long idx, User loginUser) {
-        return findBy(idx).setStatus(loginUser);
     }
 
     public List<CarePostComment> findCommentsBy(Long idx, User loginUser) {
