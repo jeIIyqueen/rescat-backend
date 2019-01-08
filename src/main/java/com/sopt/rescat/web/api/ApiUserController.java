@@ -311,14 +311,11 @@ public class ApiUserController {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
 
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
-
-        if (notification.getTargetType().equals(RequestType.CAREPOST))
-            return ResponseEntity.status(HttpStatus.OK).body(carePostService.findCarePostBy(notification.getTargetIdx(),loginUser));
-        if(notification.getTargetType().equals(RequestType.FUNDING))
-            return ResponseEntity.status(HttpStatus.OK).body(fundingService.findBy(notification.getTargetIdx(), loginUser));
-
-        //target이 없는 경우
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(NotificationTargetDto
+                        .builder().targetIdx(notification.getTargetIdx())
+                        .targetType(notification.getTargetType())
+                        .build());
     }
 
     @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")

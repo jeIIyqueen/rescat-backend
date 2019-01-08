@@ -37,7 +37,7 @@ public class CareTakerRequest extends BaseEntity {
 
     @Column
     @NonNull
-    @Length(max = 11)
+    @Length(max = 13)
     @Pattern(regexp = "^01[0|1|6-9][0-9]{3,4}[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     private String phone;
 

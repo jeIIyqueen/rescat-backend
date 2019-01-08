@@ -135,6 +135,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .regions(regions)
+                .isFinished(!careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user,RequestStatus.DEFER.getValue()))
                 .build();
     }
 
@@ -144,6 +145,11 @@ public class UserService {
 
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
+
+        if (careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user, RequestStatus.DEFER.getValue()))
+            throw new AlreadyExistsException("careTakerRequest", "아직 완료되지 않은 케어테이커 신청이 있습니다.");
+        if(careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmed(user,RequestStatus.CONFIRM.getValue()))
+            throw new AlreadyExistsException("careTakerRequest", "이미 케어테이커 인증이 완료됐습니다.");
 
         String[] fullName = careTakerRequest.getRegionFullName().split(" ");
         if (fullName.length != 3)
@@ -265,6 +271,7 @@ public class UserService {
                 .notification(notification)
                 .isChecked(RequestStatus.DEFER.getValue())
                 .build());
+
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {

@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,10 +65,10 @@ public class CarePostRequestDto {
     private String etc;
 
     @ApiModelProperty(notes = "임시보호 시작기간(글 타입 1일 경우 필수)")
-    private LocalDateTime startProtectionPeriod;
+    private LocalDate startProtectionPeriod;
 
     @ApiModelProperty(notes = "임시보호 종료기간(글 타입 1일 경우 필수)")
-    private LocalDateTime endProtectionPeriod;
+    private LocalDate endProtectionPeriod;
 
     public CarePost toCarePost(Boolean isFinished) {
         return CarePost.builder()

@@ -18,4 +18,5 @@ public class UserMypageDto {
     private List<RegionDto> regions;
     private String phone;
     private Long mileage;
+    private Boolean isFinished;
 }
