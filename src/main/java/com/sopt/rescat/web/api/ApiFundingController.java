@@ -215,7 +215,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 신고", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 신고합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 신고 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 신고 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 401, message = "댓글 신고 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
