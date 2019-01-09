@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@CrossOrigin(origins = "*")
 @Slf4j
 @Api(value = "ApiPhotoController", description = "사진 api")
 @RestController

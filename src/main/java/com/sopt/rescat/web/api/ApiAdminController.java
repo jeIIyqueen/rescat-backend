@@ -2,21 +2,23 @@ package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.ExceptionDto;
+import com.sopt.rescat.dto.JwtTokenDto;
+import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
-import com.sopt.rescat.service.CarePostService;
-import com.sopt.rescat.service.FundingService;
-import com.sopt.rescat.service.MapService;
-import com.sopt.rescat.service.UserService;
+import com.sopt.rescat.service.*;
+import com.sopt.rescat.utils.HttpSessionUtils;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import io.swagger.annotations.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,15 +32,40 @@ public class ApiAdminController {
     private FundingService fundingService;
     private CarePostService carePostService;
     private MapService mapService;
+    private JWTService jwtService;
+
+    @Value("${NAVER.MAP.REVERSE.CLIENTID}")
+    private String clientId;
+    @Value("${NAVER.MAP.REVERSE.CLIENTSECRETE}")
+    private String clientSecret;
 
     public ApiAdminController(final UserService userService,
                               final FundingService fundingService,
                               final CarePostService carePostService,
-                              final MapService mapService) {
+                              final MapService mapService, JWTService jwtService) {
         this.userService = userService;
         this.fundingService = fundingService;
         this.carePostService = carePostService;
         this.mapService = mapService;
+        this.jwtService = jwtService;
+    }
+
+    @ApiOperation(value = "유저 로그인", notes = "유저가 로그인합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "로그인 성공"),
+            @ApiResponse(code = 401, message = "로그인 실패", response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(
+            @RequestBody UserLoginDto userLoginDto,
+            HttpSession session) {
+        HttpSessionUtils.setTokenInSession(session, JwtTokenDto.builder()
+                .token(jwtService.create(userService.login(userLoginDto).getIdx()))
+                .build()
+                .getToken()
+        );
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ApiOperation(value = "홈화면 요청 개수 리스트 api", notes = "홈화면 요청 개수 리스트를 반환합니다.")
@@ -47,10 +74,10 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @GetMapping("/home/counts")
-    public ResponseEntity<Map<String, Integer>> getRequestCounts() {
+    public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpSession session) {
+        HttpSessionUtils.checkAdminUser(session);
+
         Map<String, Integer> body = new HashMap<>();
         body.put("careTakerRequest", userService.getCareTakerRequestCount());
         body.put("carePostRequest", carePostService.getCarePostRequestCount());
@@ -65,10 +92,9 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @GetMapping("/care-taker-requests")
-    public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest() {
+    public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest(HttpSession session) {
+        HttpSessionUtils.checkAdminUser(session);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCareTakerRequest());
     }
 
@@ -78,20 +104,16 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
-    })
-    @AdminAuth
     @PostMapping("/care-taker-requests/{idx}")
     public ResponseEntity<Void> approveCareTaker(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest) {
+            HttpSession httpSession) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         userService.approveCareTaker(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -102,20 +124,16 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
-    })
-    @AdminAuth
     @PostMapping("/add-region-requests/{idx}")
     public ResponseEntity<Void> approveAddRegion(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest) {
+            HttpSession httpSession) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         userService.confirmedAddRegion(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -127,8 +145,6 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @GetMapping("/funding-requests")
     public ResponseEntity showFundingRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getFundingRequests());
@@ -141,18 +157,16 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @PutMapping("/funding-requests/{idx}")
     public ResponseEntity<FundingResponseDto> confirmFundingPost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest) {
+            HttpSession httpSession) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(fundingService.confirmFunding(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -164,8 +178,6 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @GetMapping("/care-post-requests")
     public ResponseEntity<Iterable<CarePost>> showCarePostRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
@@ -178,18 +190,16 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    @AdminAuth
     @PutMapping("/care-post-requests/{idx}")
     public ResponseEntity<CarePostResponseDto> confirmCarePost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest) {
+            HttpSession httpSession) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(carePostService.confirmCarePost(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -201,10 +211,6 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    })
-    @AdminAuth
     @GetMapping("/map-requests")
     public ResponseEntity<Iterable<MapRequest>> showMapRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMapRequest());
@@ -218,20 +224,16 @@ public class ApiAdminController {
             @ApiResponse(code = 404, message = "요청 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    })
-    @AdminAuth
     @PutMapping("/map-requests/{idx}")
     public ResponseEntity<MapRequest> approveMapRequest(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpServletRequest httpServletRequest) {
+            HttpSession httpSession) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mapService.approveMap(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -242,15 +244,11 @@ public class ApiAdminController {
             @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    })
-    @AdminAuth
-    @PostMapping("/cats")
+    @PostMapping("/map-markers/cats")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Cat cat,
-            HttpServletRequest httpServletRequest) {
-        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+            HttpSession httpSession) {
+        User admin = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         mapService.create(cat, admin);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -261,16 +259,25 @@ public class ApiAdminController {
             @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-    })
-    @AdminAuth
-    @PostMapping("/places")
+    @PostMapping("/map-markers/places")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Place place,
-            HttpServletRequest httpServletRequest) {
-        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+            HttpSession httpSession) {
+        User admin = HttpSessionUtils.getAdminUserIfPresent(httpSession);
         mapService.create(place, admin);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/geo-coding-reverse")
+    public ResponseEntity<String> getCoordsToAddrJsonResult(@RequestParam Double lng, @RequestParam Double lat) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-NCP-APIGW-API-KEY-ID", clientId);
+        httpHeaders.add("X-NCP-APIGW-API-KEY", clientSecret);
+
+        String url = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords=" + lng + "," + lat + "&sourcecrs=epsg:4326&output=json&orders=addr,admcode";
+
+        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), String.class);
     }
 }

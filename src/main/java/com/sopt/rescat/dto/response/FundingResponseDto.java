@@ -17,6 +17,10 @@ public class FundingResponseDto {
     private String title;
     @ApiModelProperty(notes = "자기소개")
     private String introduction;
+    @ApiModelProperty(notes = "이름")
+    private String name;
+    @ApiModelProperty(notes = "전화번호")
+    private String phone;
     @ApiModelProperty(notes = "목표금액")
     private Long goalAmount;
     @ApiModelProperty(notes = "현재금액")
