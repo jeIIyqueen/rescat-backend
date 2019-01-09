@@ -20,8 +20,6 @@ public class MarkerDto {
 
     private Double lng;
 
-    private Integer radius;
-
     // 0: 남, 1: 여
     private Integer sex;
 
@@ -41,5 +39,6 @@ public class MarkerDto {
 
     private String address;
 
-    private Integer phone;
+    private String phone;
 }
+

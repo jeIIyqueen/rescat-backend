@@ -37,11 +37,10 @@ public class Region {
     private String emdName;
 
     public RegionDto toRegionDto() {
-        return RegionDto.builder().code(this.emdCode).name(sdName + " " + sggName + " " + emdName).build();
-    }
-
-    public RegionDto toRegionDto(Integer code, String name) {
-        return RegionDto.builder().code(code).name(name).build();
+        return RegionDto.builder()
+                .code(this.emdCode)
+                .name(sdName + " " + sggName + " " + emdName)
+                .build();
     }
 
     public boolean equals(Region region) {

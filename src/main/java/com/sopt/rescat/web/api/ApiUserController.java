@@ -1,13 +1,15 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
-import com.sopt.rescat.service.JWTService;
-import com.sopt.rescat.service.MapService;
-import com.sopt.rescat.service.UserService;
+import com.sopt.rescat.dto.response.CarePostResponseDto;
+import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.InvalidValueException;
+import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
+import com.sopt.rescat.utils.auth.CareTakerAuth;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -21,22 +23,31 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
 
 @Slf4j
-@Api(value = "UserController", description = "유저 관련 api")
+@Api(value = "ApiUserController", description = "유저 관련 api")
 @RestController
 @RequestMapping("/api/users")
 @Validated
 public class ApiUserController {
-    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
+    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)([0-9]{3,4})([0-9]{4})$";
+
     private final UserService userService;
     private final JWTService jwtService;
-    private final MapService mapService;
+    private final CarePostService carePostService;
+    private final FundingService fundingService;
+    private final NotificationService notificationService;
 
-    public ApiUserController(final UserService userService, final JWTService jwtService, final MapService mapService) {
+    public ApiUserController(final UserService userService, final JWTService jwtService,
+                             final CarePostService carePostService, final FundingService fundingService,
+                             final NotificationService notificationService) {
         this.userService = userService;
         this.jwtService = jwtService;
-        this.mapService = mapService;
+        this.carePostService = carePostService;
+        this.fundingService = fundingService;
+        this.notificationService = notificationService;
     }
 
     @ApiOperation(value = "일반 유저 생성", notes = "일반 유저를 생성합니다. 성공시 jwt 토큰을 바디에 담아 반환합니다.")
@@ -81,7 +92,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto){
         return ResponseEntity.status(HttpStatus.OK).body(JwtTokenDto.builder().token(jwtService.create(userService.login(userLoginDto).getIdx())).build());
     }
 
@@ -94,9 +105,9 @@ public class ApiUserController {
     })
     @PostMapping("/authentications/phone")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(
-            @ApiParam(value = "01000000000 또는 010-0000-0000", required = true)
+            @ApiParam(value = "01012345678", required = true)
             @Valid
-            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 000-0000-0000 또는 00000000000 형식이어야 합니다.")
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
             @RequestParam String phone) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
@@ -113,40 +124,263 @@ public class ApiUserController {
     })
     @Auth
     @PostMapping("/authentications/caretaker")
-    public ResponseEntity requestCareTaker(
-            @RequestBody @Valid CareTakerRequest careTakerRequest,
-            HttpServletRequest httpServletRequest) throws IOException {
+    public ResponseEntity requestCareTaker(@RequestBody @Valid CareTakerRequest careTakerRequest,
+                                           HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-
         userService.saveCareTakerRequest(user, careTakerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @ApiOperation(value = "유저의 마이페이지 조회", notes = "유저의 마이페이지 목록(아이디, 닉네임, 롤, 지역)을 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = UserMypageDto.class),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @GetMapping("/mypage")
-    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest){
+    public ResponseEntity<UserMypageDto> getMypage(HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUserMypage(loginUser));
     }
 
     @ApiOperation(value = "케어테이커 유저의 지역 목록 조회", notes = "케어테이커 유저가 인증한 지역 목록을 반환합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 200, message = "조회 성공", response = RegionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @CareTakerAuth
+    @GetMapping("/mypage/regions")
+    public ResponseEntity<List<RegionDto>> getRegionList(HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
+    }
+
+    @ApiOperation(value = "유저의 회원정보 조회", notes = "유저의 회원정보 목록(아이디, 닉네임, 롤, 핸드폰)을 반환합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = UserMypageDto.class),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/edit")
+    public ResponseEntity<UserMypageDto> getEditUser(@RequestHeader(value = "Authorization") final String token,
+                                                     HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getEditUser(loginUser));
+    }
+
+    @ApiOperation(value = "유저의 닉네임 수정", notes = "유저의 닉네임을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "수정 성공"),
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
-    @GetMapping("/mypage/regions")
-    public ResponseEntity<List<RegionDto>> getRegionList(HttpServletRequest httpServletRequest) {
+    @PutMapping("/mypage/edit/nickname")
+    public ResponseEntity editUserNickname(HttpServletRequest httpServletRequest, @RequestParam String nickname) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getRegionList(loginUser));
+        userService.editUserNickname(loginUser, nickname);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "유저의 핸드폰 번호 수정", notes = "유저의 핸드폰 번호를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @Auth
+    @PutMapping("/mypage/edit/phone")
+    public ResponseEntity editUserPhone(
+            @ApiParam(value = "01012345678", required = true)
+            @Valid
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
+            @RequestParam String phone,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPhone(loginUser, phone);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "유저가 후원한 펀딩 목록 조회", notes = "유저가 후원한 펀딩 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = FundingResponseDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/supporting")
+    public ResponseEntity<List<FundingResponseDto>> getUserSupportingFundings(@RequestHeader(value = "Authorization") final String token,
+                                                                              HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getSupportingFundings(loginUser));
+    }
+
+    @ApiOperation(value = "유저가 작성한 입양/임시보호 글 리스트 조회", notes = "유저가 작성한 입양/임시보호 글 리스트를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = CarePostResponseDto.class),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/care-posts")
+    public ResponseEntity<Iterable<CarePostResponseDto>> getUserCarePostsList(@RequestHeader(value = "Authorization") final String token,
+                                                                              HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllBy(loginUser));
+    }
+
+    @ApiOperation(value = "유저가 작성한 완료되지 않은 입양/임시보호 글 끌올", notes = "유저가 작성한 완료되지 않은 입양/임시보호 글의 작성시간을 최신으로 만듭니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "끌올 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/care-posts/{idx}")
+    public ResponseEntity<Iterable<CarePost>> pullUpCarePost(
+            @RequestHeader(value = "Authorization") final String token,
+            @ApiParam(value = "글 번호") @PathVariable Long idx,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        carePostService.updateCarePostToRecent(idx, loginUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "유저가 작성한 펀딩 글 리스트 조회", notes = "유저가 작성한 펀딩 글 리스트를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = FundingResponseDto.class),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/fundings")
+    public ResponseEntity<Iterable<FundingResponseDto>> getUserFundingList(
+            @RequestHeader(value = "Authorization") final String token,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(loginUser));
+    }
+
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "마이페이지에서 유저 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "비밀번호 변경 성공"),
+            @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @PutMapping("/mypage/edit/password")
+    public ResponseEntity editUserPassword(
+            @RequestHeader(value = "Authorization") final String token,
+            @RequestBody @Valid UserPasswordDto userPasswordDto,
+            HttpServletRequest httpServletRequest) {
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserPassword(loginUser, userPasswordDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "알림 리스트 조회", notes = "마이페이지에서 유저가 받은 알림들을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box")
+    public ResponseEntity getNotifications(@RequestHeader(value = "Authorization") final String token,
+                                           HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
+    }
+
+    @ApiOperation(value = "알림 상세 조회", notes = "마이페이지에서 유저가 받은 알림관련 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
+            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @Auth
+    @GetMapping("/mypage/notification-box/{idx}")
+    public ResponseEntity getTargetContents(@RequestHeader(value = "Authorization") final String token,
+                                            @ApiParam(value = "알림 idx", required = true) @PathVariable Long idx,
+                                            HttpServletRequest httpServletRequest){
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+
+        Notification notification = notificationService.updateIsChecked(idx, loginUser);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(NotificationTargetDto
+                        .builder().targetIdx(notification.getTargetIdx())
+                        .targetType(notification.getTargetType())
+                        .build());
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 삭제", notes = "케어테이커 유저가 선택한 지역을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "삭제 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    @CareTakerAuth
+    @DeleteMapping("/mypage/region")
+    public ResponseEntity deleteRegion(
+            @ApiParam(value = "example -> {\"emdCode\": 1101055}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("emdCode"))
+            throw new InvalidValueException("emdCode", "emdCode field 가 body에 존재하지 않습니다.");
+
+        User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.deleteRegion(loginUser, Integer.parseInt(String.valueOf(body.get("emdCode"))));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 추가 요청", notes = "케어테이커 유저가 지역 추가를 관리자에게 요청합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PostMapping("/mypage/region")
+    public ResponseEntity requestAddRegion(
+            @ApiParam(value = "example -> {\n\"emdCode\": 1101055, \n\"authenticationPhotoUrl\": url\n}")
+            @RequestBody Map<String, Object> body,
+            HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("emdCode") && !body.containsKey("authenticationPhotoUrl"))
+            throw new InvalidValueException("emdCode or authenticationPhoto", "emdCode 또는 authenticationPhoto field 가 body에 존재하지 않습니다.");
+
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveAddRegionRequest(user, Integer.parseInt(String.valueOf(body.get("emdCode"))), String.valueOf(body.get("authenticationPhotoUrl")));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PutMapping("/mypage/region")
+    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<Region> receivedRegions) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserRegion(user, receivedRegions);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

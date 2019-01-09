@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -10,6 +11,9 @@ import org.hibernate.validator.constraints.URL;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -25,20 +29,26 @@ public class CareTakerRequest extends BaseEntity {
 
     @Column
     @NonNull
+    // 0: 케어테이커 인증요청, 1: 지역 추가요청
+    private Integer type;
+
+    @Column
+    @NonNull
     @Length(max = 10)
     @ApiModelProperty(notes = "인증하고자 하는 유저의 이름", position = 3)
     private String name;
 
     @Column
     @NonNull
-    @Length(max = 11)
+    @Length(max = 13)
     @Pattern(regexp = "^01[0|1|6-9][0-9]{3,4}[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     private String phone;
 
     @OneToOne
     @NonNull
+    @JsonIgnore
     @ApiModelProperty(hidden = true)
-    private Region mainRegion;
+    private Region region;
 
     @Column
     @NonNull
@@ -53,21 +63,23 @@ public class CareTakerRequest extends BaseEntity {
     private Integer isConfirmed;
 
     @Transient
-    @ApiModelProperty(notes = "지역코드(읍면동)")
-    private Integer emdCode;
+    @ApiModelProperty(notes = "지역 전체 이름", required = true)
+    private String regionFullName;
 
     @Transient
     @ApiModelProperty(notes = "요청자 이름")
     private String nickname;
 
     @Builder
-    public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone, @NonNull Region mainRegion, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed) {
+    public CareTakerRequest(User writer, @NonNull @Length(max = 10) String name, @NonNull @Length(max = 11) @Pattern(regexp = "^01[0|1|6-9]-[0-9]{3,4}-[0-9]{4}$", message = "잘못된 전화번호 형식입니다.") String phone,
+                            Region region, @NonNull @URL @NotNull String authenticationPhotoUrl, @Range(min = 0, max = 2) Integer isConfirmed, Integer type) {
         super(writer);
         this.name = name;
         this.phone = phone;
-        this.mainRegion = mainRegion;
+        this.region = region;
         this.authenticationPhotoUrl = authenticationPhotoUrl;
         this.isConfirmed = isConfirmed;
+        this.type = type;
     }
 
     public void fillUserNickname() {
@@ -80,5 +92,11 @@ public class CareTakerRequest extends BaseEntity {
 
     public void refuse() {
         this.isConfirmed = RequestStatus.REFUSE.getValue();
+    }
+
+    public void fillRegionFullName() {
+        this.regionFullName = this.region.getSdName() + " "
+                + this.region.getSggName() + " "
+                + this.region.getEmdName();
     }
 }

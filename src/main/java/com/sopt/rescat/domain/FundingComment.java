@@ -1,26 +1,34 @@
 package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sopt.rescat.domain.enums.Role;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
 
 @Getter
-@Setter
 @Entity
+@Slf4j
 public class FundingComment extends BaseEntity {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @ApiModelProperty(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @Column(length = 300)
+    @Column
     @NonNull
     private String contents;
 
     @Column
+    @URL
     private String photoUrl;
 
     @ManyToOne
@@ -28,11 +36,22 @@ public class FundingComment extends BaseEntity {
     @JsonIgnore
     private Funding funding;
 
+    @Column
+    @Builder.Default
+    @ApiModelProperty(readOnly = true)
+    private int warning = 0;
+
     @Transient
+    @ApiModelProperty(readOnly = true, notes = "닉네임")
     private String nickname;
 
     @Transient
+    @ApiModelProperty(readOnly = true, notes = "유저 등급")
     private Role userRole;
+
+    @Transient
+    @ApiModelProperty(readOnly = true, notes = "작성자 일치 여부")
+    private Boolean isWriter;
 
     public FundingComment setWriterNickname() {
         this.nickname = getWriter().getNickname();
@@ -43,4 +62,28 @@ public class FundingComment extends BaseEntity {
         this.userRole = getWriter().getRole();
         return this;
     }
+
+    public FundingComment setWriter(User loginUser) {
+        initWriter(loginUser);
+        return this;
+    }
+
+    public FundingComment initFunding(Funding funding) {
+        this.funding = funding;
+        return this;
+    }
+
+    private boolean equalsWriter(User loginUser) {
+        return this.getWriter().equals(loginUser);
+    }
+
+    public FundingComment setStatus(User loginUser) {
+        this.isWriter = this.equalsWriter(loginUser);
+        return this;
+    }
+
+    public void warningCount() {
+        ++this.warning;
+    }
+
 }

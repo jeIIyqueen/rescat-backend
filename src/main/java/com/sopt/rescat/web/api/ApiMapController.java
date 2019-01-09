@@ -3,15 +3,17 @@ package com.sopt.rescat.web.api;
 import com.sopt.rescat.domain.MapRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.MarkerDto;
-import com.sopt.rescat.service.JWTService;
 import com.sopt.rescat.service.MapService;
+import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -20,16 +22,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Api(value = "MapController", description = "길냥이맵 관련 api")
+@Api(value = "ApiMapController", description = "길냥이맵 관련 api")
 @RestController
 @RequestMapping("/api/maps")
 public class ApiMapController {
 
-    private final JWTService jwtService;
     private final MapService mapService;
 
-    public ApiMapController(JWTService jwtService, MapService mapService) {
-        this.jwtService = jwtService;
+    public ApiMapController(MapService mapService) {
         this.mapService = mapService;
     }
 
@@ -41,7 +41,7 @@ public class ApiMapController {
     })
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header"),
-            @ApiImplicitParam(name = "emdCode", value = "읍면동 지역코드", required = false, dataType = "integer")
+            @ApiImplicitParam(name = "emdCode", value = "읍면동 지역코드", dataType = "integer")
     })
     @CareTakerAuth
     @GetMapping
@@ -66,11 +66,12 @@ public class ApiMapController {
     @CareTakerAuth
     @PostMapping
     public ResponseEntity requestMarkerRegisterOrEdit(
-            @RequestBody @Valid MapRequest mapRequest, HttpServletRequest httpServletRequest) throws IOException {
+            @RequestBody @Valid MapRequest mapRequest,
+            HttpServletRequest httpServletRequest) throws IOException {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-        log.info(mapRequest.toString());
 
         mapService.saveMarkerRequest(user, mapRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 }

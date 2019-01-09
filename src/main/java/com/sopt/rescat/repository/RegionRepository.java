@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RegionRepository extends CrudRepository<Region, Long> {
+
     List<Region> findAll();
 
     Optional<Region> findByEmdCode(Integer emdCode);
 
     Optional<Region> findBySdNameAndSggNameAndEmdName(String sdName, String sggName, String emdName);
+
 }

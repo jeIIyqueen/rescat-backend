@@ -6,18 +6,23 @@ import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
+@Slf4j
 public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +44,7 @@ public class User extends BaseTime {
     private String id;
 
     @Column
-    @Length(max = 11)
+    @Pattern(regexp = "^01[0|1|6-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     private String phone;
 
     @Column
@@ -48,28 +53,28 @@ public class User extends BaseTime {
     @JsonIgnore
     private String password;
 
-    @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_main_region_idx"))
     private Region mainRegion;
 
-    @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_1_region_idx"))
     private Region subRegion1;
 
-    @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_region_idx"))
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_user_sub_2_region_idx"))
     private Region subRegion2;
 
+    @Enumerated(value = EnumType.STRING)
     @Column
-    @Enumerated(EnumType.STRING)
     @NonNull
     private Role role;
 
     @Column
-    private String photoUrl;
+    private Long mileage;
 
     @Column
-    private Long mileage;
+    private String deviceToken;
 
     @Builder
     public User(String id, String password, String nickname) {
@@ -80,6 +85,10 @@ public class User extends BaseTime {
         this.mileage = 0L;
     }
 
+    public boolean match(User target) {
+        return this.idx.equals(target.getIdx());
+    }
+
     public boolean matchPasswordBy(UserLoginDto userLoginDto, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(userLoginDto.getPassword(), this.password)) {
             throw new NotMatchException("password", "비밀번호가 일치하지 않습니다.");
@@ -87,8 +96,12 @@ public class User extends BaseTime {
         return true;
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
     private void checkMileageMoreThan(Long mileage) {
-        if(this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
+        if (this.mileage + mileage < 0) throw new InvalidValueException("mileage", "사용자가 가진 마일리지는 음수가 될 수 없습니다.");
     }
 
     public void updateMileage(Long mileage) {
@@ -97,14 +110,68 @@ public class User extends BaseTime {
     }
 
     public boolean isAuthenticatedRegion(Integer emdCode) {
-        if (this.mainRegion.getEmdCode() == emdCode || this.subRegion1.getEmdCode() == emdCode || this.subRegion2.getEmdCode() == emdCode)
-            return true;
+        try {
+            if (this.mainRegion.getEmdCode().equals(emdCode)
+                    || this.subRegion1.getEmdCode().equals(emdCode)
+                    || this.subRegion2.getEmdCode().equals(emdCode))
+                return true;
+        } catch (Exception e) {
+            throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
+        }
         throw new UnAuthenticationException("emdCode", "인가되지 않은 지역입니다.");
     }
 
-    public void grantCareTakerAuth(String phone, String name) {
+    public void grantCareTakerAuth(String phone, String name, Region mainRegion) {
         this.role = Role.CARETAKER;
         this.phone = phone;
         this.name = name;
+        this.mainRegion = mainRegion;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
+    }
+
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken=deviceToken;
+    }
+
+
+    public void deleteMainRegion(Region subRegion1, Region subRegion2) {
+        this.mainRegion = subRegion1;
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion1(Region subRegion2) {
+        this.subRegion1 = subRegion2;
+        this.subRegion2 = null;
+    }
+
+    public void deleteSubRegion2() {
+        this.subRegion2 = null;
+    }
+
+    public void updateRegions(List<Region> receivedRegions) {
+        this.mainRegion = receivedRegions.get(1);
+        this.subRegion2 = receivedRegions.get(2);
+        this.subRegion2 = receivedRegions.get(3);
+    }
+
+    public void addMainRegion(Region mainRegion) {
+        this.mainRegion = mainRegion;
+    }
+
+    public void addSubRegion1(Region subRegion1) {
+        this.subRegion1 = subRegion1;
+    }
+
+    public void addSubRegion2(Region subRegion2) {
+        this.subRegion2 = subRegion2;
     }
 }

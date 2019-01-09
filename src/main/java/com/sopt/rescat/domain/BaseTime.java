@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTime {
 
+    @ApiModelProperty(readOnly = true)
     @CreatedDate
     private LocalDateTime createdAt;
 }

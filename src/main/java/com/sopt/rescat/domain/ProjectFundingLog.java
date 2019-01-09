@@ -1,13 +1,13 @@
 package com.sopt.rescat.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ProjectFundingLog extends BaseTime {
     @Id

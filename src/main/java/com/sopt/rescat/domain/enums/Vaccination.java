@@ -4,8 +4,8 @@ public enum Vaccination {
     UNKNOWINGNESS("모름", 0),
     NOTHING("안함", 1),
     FIRST("1차", 2),
-    SECOND("1차", 3),
-    THIRD("1차", 4);
+    SECOND("2차", 3),
+    THIRD("3차", 4);
 
     private String value;
     private int index;
