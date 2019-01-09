@@ -380,7 +380,7 @@ public class ApiUserController {
     @PostMapping("/mypage/region")
     public ResponseEntity addRegion(
             @ApiParam(value = "example -> 서울특별시 종로구 사직동")
-            @RequestBody String regionFullName,
+            @RequestParam String regionFullName,
             HttpServletRequest httpServletRequest) {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.saveAddRegion(user, regionFullName);
