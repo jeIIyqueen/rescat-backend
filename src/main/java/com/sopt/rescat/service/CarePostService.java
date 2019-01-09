@@ -234,6 +234,7 @@ public class CarePostService {
     public CarePostComment createComment(Long carePostIdx, CarePostComment carePostComment, User loginUser) {
         return carePostCommentRepository.save(carePostComment
                 .setWriter(loginUser)
+                .setStatus(loginUser)
                 .initCarePost(getCarePostBy(carePostIdx)))
                 .setWriterNickname()
                 .setUserRole();
