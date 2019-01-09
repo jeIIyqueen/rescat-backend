@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.dto.response.UserLoginResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
@@ -93,8 +94,13 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto){
-        return ResponseEntity.status(HttpStatus.OK).body(JwtTokenDto.builder().token(jwtService.create(userService.login(userLoginDto).getIdx())).build());
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginDto userLoginDto){
+        User user = userService.login(userLoginDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user.toUserLoginResponseDto(JwtTokenDto.builder()
+                        .token(jwtService.create(user.getIdx()))
+                        .build()));
     }
 
     @ApiOperation(value = "핸드폰 인증", notes = "핸드폰 번호를 받아 문자를 보내고, 해당 인증코드를 반환합니다.")

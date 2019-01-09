@@ -2,8 +2,10 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.response.UserLoginResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -179,5 +182,27 @@ public class User extends BaseTime {
 
     public void addSubRegion2(Region subRegion2) {
         this.subRegion2 = subRegion2;
+    }
+
+    public List<RegionDto> getMyRegionDtoList() {
+        List<RegionDto> regionDtos = new ArrayList<>();
+        regionDtos.add(mainRegion.toRegionDto());
+        if(subRegion1 != null)
+            regionDtos.add(subRegion1.toRegionDto());
+        if(subRegion2 != null)
+            regionDtos.add(subRegion2.toRegionDto());
+
+        return regionDtos;
+
+    }
+
+    public UserLoginResponseDto toUserLoginResponseDto(JwtTokenDto tokenDto) {
+        return UserLoginResponseDto.builder()
+                .idx(idx)
+                .mileage(mileage)
+                .regions(getMyRegionDtoList())
+                .role(role)
+                .jwtTokenDto(tokenDto)
+                .build();
     }
 }
