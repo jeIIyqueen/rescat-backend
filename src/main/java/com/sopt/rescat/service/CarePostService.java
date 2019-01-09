@@ -50,8 +50,8 @@ public class CarePostService {
 
     @Transactional
     public void create(CarePostRequestDto carePostRequestDto, User loginUser) {
-        if (carePostRepository.existsCarePostByWriterAndIsFinished(loginUser, false)) {
-            throw new AlreadyExistsException("carePost", "완료되지 않은 작성글이 있습니다.");
+        if (carePostRepository.existsCarePostByWriterAndIsConfirmed(loginUser, RequestStatus.DEFER.getValue())) {
+            throw new AlreadyExistsException("carePost", "게시 승인되지 않은 작성글이 있습니다.");
         }
 
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
@@ -234,6 +234,7 @@ public class CarePostService {
     public CarePostComment createComment(Long carePostIdx, CarePostComment carePostComment, User loginUser) {
         return carePostCommentRepository.save(carePostComment
                 .setWriter(loginUser)
+                .setStatus(loginUser)
                 .initCarePost(getCarePostBy(carePostIdx)))
                 .setWriterNickname()
                 .setUserRole();
