@@ -2,10 +2,12 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,6 +77,10 @@ public class User extends BaseTime {
 
     @Column
     private String deviceToken;
+
+    @Transient
+    @ApiModelProperty(notes = "지역 전체 이름", required = true)
+    private String regionFullName;
 
     @Builder
     public User(String id, String password, String nickname) {
@@ -157,10 +163,10 @@ public class User extends BaseTime {
         this.subRegion2 = null;
     }
 
-//    public void updateRegions(Region mainRegion, Region subRegion1, Region subRegion2) {
-//        this.mainRegion = mainRegion;
-//        this.subRegion2 = subRegion1;
-//        this.subRegion2 = subRegion2;
+//    public void updateRegions(List<RegionDto> editRegions) {
+//        this.mainRegion = editRegions.get(1);
+//        this.subRegion2 = editRegions.get(2);
+//        this.subRegion2 = editRegions.get(3);
 //    }
 
     public void addMainRegion(Region mainRegion) {

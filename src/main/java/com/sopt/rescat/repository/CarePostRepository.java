@@ -2,6 +2,8 @@ package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.RequestStatus;
+import com.sopt.rescat.domain.enums.RequestType;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public interface CarePostRepository extends CrudRepository<CarePost, Long> {
 
     List<CarePost> findAllByIsConfirmedOrderByUpdatedAt(Integer isConfirmed);
 
-    Boolean existsCarePostByWriterAndIsFinished(User writer, Boolean isFinished);
+    Boolean existsCarePostByWriterAndIsConfirmed(User writer, Integer isConfirmed);
 
     List<CarePost> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
 
