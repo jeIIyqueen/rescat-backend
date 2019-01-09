@@ -1,6 +1,7 @@
 package com.sopt.rescat.service;
 
 import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.WarningType;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,6 +200,17 @@ public class FundingService {
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 댓글이 존재하지 않습니다."));
     }
 
+    public List<Map> getBankList() {
+        return Arrays.stream(Bank.values())
+                .map((bankEnum) -> {
+                    Map<String, Object> breed = new HashMap<>();
+                    breed.put("english", bankEnum.name());
+                    breed.put("korean", bankEnum.getValue());
+                    return breed;
+                })
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void warningFunding(Long idx, User user){
         Funding funding = getFundingBy(idx);
@@ -225,5 +240,4 @@ public class FundingService {
                 .warningUser(user)
                 .build());
     }
-    
 }

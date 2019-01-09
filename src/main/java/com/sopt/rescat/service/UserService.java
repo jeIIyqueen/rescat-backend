@@ -11,6 +11,7 @@ import com.sopt.rescat.repository.*;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
@@ -135,6 +136,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .regions(regions)
+                .isFinished(!careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmedAndType(user,RequestStatus.DEFER.getValue(),0))
                 .build();
     }
 
@@ -144,6 +146,11 @@ public class UserService {
 
     @Transactional
     public void saveCareTakerRequest(final User user, CareTakerRequest careTakerRequest) {
+
+        if (careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmedAndType(user, RequestStatus.DEFER.getValue(), 0))
+            throw new AlreadyExistsException("careTakerRequest", "아직 완료되지 않은 케어테이커 신청이 있습니다.");
+        if (careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmedAndType(user, RequestStatus.CONFIRM.getValue(), 0))
+            throw new AlreadyExistsException("careTakerRequest", "이미 케어테이커 인증이 완료됐습니다.");
 
         String[] fullName = careTakerRequest.getRegionFullName().split(" ");
         if (fullName.length != 3)
@@ -176,8 +183,11 @@ public class UserService {
     }
 
     public Iterable<CareTakerRequest> getCareTakerRequest() {
-        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAt(RequestStatus.DEFER.getValue())
-                .stream().peek(CareTakerRequest::fillUserNickname)
+        return careTakerRequestRepository.findAllByIsConfirmedOrderByCreatedAtDesc(RequestStatus.DEFER.getValue())
+                .stream().peek(careTakerRequest -> {
+                    careTakerRequest.fillUserNickname();
+                    careTakerRequest.fillRegionFullName();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -262,6 +272,7 @@ public class UserService {
                 .notification(notification)
                 .isChecked(RequestStatus.DEFER.getValue())
                 .build());
+
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
@@ -285,43 +296,49 @@ public class UserService {
                 .setApprover(approver));
     }
 
-    @Transactional
-    public void deleteRegion(User user, Integer emdCode) {
-
-        Region deleteRegion = regionRepository.findByEmdCode(emdCode)
-                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
-
-        if (deleteRegion.equals(user.getMainRegion()))
-            user.deleteMainRegion(user.getSubRegion1(), user.getSubRegion2());
-
-        else if (deleteRegion.equals(user.getSubRegion1()))
-            user.deleteSubRegion1(user.getSubRegion2());
-
-        else if (deleteRegion.equals(user.getSubRegion2()))
-            user.deleteSubRegion2();
-
-        else
-            throw new NotMatchException("mainRegion or subRegion1 or subRegion2", "유저에게 존재하지 않는 지역코드입니다.");
-    }
-
-    @Transactional
-    public void saveAddRegionRequest(final User user, Integer emdCode, @URL String authenticationPhotoUrl) {
-
-        Region region = regionRepository.findByEmdCode(emdCode)
-                .orElseThrow(() -> new NotFoundException("emdCode", "지역을 찾을 수 없습니다."));
-
+    private List<Region> getUserRegionList(User user){
         List<Region> regions = new ArrayList<>();
         regions.add(user.getMainRegion());
         regions.add(user.getSubRegion1());
         regions.add(user.getSubRegion2());
+        return regions;
+    }
 
-        if (regions.contains(region))
-            throw new AlreadyExistsException("emdCode", "이미 존재하는 지역입니다.");
+    @Transactional
+    public void deleteRegion(User user, String regionFullName) {
+
+        String[] fullName = regionFullName.split(" ");
+        if (fullName.length != 3)
+            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
+        Region deleteRegion = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
+                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+
+        if (!getUserRegionList(user).contains(deleteRegion))
+            throw new NotMatchException("mainRegion or subRegion1 or subRegion2", "유저에게 존재하지 않는 지역입니다.");
+        else if (deleteRegion.equals(user.getMainRegion()))
+            user.deleteMainRegion(user.getSubRegion1(), user.getSubRegion2());
+        else if (deleteRegion.equals(user.getSubRegion1()))
+            user.deleteSubRegion1(user.getSubRegion2());
+        else if (deleteRegion.equals(user.getSubRegion2()))
+            user.deleteSubRegion2();
+    }
+
+    @Transactional
+    public void saveAddRegionRequest(final User user, UserAddRegionDto userAddRegionDto) {
+
+        String[] fullName = userAddRegionDto.getRegionFullName().split(" ");
+        if (fullName.length != 3)
+            throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
+        Region addRegion = regionRepository.findBySdNameAndSggNameAndEmdName(fullName[0], fullName[1], fullName[2])
+                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+
+        if (getUserRegionList(user).contains(addRegion))
+            throw new AlreadyExistsException("regionFullName", "유저에게 이미 존재하는 지역입니다.");
 
         careTakerRequestRepository.save(CareTakerRequest.builder()
-                    .authenticationPhotoUrl(authenticationPhotoUrl)
+                    .authenticationPhotoUrl(userAddRegionDto.getAuthenticationPhotoUrl())
                     .isConfirmed(RequestStatus.DEFER.getValue())
-                    .region(region)
+                    .region(addRegion)
                     .name(user.getName())
                     .phone(user.getPhone())
                     .writer(user)
@@ -329,16 +346,28 @@ public class UserService {
                     .build());
     }
 
-    public void editUserRegion(User user, List<Region> receivedRegions) {
-        List<Region> regions = new ArrayList<>();
-        regions.add(user.getMainRegion());
-        regions.add(user.getSubRegion1());
-        regions.add(user.getSubRegion2());
-
-        if (regions.equals(receivedRegions)) {
-            user.updateRegions(receivedRegions);
-        }
-    }
+//    public void editUserRegion(User user, List<String> editRegions) {
+//
+//        String[] fullName0 = editRegions.get(0).split(" ");
+//        String[] fullName1 = editRegions.get(1).split(" ");
+//        String[] fullName2 = editRegions.get(2).split(" ");
+//
+//        Region editRegion0 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName0[0], fullName0[1], fullName0[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//        Region editRegion1 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName1[0], fullName1[1], fullName1[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//        Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//
+//        List<String> regions = new ArrayList<>();
+//        regions.add(user.getMainRegion().toRegionDto().getName());
+//        regions.add(user.getSubRegion1().toRegionDto().getName());
+//        regions.add(user.getSubRegion2().toRegionDto().getName());
+//
+//        if (!regions.equals(editRegions)) {
+//            user.updateRegions(editRegion0, editRegion1, editRegion2);
+//        }
+//    }
 
     @Transactional
     public void confirmedAddRegion(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {

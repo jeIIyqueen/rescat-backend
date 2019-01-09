@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 
@@ -43,7 +44,7 @@ public class User extends BaseTime {
     private String id;
 
     @Column
-    @Length(max = 11)
+    @Pattern(regexp = "^01[0|1|6-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
     private String phone;
 
     @Column
@@ -156,11 +157,11 @@ public class User extends BaseTime {
         this.subRegion2 = null;
     }
 
-    public void updateRegions(List<Region> receivedRegions) {
-        this.mainRegion = receivedRegions.get(1);
-        this.subRegion2 = receivedRegions.get(2);
-        this.subRegion2 = receivedRegions.get(3);
-    }
+//    public void updateRegions(Region mainRegion, Region subRegion1, Region subRegion2) {
+//        this.mainRegion = mainRegion;
+//        this.subRegion2 = subRegion1;
+//        this.subRegion2 = subRegion2;
+//    }
 
     public void addMainRegion(Region mainRegion) {
         this.mainRegion = mainRegion;

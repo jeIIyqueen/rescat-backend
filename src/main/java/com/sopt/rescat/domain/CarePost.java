@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -104,11 +105,11 @@ public class CarePost extends BaseEntity {
 
     @ApiModelProperty(notes = "임시보호 시작기간(글 타입 1일 경우 필수)")
     @Column
-    private LocalDateTime startProtectionPeriod;
+    private LocalDate startProtectionPeriod;
 
     @ApiModelProperty(notes = "임시보호 종료기간(글 타입 1일 경우 필수)")
     @Column
-    private LocalDateTime endProtectionPeriod;
+    private LocalDate endProtectionPeriod;
 
     @ApiModelProperty(notes = "관리자 승인 여부(0: 보류, 1: 승인, 2: 거절)")
     @Column

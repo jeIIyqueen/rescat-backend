@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Api(value = "ApiFundingController", description = "크라우드 펀딩 api")
@@ -158,8 +160,13 @@ public class ApiFundingController {
     public ResponseEntity<Void> payForMileage(
             @RequestHeader(value = "Authorization") final String token,
             @PathVariable Long idx,
-            @RequestBody Long mileage,
+            @ApiParam(value = "example -> {\"mileage\": 1000}")
+            @RequestBody Map<String, Object> body,
             HttpServletRequest httpServletRequest) {
+        if (!body.containsKey("mileage"))
+            throw new InvalidValueException("mileage", "mileage field 가 body에 존재하지 않습니다.");
+        Long mileage = Long.parseLong(String.valueOf(body.get("mileage")));
+
         if (mileage <= 0) throw new InvalidValueException("mileage", "mileage 값은 음수일 수 없습니다.");
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
@@ -175,6 +182,16 @@ public class ApiFundingController {
     @GetMapping("/main")
     public ResponseEntity<Iterable<FundingResponseDto>> get4Fundings() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.find4Fundings());
+    }
+
+    @ApiOperation(value = "은행 목록 조회", notes = "은행 목록를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "은행 목록 반환 성공"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @GetMapping("/banks")
+    public ResponseEntity<List<Map>> getBanks() {
+        return ResponseEntity.status(HttpStatus.OK).body(fundingService.getBankList());
     }
 
     @ApiOperation(value = "크라우드 펀딩 글 신고", notes = "idx에 따른 크라우드 펀딩 글을 신고합니다.")
@@ -198,7 +215,7 @@ public class ApiFundingController {
 
     @ApiOperation(value = "크라우드 펀딩 글의 댓글 신고", notes = "idx 에 따른 크라우드 펀딩 글의 댓글을 신고합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "크라우드 펀딩 글의 댓글 신고 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글의 댓글 신고 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
             @ApiResponse(code = 401, message = "댓글 신고 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -217,5 +234,4 @@ public class ApiFundingController {
         fundingService.warningFundingComment(commentIdx, loginUser);
         return ResponseEntity.ok().build();
     }
-
 }
