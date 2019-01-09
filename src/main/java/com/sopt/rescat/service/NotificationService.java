@@ -1,8 +1,7 @@
 package com.sopt.rescat.service;
 
-import com.amazonaws.services.s3.model.JSONOutput;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.common.base.Utf8;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -20,7 +19,6 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -36,8 +34,6 @@ public class NotificationService {
     private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String[] SCOPES = {MESSAGING_SCOPE };
 
-//    private static final String TITLE = "FCM Notification";
-//    private static final String BODY = "Notification from FCM";
     public static final String MESSAGE_KEY = "message";
 
     private UserNotificationLogRepository userNotificationLogRepository;
@@ -238,14 +234,6 @@ public class NotificationService {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(jsonObject) + "\n");
     }
-
-//    public void writePush(Notification savedNotification, User receivingUser) {
-//        send(NotificationDto.builder()
-//                .body(savedNotification.getContents())
-//                .to("68fc1bda1bd560ba66141f1820b68ee4ad2be6a59a52dbe0605ffb0c8f800c2c")
-//                .build()
-//                .toFormalNotification());
-//    }
 
     @Transactional
     public void createNotification(User receivingUser, Notification notification){

@@ -168,6 +168,7 @@ public class FundingService {
     public FundingComment createComment(Long idx, FundingComment fundingComment, User loginUser) {
         return fundingCommentRepository.save(fundingComment
                 .setWriter(loginUser)
+                .setStatus(loginUser)
                 .initFunding(getFundingBy(idx)))
                 .setWriterNickname()
                 .setUserRole();

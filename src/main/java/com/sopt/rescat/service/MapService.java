@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.MarkerType;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.MarkerDto;
+import com.sopt.rescat.exception.FailureException;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.repository.*;
@@ -27,17 +28,23 @@ public class MapService {
     private final MapRequestRepository mapRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
+    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     public MapService(CatRepository catRepository,
                       PlaceRepository placeRepository,
                       MapRequestRepository mapRequestRepository,
                       RegionRepository regionRepository,
-                      ApprovalLogRepository approvalLogRepository) {
+                      ApprovalLogRepository approvalLogRepository,
+                      NotificationService notificationService,
+                      NotificationRepository notificationRepository) {
         this.catRepository = catRepository;
         this.placeRepository = placeRepository;
         this.mapRequestRepository = mapRequestRepository;
         this.regionRepository = regionRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationService = notificationService;
+        this.notificationRepository = notificationRepository;
     }
 
     public List<MarkerDto> getMarkerListByRegion(final User user, final Optional<Integer> emdCode) {
@@ -89,10 +96,37 @@ public class MapService {
     public MapRequest approveMap(Long mapRequestIdx, Integer status, User approver) {
         MapRequest mapRequest = mapRequestRepository.findById(mapRequestIdx).orElseThrow(() -> new NotFoundException("idx", "존재하지 않는 등록/수정 요청입니다."));
 
+        User writer = mapRequest.getWriter();
+
+        String requestType = (mapRequest.getRequestType() == 0) ? "등록" : "수정";
+        String registerType;
+        if(mapRequest.getRegisterType() == 0){
+            registerType = "배식소";
+
+        }
+        else if (mapRequest.getRegisterType() == 1)
+            registerType = "병원";
+        else
+            registerType = "고양이";
+
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseMapRequest(mapRequest, approver);
+
+            Notification notification = new Notification().builder()
+                    .contents(writer.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+            notificationRepository.save(notification);
+            notificationService.createNotification(writer, notification);
+
+        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+            approveMapRequest(mapRequest, approver);
+
+            Notification notification = new Notification().builder()
+                    .contents(writer.getNickname() + "님의 " + registerType + requestType + " 요청이 승인되었습니다.")
+                    .build();
+            notificationRepository.save(notification);
+            notificationService.createNotification(writer, notification);
         }
-        approveMapRequest(mapRequest, approver);
         return mapRequest;
     }
 
@@ -120,13 +154,11 @@ public class MapService {
         if (mapRequest.getRegisterType().equals(MarkerType.CAFETERIA.getValue())
                 || mapRequest.getRegisterType().equals(MarkerType.HOSPITAL.getValue())) {
             placeRepository.save(mapRequest.toPlace());
-            return;
         }
 
         if (mapRequest.getRegisterType().equals(MarkerType.Cat.getValue())) {
             mapRequest.approve();
             catRepository.save(mapRequest.toCat());
-            return;
         }
 
         throw new InvalidValueException("registerType", "유효하지 않은 값을 선택하였습니다.");
@@ -137,14 +169,12 @@ public class MapService {
                 || mapRequest.getRegisterType().equals(MarkerType.HOSPITAL.getValue())) {
             Place place = placeRepository.findById(mapRequest.getMarkerIdx()).orElseThrow(() -> new NotFoundException("markerIdx", "존재하지 않는 마커입니다."));
             place.update(mapRequest);
-            return;
         }
 
         if (mapRequest.getRegisterType().equals(MarkerType.Cat.getValue())) {
             mapRequest.approve();
             Cat cat = catRepository.findById(mapRequest.getMarkerIdx()).orElseThrow(() -> new NotFoundException("markerIdx", "존재하지 않는 마커입니다."));
             cat.update(mapRequest);
-            return;
         }
 
         throw new InvalidValueException("registerType", "유효하지 않은 값을 선택하였습니다.");
