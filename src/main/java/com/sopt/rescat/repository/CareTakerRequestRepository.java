@@ -11,5 +11,5 @@ public interface CareTakerRequestRepository extends CrudRepository<CareTakerRequ
 
     Integer countByIsConfirmed(Integer isConfirmed);
 
-    boolean existsCareTakerRequestByWriterAndIsConfirmed(User user, Integer isConfirmed);
+    boolean existsCareTakerRequestByWriterAndIsConfirmedAndType(User user, Integer isConfirmed, Integer type);
 }
