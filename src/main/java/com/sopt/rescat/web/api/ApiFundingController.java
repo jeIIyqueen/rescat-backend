@@ -15,6 +15,7 @@ import com.sopt.rescat.utils.auth.CareTakerAuth;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +61,7 @@ public class ApiFundingController {
     public ResponseEntity<Void> create(
             @RequestHeader(value = "Authorization") final String token,
             HttpServletRequest httpServletRequest,
-            @Valid @RequestBody FundingRequestDto fundingRequestDto) {
+            @Validated @RequestBody FundingRequestDto fundingRequestDto) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         fundingService.create(fundingRequestDto, loginUser);
         return ResponseEntity.ok().build();

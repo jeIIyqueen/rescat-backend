@@ -48,7 +48,7 @@ public class CareApplication extends BaseEntity {
     private String name;
 
     @Column
-    @Pattern(regexp = "^01[0|1|6-9]-?[0-9]{3,4}-?[0-9]{4}$", message = "잘못된 전화번호 형식입니다.")
+    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4})$", message = "잘못된 전화번호 형식입니다.")
     @NonNull
     @NotNull
     @ApiModelProperty(notes = "신청자 연락처", position = 3, required = true)
