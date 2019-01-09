@@ -6,7 +6,6 @@ public enum WarningType {
     FUNDING(2),
     FUNDINGCOMMENT(3);
 
-
     private Integer value;
 
     WarningType(Integer value) {
