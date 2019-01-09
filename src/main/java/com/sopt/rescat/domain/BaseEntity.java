@@ -21,7 +21,6 @@ import javax.persistence.OneToOne;
 public abstract class BaseEntity extends BaseTime {
     @OneToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ApiModelProperty(readOnly = true)
     private User writer;
 
