@@ -15,7 +15,9 @@ public class UserLoginResponseDto {
 
     private Long idx;
 
-    private List<RegionDto> regions;
+    private List<String> regions;
+
+    private List<Integer> emdCodes;
 
     private Long mileage;
 
