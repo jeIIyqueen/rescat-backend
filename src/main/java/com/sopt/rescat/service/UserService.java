@@ -103,8 +103,6 @@ public class UserService {
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         savedUser.updateInstanceToken(userLoginDto.getInstanceToken());
 
-        notificationService.createNotification(savedUser,"님이 로그인 하셨습니다.");
-
         return savedUser;
     }
 
@@ -242,11 +240,18 @@ public class UserService {
         CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
 
+        User writer = careTakerRequest.getWriter();
+
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCareTakerRequest(careTakerRequest, approver);
 
-            notificationService.createNotification(careTakerRequest.getWriter(), "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.");
+            Notification notification = Notification.builder()
+                    .contents(writer.getNickname() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+
+            notificationRepository.save(notification);
+            notificationService.createNotification(writer, notification);
 
             return;
         }
@@ -254,7 +259,12 @@ public class UserService {
         // 승인일 경우
         approveCareTakerRequest(careTakerRequest, approver);
 
-        notificationService.createNotification(careTakerRequest.getWriter(),  "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.");
+        Notification notification = Notification.builder()
+                .contents(writer.getNickname() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                .build();
+
+        notificationRepository.save(notification);
+        notificationService.createNotification(careTakerRequest.getWriter(), notification);
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {

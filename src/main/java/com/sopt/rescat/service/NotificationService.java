@@ -1,5 +1,6 @@
 package com.sopt.rescat.service;
 
+import com.amazonaws.services.s3.model.JSONOutput;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.common.base.Utf8;
 import com.google.gson.Gson;
@@ -76,7 +77,7 @@ public class NotificationService {
         URL url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestProperty("Authorization", "Bearer " + getAccessToken());
-        httpURLConnection.setRequestProperty("Content-Type", "application/json; UTF-8");
+        httpURLConnection.setRequestProperty("Content-Type", "application/json");
         return httpURLConnection;
         // [END use_access_token]
     }
@@ -88,15 +89,12 @@ public class NotificationService {
      * @throws IOException
      */
     private static void sendPush(JsonObject fcmMessage) throws IOException {
-      //  String sFcmMessage = fcmMessage.toString();
 
         HttpURLConnection connection = getConnection();
         connection.setDoOutput(true);
 
-        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-        outputStream.writeBytes(fcmMessage.toString());
-//        OutputStream outputStream = connection.getOutputStream();
-//        outputStream.write(sFcmMessage.getBytes("UTF-8"));
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(fcmMessage.toString().getBytes("UTF-8"));
         outputStream.flush();
         outputStream.close();
 
@@ -201,15 +199,8 @@ public class NotificationService {
     private static JsonObject buildNotificationMessage(String instanceToken, String body) {
         JsonObject jNotification = new JsonObject();
 
-//        String body = null;
-//        try {
-//            body = URLEncoder.encode(contents,"UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-
-        jNotification.addProperty("title", "rescat");
-        jNotification.addProperty("body", "안녕");
+        //jNotification.addProperty("title", "rescat");
+        jNotification.addProperty("body", body);
 
         JsonObject jMessage = new JsonObject();
         jMessage.addProperty("token",instanceToken);
@@ -256,25 +247,19 @@ public class NotificationService {
 //                .toFormalNotification());
 //    }
 
-    public void createNotification(User receivingUser, String baseContents ){
-
-        Notification notification = Notification.builder()
-                .contents(receivingUser.getNickname() + baseContents)
-                .build();
-        notificationRepository.save(notification);
-
-        try {
-            writePush(receivingUser.getInstanceToken(),notification.getContents());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    @Transactional
+    public void createNotification(User receivingUser, Notification notification){
         userNotificationLogRepository.save(
                 UserNotificationLog.builder()
                         .receivingUser(receivingUser)
                         .notification(notification)
                         .isChecked(RequestStatus.DEFER.getValue())
                         .build());
+        try {
+            writePush(receivingUser.getInstanceToken(),notification.getContents());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Transactional

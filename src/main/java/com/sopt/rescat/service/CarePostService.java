@@ -28,34 +28,35 @@ public class CarePostService {
     private CarePostCommentRepository carePostCommentRepository;
     private CareApplicationRepository careApplicationRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationService notificationService;
     private NotificationRepository notificationRepository;
-    private UserNotificationLogRepository userNotificationLogRepository;
     private WarningLogRepository warningLogRepository;
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
                            final ApprovalLogRepository approvalLogRepository,
+                           final NotificationService notificationService,
                            final NotificationRepository notificationRepository,
-                           final UserNotificationLogRepository userNotificationLogRepository,
                            WarningLogRepository warningLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationService = notificationService;
         this.notificationRepository = notificationRepository;
-        this.userNotificationLogRepository = userNotificationLogRepository;
         this.warningLogRepository = warningLogRepository;
     }
 
     @Transactional
     public void create(CarePostRequestDto carePostRequestDto, User loginUser) {
-        if (carePostRepository.existsCarePostByWriterAndIsFinished(loginUser, false)) {
+        if (carePostRepository.existsCarePostByWriterAndIsConfirmed(loginUser, RequestStatus.DEFER.getValue())) {
             throw new AlreadyExistsException("carePost", "완료되지 않은 작성글이 있습니다.");
         }
 
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
+        log.info(carePost.getCreatedAt().toString());
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
@@ -166,38 +167,28 @@ public class CarePostService {
         CarePost carePost = getCarePostBy(idx);
         String category = (carePost.getType() == 0) ? "입양" : "임시보호";
 
+        User writer = carePost.getWriter();
+
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
 
-            Notification notification = Notification.builder()
-                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+            Notification notification = new Notification().builder()
+                    .contents(writer.getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
             notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(carePost.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
+            notificationService.createNotification(writer, notification);
 
         } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
 
-            Notification notification = Notification.builder()
-                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
+            Notification notification = new Notification().builder()
+                    .contents(writer.getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
                     .targetType(RequestType.CAREPOST)
                     .targetIdx(carePost.getIdx())
                     .build();
             notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(carePost.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
+            notificationService.createNotification(writer, notification);
         }
 
         return carePost.toCarePostDto();
