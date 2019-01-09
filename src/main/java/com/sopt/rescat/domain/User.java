@@ -79,6 +79,7 @@ public class User extends BaseTime {
     private Long mileage;
 
     @Column
+    @ApiModelProperty(readOnly = true)
     private String deviceToken;
 
     @Transient
@@ -186,7 +187,8 @@ public class User extends BaseTime {
 
     public List<RegionDto> getMyRegionDtoList() {
         List<RegionDto> regionDtos = new ArrayList<>();
-        regionDtos.add(mainRegion.toRegionDto());
+        if(mainRegion != null)
+            regionDtos.add(mainRegion.toRegionDto());
         if(subRegion1 != null)
             regionDtos.add(subRegion1.toRegionDto());
         if(subRegion2 != null)
