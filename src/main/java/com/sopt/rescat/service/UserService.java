@@ -373,26 +373,25 @@ public class UserService {
     }
 
 //    public void editUserRegion(User user, List<RegionDto> editRegions) {
+//        String[] fullName0 = editRegions.get(0).split(" ");
+//        String[] fullName1 = editRegions.get(1).split(" ");
+//        String[] fullName2 = editRegions.get(2).split(" ");
 //
-////        String[] fullName0 = editRegions.get(0).split(" ");
-////        String[] fullName1 = editRegions.get(1).split(" ");
-////        String[] fullName2 = editRegions.get(2).split(" ");
-////
-////        Region editRegion0 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName0[0], fullName0[1], fullName0[2])
-////                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
-////        Region editRegion1 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName1[0], fullName1[1], fullName1[2])
-////                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
-////        Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
-////                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//        Region editRegion0 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName0[0], fullName0[1], fullName0[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//        Region editRegion1 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName1[0], fullName1[1], fullName1[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
+//        Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
+//                .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
 //
-////        List<String> regions = new ArrayList<>();
-////        regions.add(user.getMainRegion().toRegionDto().getName());
-////        regions.add(user.getSubRegion1().toRegionDto().getName());
-////        regions.add(user.getSubRegion2().toRegionDto().getName());
-////
-////        if (!regions.equals(editRegions)) {
-////            user.updateRegions(editRegion0, editRegion1, editRegion2);
-////        }
+//        List<String> regions = new ArrayList<>();
+//        regions.add(user.getMainRegion().toRegionDto().getName());
+//        regions.add(user.getSubRegion1().toRegionDto().getName());
+//        regions.add(user.getSubRegion2().toRegionDto().getName());
+//
+//        if (!regions.equals(editRegions)) {
+//            user.updateRegions(editRegion0, editRegion1, editRegion2);
+//        }
 //        user.updateRegions(editRegions);
 //    }
 
