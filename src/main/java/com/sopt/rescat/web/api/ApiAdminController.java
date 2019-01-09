@@ -12,9 +12,10 @@ import com.sopt.rescat.service.UserService;
 import com.sopt.rescat.utils.auth.AdminAuth;
 import com.sopt.rescat.utils.auth.AuthAspect;
 import io.swagger.annotations.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,6 +31,11 @@ public class ApiAdminController {
     private FundingService fundingService;
     private CarePostService carePostService;
     private MapService mapService;
+
+    @Value("${NAVER.MAP.REVERSE.CLIENTID}")
+    private String clientId;
+    @Value("${NAVER.MAP.REVERSE.CLIENTSECRETE}")
+    private String clientSecret;
 
     public ApiAdminController(final UserService userService,
                               final FundingService fundingService,
@@ -246,7 +252,7 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @PostMapping("/cats")
+    @PostMapping("/map-markers/cats")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Cat cat,
             HttpServletRequest httpServletRequest) {
@@ -265,12 +271,26 @@ public class ApiAdminController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @AdminAuth
-    @PostMapping("/places")
+    @PostMapping("/map-markers/places")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Place place,
             HttpServletRequest httpServletRequest) {
         User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         mapService.create(place, admin);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @AdminAuth
+    @GetMapping("/geo-coding-reverse")
+    public ResponseEntity<String> getCoordsToAddrJsonResult(@RequestParam Double lng, @RequestParam Double lat) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-NCP-APIGW-API-KEY-ID", clientId);
+        httpHeaders.add("X-NCP-APIGW-API-KEY", clientSecret);
+
+        String url = "https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?request=coordsToaddr&coords="+lng+","+lat+"&sourcecrs=epsg:4326&output=json&orders=addr,admcode";
+
+        return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), String.class);
     }
 }

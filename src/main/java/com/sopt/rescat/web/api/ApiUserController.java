@@ -33,7 +33,7 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @Validated
 public class ApiUserController {
-    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
+    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)([0-9]{3,4})([0-9]{4})$";
 
     private final UserService userService;
     private final JWTService jwtService;
@@ -106,9 +106,9 @@ public class ApiUserController {
     })
     @PostMapping("/authentications/phone")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(
-            @ApiParam(value = "01000000000 또는 010-0000-0000", required = true)
+            @ApiParam(value = "01012345678", required = true)
             @Valid
-            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 000-0000-0000 또는 00000000000 형식이어야 합니다.")
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
             @RequestParam String phone) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
@@ -198,7 +198,12 @@ public class ApiUserController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @PutMapping("/mypage/edit/phone")
-    public ResponseEntity editUserPhone(HttpServletRequest httpServletRequest, @RequestParam String phone) {
+    public ResponseEntity editUserPhone(
+            @ApiParam(value = "01012345678", required = true)
+            @Valid
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
+            @RequestParam String phone,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.editUserPhone(loginUser, phone);
         return ResponseEntity.status(HttpStatus.OK).build();
