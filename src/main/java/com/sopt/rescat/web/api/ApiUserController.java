@@ -352,12 +352,32 @@ public class ApiUserController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @CareTakerAuth
-    @PostMapping("/mypage/region")
+    @PostMapping("/authentications/region")
     public ResponseEntity requestAddRegion(
             @RequestBody UserAddRegionDto userAddRegionDto,
             HttpServletRequest httpServletRequest) {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.saveAddRegionRequest(user, userAddRegionDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @ApiOperation(value = "케어테이커 유저의 지역 추가", notes = "케어테이커 유저가 지역을 추가합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "요청 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PostMapping("/mypage/region")
+    public ResponseEntity addRegion(
+            @ApiParam(value = "example -> 서울특별시 종로구 사직동")
+            @RequestBody String regionFullName,
+            HttpServletRequest httpServletRequest) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.saveAddRegion(user, regionFullName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -372,10 +392,10 @@ public class ApiUserController {
 //    })
 //    @CareTakerAuth
 //    @PutMapping("/mypage/region")
-//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<String> receivedRegions) {
+//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<RegionDto> editRegions) {
 //        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        log.info(String.valueOf(receivedRegions));
-//        List<String> editRegions = new ArrayList<>(receivedRegions);
+//        //log.info(String.valueOf(receivedRegions));
+//        //List<String> editRegions = new ArrayList<>(receivedRegions);
 //        userService.editUserRegion(user, editRegions);
 //        return ResponseEntity.status(HttpStatus.OK).build();
 //    }

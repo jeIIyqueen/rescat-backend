@@ -221,6 +221,9 @@ public class FundingService {
         if(funding.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
 
+        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.FUNDING, user))
+            throw new UnAuthenticationException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
+
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(idx)
                 .warningType(WarningType.FUNDING)
@@ -236,10 +239,14 @@ public class FundingService {
         if(fundingComment.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
 
+        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.FUNDINGCOMMENT, user))
+            throw new UnAuthenticationException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
+
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(commentIdx)
                 .warningType(WarningType.FUNDINGCOMMENT)
                 .warningUser(user)
                 .build());
     }
+
 }

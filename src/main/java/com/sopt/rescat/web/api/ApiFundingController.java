@@ -206,7 +206,7 @@ public class ApiFundingController {
     })
     @Auth
     @PostMapping("/{idx}/warning")
-    public ResponseEntity<Funding> warningFunding(
+    public ResponseEntity<Void> warningFunding(
             @ApiParam(value = "글 번호", required = true) @PathVariable Long idx,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
