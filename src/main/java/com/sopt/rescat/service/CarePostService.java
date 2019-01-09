@@ -266,6 +266,9 @@ public class CarePostService {
         if(carePost.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
 
+        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.CAREPOST, user))
+            throw new UnAuthenticationException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
+
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(idx)
                 .warningType(WarningType.CAREPOST)
@@ -280,6 +283,9 @@ public class CarePostService {
 
         if(carePostComment.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
+
+        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.CAREPOSTCOMMENT, user))
+            throw new UnAuthenticationException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(commentIdx)
