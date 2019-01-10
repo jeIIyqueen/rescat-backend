@@ -36,8 +36,6 @@ public class UserService {
     private final CareTakerRequestRepository careTakerRequestRepository;
     private final RegionRepository regionRepository;
     private final ApprovalLogRepository approvalLogRepository;
-    private final UserNotificationLogRepository userNotificationLogRepository;
-    private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
 
 
@@ -51,7 +49,6 @@ public class UserService {
     public UserService(final UserRepository userRepository, final PasswordEncoder passwordEncoder,
                        final CareTakerRequestRepository careTakerRequestRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                        final RegionRepository regionRepository, final ApprovalLogRepository approvalLogRepository,
-                       final UserNotificationLogRepository userNotificationLogRepository, final NotificationRepository notificationRepository,
                        final NotificationService notificationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -59,8 +56,6 @@ public class UserService {
         this.regionRepository = regionRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
-        this.userNotificationLogRepository = userNotificationLogRepository;
-        this.notificationRepository = notificationRepository;
         this.notificationService = notificationService;
 
     }
@@ -101,7 +96,7 @@ public class UserService {
         User savedUser = userRepository.findById(userLoginDto.getId())
                 .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
-        savedUser.updateDeviceToken(userLoginDto.getDeviceToken());
+        savedUser.updateInstanceToken(userLoginDto.getInstanceToken());
 
         return savedUser;
     }
@@ -240,38 +235,17 @@ public class UserService {
         CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
 
+        User writer = careTakerRequest.getWriter();
+
         // 거절일 경우
-        if (status.equals(RequestStatus.REFUSE.getValue())) {
+        if (status.equals(RequestStatus.REFUSE.getValue()))
             refuseCareTakerRequest(careTakerRequest, approver);
 
-            Notification notification = Notification.builder()
-                    .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-            notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(careTakerRequest.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
-            return;
-        }
-
         // 승인일 경우
-        approveCareTakerRequest(careTakerRequest, approver);
+        else if (status.equals(RequestStatus.CONFIRM.getValue()))
+            approveCareTakerRequest(careTakerRequest, approver);
 
-        Notification notification = Notification.builder()
-                .contents(careTakerRequest.getWriter().getNickname() + "님의 케어테이커 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
-                .build();
-        notificationRepository.save(notification);
-
-        userNotificationLogRepository.save(UserNotificationLog.builder()
-                .receivingUser(careTakerRequest.getWriter())
-                .notification(notification)
-                .isChecked(RequestStatus.DEFER.getValue())
-                .build());
-
+        notificationService.send(careTakerRequest, careTakerRequest.getWriter());
     }
 
     private void refuseCareTakerRequest(CareTakerRequest careTakerRequest, User approver) {
@@ -354,7 +328,6 @@ public class UserService {
     //지역 추가 (관리자 승인 X)
     @Transactional
     public void saveAddRegion(final User user, String regionFullName) {
-
         String[] fullName = regionFullName.split(" ");
         if (fullName.length != 3)
             throw new InvalidValueException("regionFullName", "유효한 지역이름을 입력해주세요.");
@@ -374,10 +347,10 @@ public class UserService {
     }
 
     @Transactional
-    public void editUserRegion(User user, List<RegionDto> editRegions) {
+    public void editUserRegion(User user, List<String> editRegions) {
 
-        String[] fullName0 = editRegions.get(0).getName().split(" ");
-        String[] fullName1 = editRegions.get(1).getName().split(" ");
+        String[] fullName0 = editRegions.get(0).split(" ");
+        String[] fullName1 = editRegions.get(1).split(" ");
 
         Region editRegion0 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName0[0], fullName0[1], fullName0[2])
                 .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
@@ -387,12 +360,11 @@ public class UserService {
         user.updateRegions(editRegion0, editRegion1, null);
 
         if(editRegions.size() == 3) {
-            String[] fullName2 = editRegions.get(2).getName().split(" ");
+            String[] fullName2 = editRegions.get(2).split(" ");
             Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
                     .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
             user.updateRegions(editRegion0, editRegion1, editRegion2);
         }
-        
     }
 
     @Transactional
@@ -400,14 +372,16 @@ public class UserService {
         CareTakerRequest careTakerRequest = careTakerRequestRepository.findById(idx)
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 요청이 존재하지 않습니다."));
 
+        User writer = careTakerRequest.getWriter();
+
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseAddRegionRequest(careTakerRequest, approver);
-            return;
+        }else {//승인일경우
+            approveAddRegionRequest(careTakerRequest, approver);
         }
 
-        // 승인일 경우
-        approveAddRegionRequest(careTakerRequest, approver);
+        notificationService.send(careTakerRequest, careTakerRequest.getWriter());
     }
 
     private void refuseAddRegionRequest(CareTakerRequest careTakerRequest, User approver) {
