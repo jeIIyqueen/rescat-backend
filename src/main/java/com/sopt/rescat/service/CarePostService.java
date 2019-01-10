@@ -69,7 +69,8 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        return findCarePostBy(idx).setStatus(loginUser);
+        CarePost carePost = findCarePostBy(idx).setStatus(loginUser);
+        return carePost;
     }
 
     public Iterable<CarePost> findAll() {
@@ -255,14 +256,14 @@ public class CarePostService {
     }
 
     @Transactional
-    public void warningCarePost(Long idx, User user){
+    public void warningCarePost(Long idx, User user) {
         CarePost carePost = getCarePostBy(idx);
         carePost.warningCount();
 
-        if(carePost.getWriter().getIdx().equals(user.getIdx()))
+        if (carePost.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
 
-        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.CAREPOST, user))
+        if (warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.CAREPOST, user))
             throw new AlreadyExistsException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()
@@ -273,14 +274,14 @@ public class CarePostService {
     }
 
     @Transactional
-    public void warningCarePostComment(Long commentIdx, User user){
+    public void warningCarePostComment(Long commentIdx, User user) {
         CarePostComment carePostComment = getCommentBy(commentIdx);
         carePostComment.warningCount();
 
-        if(carePostComment.getWriter().getIdx().equals(user.getIdx()))
+        if (carePostComment.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
 
-        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.CAREPOSTCOMMENT, user))
+        if (warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.CAREPOSTCOMMENT, user))
             throw new AlreadyExistsException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()

@@ -52,7 +52,7 @@ public class ApiCarePostController {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.findAllBy(type));
     }
 
-    @ApiOperation(value = "입양/임시보호 글 등록", notes = "입양/임시보호 글을 등록합니다.")
+    @ApiOperation(value = "입양/임시보호 글 등록 요청", notes = "입양/임시보호 글 등록을 관리자에게 요청합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 등록 성공"),
             @ApiResponse(code = 409, message = "완료되지 않은 글 중복 오류"),
@@ -221,6 +221,7 @@ public class ApiCarePostController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 신고 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "글 신고 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParams({

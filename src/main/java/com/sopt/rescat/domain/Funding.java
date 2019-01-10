@@ -2,18 +2,18 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
+import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Getter
@@ -49,7 +49,7 @@ public class Funding extends BaseEntity {
     @Column
     private String introduction;
 
-    @ApiModelProperty(notes = "이름",  required = true)
+    @ApiModelProperty(notes = "이름", required = true)
     @Column
     @NonNull
     private String name;
@@ -89,7 +89,7 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "증빙서류 사진", required = true)
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FundingPhoto> certifications;
+    private List<CertificationPhoto> certifications;
 
     @ApiModelProperty(notes = "펀딩글 유형(0: 치료비 모금, 1: 프로젝트 후원)", required = true)
     @Column
@@ -102,8 +102,7 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "마감 기한")
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date limitAt;
+    private LocalDateTime limitAt;
 
     @ApiModelProperty(notes = "관리자 승인 여부(0: 보류, 1: 승인, 2: 거절)")
     @Column
@@ -154,7 +153,7 @@ public class Funding extends BaseEntity {
         return this;
     }
 
-    public Funding initCertifications(List<FundingPhoto> certificationPhotos) {
+    public Funding initCertifications(List<CertificationPhoto> certificationPhotos) {
         this.certifications = certificationPhotos;
         return this;
     }

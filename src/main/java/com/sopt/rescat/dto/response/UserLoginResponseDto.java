@@ -2,7 +2,6 @@ package com.sopt.rescat.dto.response;
 
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.JwtTokenDto;
-import com.sopt.rescat.dto.RegionDto;
 import lombok.Builder;
 import lombok.Data;
 

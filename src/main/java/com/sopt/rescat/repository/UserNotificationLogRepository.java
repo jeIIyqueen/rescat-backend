@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface UserNotificationLogRepository extends CrudRepository<UserNotificationLog, Long> {
-        List<UserNotificationLog> findByReceivingUserOrderByCreatedAtDesc(User user);
-        UserNotificationLog findByNotificationAndReceivingUser(Notification notification, User user);
+    List<UserNotificationLog> findByReceivingUserOrderByCreatedAtDesc(User user);
+
+    UserNotificationLog findByNotificationAndReceivingUser(Notification notification, User user);
 }

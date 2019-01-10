@@ -5,7 +5,6 @@ import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.UserRepository;
 import com.sopt.rescat.service.JWTService;
-import com.sopt.rescat.utils.HttpSessionUtils;
 import com.sopt.rescat.vo.JwtTokenVO;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
