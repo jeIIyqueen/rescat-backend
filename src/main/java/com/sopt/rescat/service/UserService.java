@@ -347,10 +347,10 @@ public class UserService {
     }
 
     @Transactional
-    public void editUserRegion(User user, List<RegionDto> editRegions) {
+    public void editUserRegion(User user, List<String> editRegions) {
 
-        String[] fullName0 = editRegions.get(0).getName().split(" ");
-        String[] fullName1 = editRegions.get(1).getName().split(" ");
+        String[] fullName0 = editRegions.get(0).split(" ");
+        String[] fullName1 = editRegions.get(1).split(" ");
 
         Region editRegion0 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName0[0], fullName0[1], fullName0[2])
                 .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
@@ -360,12 +360,11 @@ public class UserService {
         user.updateRegions(editRegion0, editRegion1, null);
 
         if(editRegions.size() == 3) {
-            String[] fullName2 = editRegions.get(2).getName().split(" ");
+            String[] fullName2 = editRegions.get(2).split(" ");
             Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
                     .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
             user.updateRegions(editRegion0, editRegion1, editRegion2);
         }
-        
     }
 
     @Transactional

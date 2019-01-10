@@ -33,4 +33,9 @@ public class CertificationPhoto extends BaseTime {
     public CertificationPhoto(@NonNull String url) {
         this.url = url;
     }
+
+    public CertificationPhoto initFunding(Funding funding) {
+        this.funding = funding;
+        return this;
+    }
 }

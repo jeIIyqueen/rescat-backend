@@ -49,9 +49,9 @@ public class ApiFundingController {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.findAllBy(category));
     }
 
-    @ApiOperation(value = "크라우드 펀딩 글 등록", notes = "크라우드 펀딩 글을 등록합니다.")
+    @ApiOperation(value = "크라우드 펀딩 글 등록 요청", notes = "크라우드 펀딩 글 등록을 관리자에게 요청합니다.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "크라우드 펀딩 글 등록 성공"),
+            @ApiResponse(code = 200, message = "크라우드 펀딩 글 등록 요청 성공"),
             @ApiResponse(code = 400, message = "파라미터 형식 오류"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
@@ -174,7 +174,7 @@ public class ApiFundingController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
+    @ApiOperation(value = "펀딩 글 4개 리스트 조회", notes = "펀딩 글 4개 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")

@@ -2,6 +2,7 @@ package com.sopt.rescat.dto.request;
 
 import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.domain.enums.Bank;
+import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,8 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,15 +105,14 @@ public class FundingRequestDto {
     public List<FundingPhoto> convertPhotoUrlsToPhotos(Funding funding) {
         return this.photoUrls.stream()
                 .map(FundingPhoto::new)
-                .map(fundingPhoto -> fundingPhoto.initFunding(funding))
+                .peek(fundingPhoto -> fundingPhoto.initFunding(funding))
                 .collect(Collectors.toList());
     }
 
-    public List<FundingPhoto> convertCertificationUrlsToCertifications(Funding funding) {
+    public List<CertificationPhoto> convertCertificationUrlsToCertifications(Funding funding) {
         return this.certificationUrls.stream()
-                .map(FundingPhoto::new)
-                .peek(FundingPhoto::setCertification)
-                .map(fundingPhoto -> fundingPhoto.initFunding(funding))
+                .map(CertificationPhoto::new)
+                .peek(certificationPhoto -> certificationPhoto.initFunding(funding))
                 .collect(Collectors.toList());
     }
 }
