@@ -104,6 +104,7 @@ public class FundingService {
                 .amount(mileage)
                 .funding(funding)
                 .sponsor(loginUser)
+                .status(0)
                 .build());
         funding.updateCurrentAmount(mileage);
     }

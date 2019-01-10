@@ -29,8 +29,15 @@ public class ProjectFundingLog extends BaseTime {
     @NonNull
     private Long amount;
 
+    @Column
+    @NonNull
+    // 0: 기한 전, 1: 기한 완료되었으나 모금달성 실패로 환불, 2: 계좌전송
+    private Integer status;
+
     public void refund(){
-        log.info(sponsor.toString());
-        this.sponsor.updateMileage(amount);
+        if(status == 0){
+            this.status = 1;
+            this.sponsor.updateMileage(amount);
+        }
     }
 }
