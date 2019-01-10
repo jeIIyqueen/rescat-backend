@@ -1,5 +1,8 @@
 package com.sopt.rescat.service;
 
+import com.sopt.rescat.domain.Notification;
+import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.UserNotificationLog;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.gson.Gson;
@@ -61,7 +64,7 @@ public class NotificationService {
     // [START retrieve_access_token]
     private static String getAccessToken() throws IOException {
         GoogleCredential googleCredential = GoogleCredential
-                .fromStream(new FileInputStream("C:\\Users\\BYE\\Downloads\\rescat-firebase-adminsdk-v7wju-71936ecc50.json"))
+                .fromStream(new FileInputStream("src/main/resources/rescat-firebase-adminsdk-v7wju-c0635347b7.json"))
                 .createScoped(Arrays.asList(SCOPES));
         googleCredential.refreshToken();
         return googleCredential.getAccessToken();
@@ -320,9 +323,9 @@ public class NotificationService {
                 .orElseThrow(() -> new NotMatchException("idx", "idx에 해당하는 알림이 존재하지 않습니다."));
 
 
-        UserNotificationLog notificationLog =userNotificationLogRepository.findByNotificationAndReceivingUser(notification,user);
+        UserNotificationLog notificationLog = userNotificationLogRepository.findByNotificationAndReceivingUser(notification, user);
 
-        if (notificationLog==null)
+        if (notificationLog == null)
             throw new NotMatchException("idx", "해당 idx 알림은 사용자가 받은 알림이 아닙니다.");
 
         notificationLog.updateIsChecked();

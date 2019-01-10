@@ -11,11 +11,10 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
-import javax.persistence.Column;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +57,7 @@ public class FundingRequestDto {
     @ApiModelProperty(notes = "자기소개")
     private String introduction;
 
-    @ApiModelProperty(notes = "이름",  required = true)
+    @ApiModelProperty(notes = "이름", required = true)
     @NonNull
     @Length(max = 10)
     private String name;
@@ -82,7 +81,7 @@ public class FundingRequestDto {
 
     @ApiModelProperty(notes = "마감 기한", required = true)
     @NonNull
-    private Date limitAt;
+    private LocalDateTime limitAt;
 
     public Funding toFunding() {
         return Funding.builder()

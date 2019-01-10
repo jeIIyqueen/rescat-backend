@@ -1,12 +1,14 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.CarePost;
+import com.sopt.rescat.domain.CareTakerRequest;
+import com.sopt.rescat.domain.Notification;
+import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.dto.response.UserLoginResponseDto;
-import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
 import com.sopt.rescat.utils.auth.AuthAspect;
@@ -23,9 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -94,7 +94,7 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginDto userLoginDto){
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginDto userLoginDto) {
         User user = userService.login(userLoginDto);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -296,13 +296,13 @@ public class ApiUserController {
     @ApiOperation(value = "알림 리스트 조회", notes = "마이페이지에서 유저가 받은 알림들을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
-            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @GetMapping("/mypage/notification-box")
     public ResponseEntity getNotifications(@RequestHeader(value = "Authorization") final String token,
-                                           HttpServletRequest httpServletRequest){
+                                           HttpServletRequest httpServletRequest) {
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotification(loginUser));
@@ -311,14 +311,14 @@ public class ApiUserController {
     @ApiOperation(value = "알림 상세 조회", notes = "마이페이지에서 유저가 받은 알림관련 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "조회 성공", response = Boolean.class),
-            @ApiResponse(code = 401, message = "권한 없음",response = ExceptionDto.class),
+            @ApiResponse(code = 401, message = "권한 없음", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @Auth
     @GetMapping("/mypage/notification-box/{idx}")
     public ResponseEntity getTargetContents(@RequestHeader(value = "Authorization") final String token,
                                             @ApiParam(value = "알림 idx", required = true) @PathVariable Long idx,
-                                            HttpServletRequest httpServletRequest){
+                                            HttpServletRequest httpServletRequest) {
 
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
 
@@ -399,23 +399,21 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "수정 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-//    })
-//    @CareTakerAuth
-//    @PutMapping("/mypage/region")
-//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<RegionDto> editRegions) {
-//        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        //log.info(String.valueOf(receivedRegions));
-//        //List<String> editRegions = new ArrayList<>(receivedRegions);
-//        userService.editUserRegion(user, editRegions);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
+    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PutMapping("/mypage/region")
+    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, @RequestBody List<RegionDto> editRegions) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserRegion(user, editRegions);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }

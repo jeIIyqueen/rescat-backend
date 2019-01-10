@@ -7,13 +7,12 @@ import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Getter
@@ -49,7 +48,7 @@ public class Funding extends BaseEntity {
     @Column
     private String introduction;
 
-    @ApiModelProperty(notes = "이름",  required = true)
+    @ApiModelProperty(notes = "이름", required = true)
     @Column
     @NonNull
     private String name;
@@ -102,8 +101,7 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "마감 기한")
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date limitAt;
+    private LocalDateTime limitAt;
 
     @ApiModelProperty(notes = "관리자 승인 여부(0: 보류, 1: 승인, 2: 거절)")
     @Column

@@ -12,8 +12,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Duration;
@@ -27,14 +25,13 @@ import static java.time.LocalDateTime.now;
 @Getter
 @Builder
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarePost extends BaseEntity {
     private static final Integer SECONDS_OF_3DAYS = 259200;
     private static final Integer MAIN_PHOTO_INDEX = 0;
 
-    @ApiModelProperty(readOnly = true, notes = "글번호")
+    @ApiModelProperty(readOnly = true, notes = "글p번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -128,7 +125,6 @@ public class CarePost extends BaseEntity {
     private List<CareApplication> careApplications;
 
     @ApiModelProperty(readOnly = true, notes = "작성/끌올 시간")
-    @LastModifiedDate
     @Column
     private LocalDateTime updatedAt;
 
@@ -167,7 +163,7 @@ public class CarePost extends BaseEntity {
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
-                .updatedAt(updatedAt)
+                .updatedAt(getUpdatedAt())
                 .isFinished(isFinished)
                 .build();
     }
@@ -205,6 +201,7 @@ public class CarePost extends BaseEntity {
     }
 
     public CarePost setStatus(User loginUser) {
+        log.info(this.updatedAt.toString());
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;
@@ -218,7 +215,7 @@ public class CarePost extends BaseEntity {
         if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < SECONDS_OF_3DAYS)
             throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
 
-        this.updatedAt = now();
+        this.updatedAt = now().withNano(0);
     }
 
     public void warningCount() {

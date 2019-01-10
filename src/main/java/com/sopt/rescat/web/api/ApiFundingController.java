@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -199,6 +198,7 @@ public class ApiFundingController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "크라우드 펀딩 글 신고 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "글 신고 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParams({

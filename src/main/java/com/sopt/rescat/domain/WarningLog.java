@@ -4,7 +4,6 @@ import com.sopt.rescat.domain.enums.WarningType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 
