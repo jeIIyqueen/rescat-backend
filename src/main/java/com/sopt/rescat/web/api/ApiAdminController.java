@@ -68,7 +68,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "홈화면 요청 개수 리스트 api", notes = "홈화면 요청 개수 리스트를 반환합니다.")
+    @ApiOperation(value = "홈화면 요청 개수 리스트 조회", notes = "홈화면 요청 개수 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "홈화면 요청 개수 리스트 반환 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -86,7 +86,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @ApiOperation(value = "케어테이커 인증요청, 마이페이지에서의 지역 추가요청 리스트 api", notes = "케어테이커 인증요청, 지역 추가요청 리스트를 반환합니다.")
+    @ApiOperation(value = "케어테이커 인증요청, 마이페이지에서의 지역 추가요청 리스트 조회", notes = "케어테이커 인증요청, 지역 추가요청 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "케어테이커 인증요청, 지역추가요청 리스트 반환 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -98,7 +98,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCareTakerRequest());
     }
 
-    @ApiOperation(value = "케어테이커 인증요청 승인 api", notes = "케어테이커 인증요청을 승인/거절합니다.")
+    @ApiOperation(value = "케어테이커 인증요청 승인/거절", notes = "케어테이커 인증요청을 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "케어테이커 인증요청 처리 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -118,7 +118,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "케어테이커 지역 추가요청 승인 api", notes = "케어테이커 지역 추가요청을 승인/거절합니다.")
+    @ApiOperation(value = "케어테이커 지역 추가요청 승인/거절", notes = "케어테이커 지역 추가요청을 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "케어테이커 지역 추가요청 처리 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -139,7 +139,7 @@ public class ApiAdminController {
     }
 
 
-    @ApiOperation(value = "크라우드 펀딩 글 게시요청 리스트 api", notes = "크라우드 펀딩 글 게시요청 리스트를 반환합니다.")
+    @ApiOperation(value = "크라우드 펀딩 글 게시요청 리스트 조회", notes = "크라우드 펀딩 글 게시요청 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "크라우드 펀딩 글 게시요청 리스트 반환 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -150,7 +150,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getFundingRequests());
     }
 
-    @ApiOperation(value = "크라우드 펀딩 글 승인/거절 api", notes = "idx 에 따른 크라우드 펀딩 글 게시를 승인/거절합니다.")
+    @ApiOperation(value = "크라우드 펀딩 글 승인/거절", notes = "idx 에 따른 크라우드 펀딩 글 게시를 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "크라우드 펀딩 글 게시요청 처리 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
@@ -172,7 +172,7 @@ public class ApiAdminController {
     }
 
 
-    @ApiOperation(value = "입양/임시보호 글 게시요청 리스트 api", notes = "입양/임시보호 글 게시요청 리스트를 반환합니다.")
+    @ApiOperation(value = "입양/임시보호 글 게시요청 리스트 조회", notes = "입양/임시보호 글 게시요청 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 게시요청 리스트 반환 성공"),
             @ApiResponse(code = 401, message = "권한 미보유"),
@@ -183,7 +183,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
     }
 
-    @ApiOperation(value = "입양/임시보호 글 승인/거절 api", notes = "idx 에 따른 입양/임시보호 글 게시를 승인/거절합니다.")
+    @ApiOperation(value = "입양/임시보호 글 승인/거절", notes = "idx 에 따른 입양/임시보호 글 게시를 승인/거절합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 게시요청 처리 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
@@ -268,6 +268,7 @@ public class ApiAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ApiOperation(value = "경위도 좌표 -> 주소 변환 (reverse geocoding)")
     @GetMapping("/geo-coding-reverse")
     public ResponseEntity<String> getCoordsToAddrJsonResult(@RequestParam Double lng, @RequestParam Double lat) {
         RestTemplate restTemplate = new RestTemplate();
