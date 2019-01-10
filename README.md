@@ -18,6 +18,7 @@
 * ##### Spring AOP
 * ##### String DATA JPA
 * ##### use AWS EC2, RDS, S3
+* ##### encode password by BCryptPasswordEncoder
 * ##### apply XSS-filter
 * ##### apply SWAGGER2
 
