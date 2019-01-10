@@ -29,12 +29,10 @@ public class FundingService {
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
     private NotificationService notificationService;
-    private NotificationRepository notificationRepository;
     private WarningLogRepository warningLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
                           final NotificationService notificationService,
-                          final NotificationRepository notificationRepository,
                           FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                           final ApprovalLogRepository approvalLogRepository, final WarningLogRepository warningLogRepository) {
         this.fundingRepository = fundingRepository;
@@ -42,7 +40,6 @@ public class FundingService {
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
         this.notificationService = notificationService;
-        this.notificationRepository = notificationRepository;
         this.warningLogRepository = warningLogRepository;
     }
 
@@ -121,26 +118,12 @@ public class FundingService {
 
         if (status.equals(RequestStatus.REFUSE.getValue())){
             refuseFundingRequest(funding, approver);
-
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
         }
         else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
-
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
-                    .targetType(RequestType.FUNDING)
-                    .targetIdx(funding.getIdx())
-                    .build();
-
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
         }
+
+        notificationService.send(funding, funding.getWriter());
 
         return funding.toFundingDto();
     }
@@ -167,12 +150,17 @@ public class FundingService {
 
     @Transactional
     public FundingComment createComment(Long idx, FundingComment fundingComment, User loginUser) {
-        return fundingCommentRepository.save(fundingComment
+
+        FundingComment comment = fundingCommentRepository.save(fundingComment
                 .setWriter(loginUser)
                 .setStatus(loginUser)
                 .initFunding(getFundingBy(idx)))
                 .setWriterNickname()
                 .setUserRole();
+
+        notificationService.send(comment, comment.getFunding().getWriter());
+
+        return comment;
     }
 
     public void deleteComment(Long commentIdx, User loginUser) {

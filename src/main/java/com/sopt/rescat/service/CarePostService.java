@@ -139,16 +139,7 @@ public class CarePostService {
 
         careApplicationRepository.save(application);
 
-
-        String category = (carePost.getType() == 0) ? "입양을" : "임시보호를";
-
-        Notification notification = new Notification().builder()
-                .contents(loginUser.getNickname() + "님께서 " + carePost.getName() + "(이)의 " + category + " 신청하셨습니다.")
-                .targetType(RequestType.CAREAPPLICATION)
-                .targetIdx(application.getIdx())
-                .build();
-        notificationRepository.save(notification);
-        notificationService.createNotification(carePost.getWriter(), notification);
+        notificationService.send(application, carePost.getWriter());
     }
 
     @Transactional
@@ -159,7 +150,6 @@ public class CarePostService {
 
         careApplication.accept(loginUser);
         careApplication.getCarePost().finish();
-        User applicant = careApplication.getWriter();
 
         approvalLogRepository.save(ApprovalLog.builder()
                 .requestIdx(careApplication.getIdx())
@@ -168,12 +158,7 @@ public class CarePostService {
                 .build()
                 .setApprover(loginUser));
 
-        Notification notification = Notification.builder()
-                .contents(applicant.getNickname() + "님의 입양 신청이 승인되었습니다. 당신의 아름다운 결정을 지지합니다.")
-                .build();
-
-        notificationRepository.save(notification);
-        notificationService.createNotification(applicant, notification);
+        notificationService.send(careApplication, careApplication.getWriter());
     }
 
     public CareApplication getCareApplication (Long careApplicationIdx){
@@ -193,32 +178,16 @@ public class CarePostService {
     @Transactional
     public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
-        String category = (carePost.getType() == 0) ? "입양" : "임시보호";
-
-        User writer = carePost.getWriter();
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
 
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
-
         } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
-
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
-                    .targetType(RequestType.CAREPOST)
-                    .targetIdx(carePost.getIdx())
-                    .build();
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
         }
 
+        notificationService.send(carePost,carePost.getWriter());
         return carePost.toCarePostDto();
     }
 
@@ -258,19 +227,12 @@ public class CarePostService {
                 .setWriterNickname()
                 .setUserRole();
 
-        Notification notification = Notification.builder()
-                .contents(loginUser.getNickname() + "님이 회원님의 게시글에 댓글을 남겼습니다.")
-                .targetIdx(carePostIdx)
-                .targetType(RequestType.CAREPOST)
-                .build();
-
         User writer = carePostRepository.findById(carePostIdx)
                 .orElseThrow(() -> new NotFoundException("carePostIdx", "idx에 해당되는 글이 존재하지 않습니다."))
                 .getWriter();
 
-        notificationRepository.save(notification);
-        notificationService.createNotification(writer, notification);
 
+        notificationService.send(carePostComment,writer);
         return comment;
     }
 

@@ -101,37 +101,14 @@ public class MapService {
     public MapRequest approveMap(Long mapRequestIdx, Integer status, User approver) {
         MapRequest mapRequest = mapRequestRepository.findById(mapRequestIdx).orElseThrow(() -> new NotFoundException("idx", "존재하지 않는 등록/수정 요청입니다."));
 
-        User writer = mapRequest.getWriter();
-
-        String requestType = (mapRequest.getRequestType() == 0) ? "등록" : "수정";
-        String registerType;
-        if(mapRequest.getRegisterType() == 0){
-            registerType = "배식소";
-
-        }
-        else if (mapRequest.getRegisterType() == 1)
-            registerType = "병원";
-        else
-            registerType = "고양이";
-
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseMapRequest(mapRequest, approver);
 
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
-
         } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
             approveMapRequest(mapRequest, approver);
-
-            Notification notification = new Notification().builder()
-                    .contents(writer.getNickname() + "님의 " + registerType + requestType + " 요청이 승인되었습니다.")
-                    .build();
-            notificationRepository.save(notification);
-            notificationService.createNotification(writer, notification);
         }
+
+        notificationService.send(mapRequest, mapRequest.getWriter());
         return mapRequest;
     }
 

@@ -5,10 +5,10 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.sopt.rescat.domain.Notification;
-import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.UserNotificationLog;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
+import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.repository.NotificationRepository;
 import com.sopt.rescat.repository.UserNotificationLogRepository;
@@ -26,7 +26,9 @@ import java.util.Scanner;
 @Slf4j
 @Service
 public class NotificationService {
-
+//
+//    public static final String REFUSE_MESSAGE = "신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.";
+//    public static final String APPROVE_MESSAGE = "신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.";
     private static final String PROJECT_ID = "rescat";
     private static final String BASE_URL = "https://fcm.googleapis.com";
     private static final String FCM_SEND_ENDPOINT = "/v1/projects/" + PROJECT_ID + "/messages:send";
@@ -236,7 +238,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public void createNotification(User receivingUser, Notification notification){
+    public void pushNotification(User receivingUser, Notification notification){
         userNotificationLogRepository.save(
                 UserNotificationLog.builder()
                         .receivingUser(receivingUser)
@@ -276,5 +278,156 @@ public class NotificationService {
         notificationLog.updateIsChecked();
 
         return notification;
+    }
+
+//    public Notification createRefuseNotification(Funding funding) {
+//        return Notification.builder()
+//                .contents(funding.getWriter().getNickname() + "님의 후원글 " + REFUSE_MESSAGE)
+//                .build();
+//    }
+//
+//    public Notification createRefuseNotification(String writerName) {
+//        return Notification.builder()
+//                .contents(writerName + "님의 입양" + REFUSE_MESSAGE)
+//                .build();
+//    }
+//
+//    public Notification createApprovingNotification(Funding funding) {
+//        return Notification.builder()
+//                .contents(funding.getWriter().getNickname() + "님의 후원글 " + APPROVE_MESSAGE)
+//                .targetType(RequestType.FUNDING)
+//                .targetIdx(funding.getIdx())
+//                .build();
+//    }
+
+
+    public<T> void send(T object, User receivingUser) {
+        Notification notification;
+
+        if(object instanceof Funding){
+            notification = createNotification((Funding) object,receivingUser);
+        }
+        else if(object instanceof CarePost) {
+            notification = createNotification((CarePost) object,receivingUser);
+        }
+        else if(object instanceof CareTakerRequest) {
+            notification = createNotification((CareTakerRequest) object,receivingUser);
+        }
+        else if(object instanceof MapRequest) {
+            notification = createNotification((MapRequest) object,receivingUser);
+        }
+        else if(object instanceof CareApplication){
+            notification = createNotification((CareApplication)object,receivingUser);
+        }
+        else if(object instanceof CarePostComment){
+            notification = createNotification((CarePostComment)object);
+        }
+        else if(object instanceof FundingComment){
+            notification = createNotification((FundingComment)object);
+        }
+        else
+            throw new InvalidValueException("notification", "알림값이 잘못 되었습니다.");
+
+        notificationRepository.save(notification);
+
+        // TODO 보내기
+        pushNotification(receivingUser,notification);
+    }
+
+
+    // TODO method overloading 이용해서 메소드 여러개 만들기
+    public Notification createNotification(Funding funding, User receivingUser) {
+
+        if(funding.getIsConfirmed().equals(RequestStatus.CONFIRM)) {
+            return Notification.builder()
+                    .targetType(RequestType.FUNDING)
+                    .targetIdx(funding.getIdx())
+                    .contents(receivingUser.getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                    .build();
+        }
+        return Notification.builder()
+                .contents(receivingUser.getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .build();
+    }
+
+    public Notification createNotification(CarePost carePost, User receivingUser) {
+        String requestType = (carePost.getType() == 0) ? "입양" : "임시보호";
+        if(carePost.getIsConfirmed().equals(RequestStatus.CONFIRM)){
+            return Notification.builder()
+                    .targetType(RequestType.CAREPOST)
+                    .targetIdx(carePost.getIdx())
+                    .contents(receivingUser.getNickname() + "님의 "+requestType+" 등록 신청이 승인되었습니다. 좋은 "+requestType+"자를 만날 수 있기를 응원합니다.")
+                    .build();
+        }
+        return Notification.builder()
+                .contents(receivingUser.getNickname() + "님의 "+requestType+" 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .build();
+    }
+
+    public Notification createNotification(CareTakerRequest careTakerRequest, User receivingUser){
+        //지역추가 or 케테 신청
+        String requestType = (careTakerRequest.getType() == 0) ? "케어테이커" : "활동지역 추가";
+
+        if(careTakerRequest.getIsConfirmed().equals(RequestStatus.CONFIRM))
+            return Notification.builder()
+                    .contents(receivingUser.getNickname() + "님의 "+requestType+" 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                    .build();
+        return Notification.builder()
+                .contents(receivingUser.getNickname() + "님의 "+requestType+" 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .build();
+    }
+
+    public Notification createNotification(MapRequest mapRequest, User receivingUser) {
+        String requestType = (mapRequest.getRequestType() == 0) ? "등록" : "수정";
+        String registerType;
+        if(mapRequest.getRegisterType() == 0)
+            registerType = "배식소";
+        else if (mapRequest.getRegisterType() == 1)
+            registerType = "병원";
+        else
+            registerType = "고양이";
+
+        if(mapRequest.getIsConfirmed().equals(RequestStatus.CONFIRM))
+            return Notification.builder()
+                    .contents(receivingUser.getNickname()+ "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .build();
+        return Notification.builder()
+                .contents(receivingUser.getNickname()+ "님의 " + registerType + requestType + " 요청이 승인되었습니다.")
+                .build();
+    }
+
+    public Notification createNotification(CareApplication careApplication, User receivingUser){
+        String requestType = (careApplication.getCarePost().getType() == 0) ? "입양" : "임시보호";
+
+        if(careApplication.getIsAccepted())
+            return Notification.builder()
+                    .contents(receivingUser.getNickname() + "님의 "+requestType+" 신청이 승인되었습니다. 당신의 아름다운 결정을 지지합니다.")
+                    .build();
+
+        requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
+        return Notification.builder()
+                .targetIdx(careApplication.getIdx())
+                .targetType(RequestType.CAREAPPLICATION)
+                .contents(receivingUser.getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
+                .build();
+    }
+
+    private Notification createNotification(CarePostComment carePostComment){
+
+        return Notification.builder()
+                .contents(carePostComment.getWriter().getNickname() + "님이 회원님의 게시글에 댓글을 남겼습니다.")
+                .targetIdx(carePostComment.getCarePost().getIdx())
+                .targetType(RequestType.CAREPOST)
+                .build();
+    }
+
+    private Notification createNotification(FundingComment fundingComment){
+
+        return Notification.builder()
+                .contents(fundingComment.getWriter().getNickname() + "님이 회원님의 게시글에 댓글을 남겼습니다.")
+                .targetIdx(fundingComment.getFunding().getIdx())
+                .targetType(RequestType.FUNDING)
+                .build();
+
     }
 }
