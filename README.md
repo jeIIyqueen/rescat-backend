@@ -12,7 +12,7 @@
 Social information service, 'Rescat' aims at diffision of care-taker's proper caring culture and coexistence between human being and stray cats.  
 You can also be with us :) Contact us!
 
-Kakaotalk : @rescat
+Kakaotalk : @rescat  
 E-mail : iamrescat@gmail.com  
 
 ## ARCHITECTURE
@@ -23,7 +23,7 @@ E-mail : iamrescat@gmail.com
 * ##### Spring AOP
 * ##### String DATA JPA
 * ##### use AWS EC2, RDS, S3
-* ##### encode password by BCryptPasswordEncoder
+* ##### encode password using BCryptPasswordEncoder
 * ##### apply XSS-filter
 * ##### apply SWAGGER2
 
