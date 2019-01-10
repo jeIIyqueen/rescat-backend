@@ -7,12 +7,11 @@
 ╚═╝  ╚═╝  ╚══════╝  ╚══════╝     ╚════╝  ╚═╝   ╚═╝     ╚═╝
 ~~~
 
-# RESCAT BACKEND SERVER
 
 ## INTRODUCTION
 
 ## ARCHITECTURE
-[[ARCHITECTURE.png]]
+![ARCHITECTURE](ARCHITECTURE.png)
 
 ## MAIN FEATURE
 * ##### RESTFul API
