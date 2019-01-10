@@ -124,7 +124,7 @@ public class FundingService {
         }
 
         notificationService.send(funding, funding.getWriter());
-
+      
         return funding.toFundingDto();
     }
 
