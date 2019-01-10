@@ -9,7 +9,11 @@
 
 
 ## INTRODUCTION
-Social information service, 'Rescat' aims at diffision of care-taker's proper caring culture and coexistence between human being and stray cats. 
+Social information service, 'Rescat' aims at diffision of care-taker's proper caring culture and coexistence between human being and stray cats.  
+You can also be with us :) Contact us!
+
+Kakaotalk : @rescat
+E-mail : iamrescat@gmail.com  
 
 ## ARCHITECTURE
 ![ARCHITECTURE](ARCHITECTURE.png)
@@ -29,9 +33,9 @@ $ git clone https://github.com/kwonhyeona/rescat-backend.git
 $ cd rescat-backend
 $ vi src/main/resources/application.properties
 ```
-
+  
 And then copy below code.
-Don`t forget You should enter your server information.
+Don`t forget you should enter your server information.  
 
 ```json
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -73,7 +77,7 @@ NAVER.MAP.REVERSE.CLIENTSECRETE=NAVER_SECRET
 ```
 
 Are you ready to run the server? Follow the command below.
-(You should download gradle before following)
+(*You should download gradle before following*)
 
 ```
 $ gradle clean
