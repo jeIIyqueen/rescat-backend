@@ -1,6 +1,7 @@
 package com.sopt.rescat.domain;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
@@ -9,6 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@Slf4j
 public class ProjectFundingLog extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +28,9 @@ public class ProjectFundingLog extends BaseTime {
     @Column
     @NonNull
     private Long amount;
+
+    public void refund(){
+        log.info(sponsor.toString());
+        this.sponsor.updateMileage(amount);
+    }
 }
