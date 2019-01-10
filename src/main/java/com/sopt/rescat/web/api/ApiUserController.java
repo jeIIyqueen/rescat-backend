@@ -4,6 +4,7 @@ import com.sopt.rescat.domain.CarePost;
 import com.sopt.rescat.domain.CareTakerRequest;
 import com.sopt.rescat.domain.Notification;
 import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
@@ -322,9 +323,21 @@ public class ApiUserController {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
 
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
+
+        if(notification.getTargetType().equals(RequestType.CAREAPPLICATION)){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(NotificationTargetDto
+                            .builder()
+                            .targetIdx(notification.getTargetIdx())
+                            .targetType(notification.getTargetType())
+                            .careApplication(carePostService.getCareApplication(notification.getTargetIdx()))
+                            .build());
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(NotificationTargetDto
-                        .builder().targetIdx(notification.getTargetIdx())
+                        .builder()
+                        .targetIdx(notification.getTargetIdx())
                         .targetType(notification.getTargetType())
                         .build());
     }

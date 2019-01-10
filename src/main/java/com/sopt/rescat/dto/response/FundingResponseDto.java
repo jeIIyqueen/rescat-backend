@@ -4,7 +4,6 @@ import com.sopt.rescat.domain.photo.FundingPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data

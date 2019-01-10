@@ -28,21 +28,18 @@ public class FundingService {
     private FundingCommentRepository fundingCommentRepository;
     private ProjectFundingLogRepository projectFundingLogRepository;
     private ApprovalLogRepository approvalLogRepository;
-    private NotificationRepository notificationRepository;
-    private UserNotificationLogRepository userNotificationLogRepository;
+    private NotificationService notificationService;
     private WarningLogRepository warningLogRepository;
 
     public FundingService(final FundingRepository fundingRepository,
-                          final NotificationRepository notificationRepository,
-                          final UserNotificationLogRepository userNotificationLogRepository,
+                          final NotificationService notificationService,
                           FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
                           final ApprovalLogRepository approvalLogRepository, final WarningLogRepository warningLogRepository) {
         this.fundingRepository = fundingRepository;
         this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
         this.approvalLogRepository = approvalLogRepository;
-        this.notificationRepository = notificationRepository;
-        this.userNotificationLogRepository = userNotificationLogRepository;
+        this.notificationService = notificationService;
         this.warningLogRepository = warningLogRepository;
     }
 
@@ -117,40 +114,18 @@ public class FundingService {
     public FundingResponseDto confirmFunding(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         Funding funding = getFundingBy(idx);
 
-        if (status.equals(RequestStatus.REFUSE.getValue()))
+        User writer = funding.getWriter();
+
+        if (status.equals(RequestStatus.REFUSE.getValue())){
             refuseFundingRequest(funding, approver);
-        else if (status.equals(RequestStatus.CONFIRM.getValue()))
+        }
+        else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
+        }
 
-        sendNotification(status, funding);
+        notificationService.send(funding, funding.getWriter());
+
         return funding.toFundingDto();
-    }
-
-    private void sendNotification(Integer status, Funding funding) {
-        Notification notification = createNotification(status, funding);
-        notificationRepository.save(notification);
-
-        userNotificationLogRepository.save(
-                UserNotificationLog.builder()
-                        .receivingUser(funding.getWriter())
-                        .notification(notification)
-                        .isChecked(status)
-                        .build());
-    }
-
-    private Notification createNotification(Integer status, Funding funding) {
-        // 거절일경우,
-        if (status.equals(RequestStatus.DEFER.getValue()))
-            return Notification.builder()
-                    .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-
-        // 승인일경우,
-        return Notification.builder()
-                .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
-                .targetType(RequestType.FUNDING)
-                .targetIdx(funding.getIdx())
-                .build();
     }
 
     private void refuseFundingRequest(Funding funding, User approver) {
@@ -175,12 +150,17 @@ public class FundingService {
 
     @Transactional
     public FundingComment createComment(Long idx, FundingComment fundingComment, User loginUser) {
-        return fundingCommentRepository.save(fundingComment
+
+        FundingComment comment = fundingCommentRepository.save(fundingComment
                 .setWriter(loginUser)
                 .setStatus(loginUser)
                 .initFunding(getFundingBy(idx)))
                 .setWriterNickname()
                 .setUserRole();
+
+        notificationService.send(comment, comment.getFunding().getWriter());
+
+        return comment;
     }
 
     public void deleteComment(Long commentIdx, User loginUser) {
