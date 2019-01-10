@@ -4,10 +4,8 @@ import com.sopt.rescat.domain.photo.CarePostPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder

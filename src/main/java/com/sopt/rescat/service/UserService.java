@@ -11,16 +11,17 @@ import com.sopt.rescat.repository.*;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiClass;
 import com.sopt.rescat.utils.gabia.com.gabia.api.ApiResult;
 import com.sopt.rescat.vo.AuthenticationCodeVO;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -134,7 +135,7 @@ public class UserService {
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .regions(regions)
-                .isFinished(!careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmedAndType(user,RequestStatus.DEFER.getValue(),0))
+                .isFinished(!careTakerRequestRepository.existsCareTakerRequestByWriterAndIsConfirmedAndType(user, RequestStatus.DEFER.getValue(), 0))
                 .build();
     }
 
@@ -294,7 +295,7 @@ public class UserService {
                 .setApprover(approver));
     }
 
-    private List<Region> getUserRegionList(User user){
+    private List<Region> getUserRegionList(User user) {
         List<Region> regions = new ArrayList<>();
         regions.add(user.getMainRegion());
         regions.add(user.getSubRegion1());
@@ -308,7 +309,7 @@ public class UserService {
         List<Region> regions = getUserRegionList(user);
         regions.removeAll(Collections.singleton(null));
 
-        if(regions.size() == 1)
+        if (regions.size() == 1)
             throw new InvalidValueException("regionFullName", "지역은 최소 1개 이상이어야 합니다.");
 
         String[] fullName = regionFullName.split(" ");
@@ -340,14 +341,14 @@ public class UserService {
             throw new AlreadyExistsException("regionFullName", "유저에게 이미 존재하는 지역입니다.");
 
         careTakerRequestRepository.save(CareTakerRequest.builder()
-                    .authenticationPhotoUrl(userAddRegionDto.getAuthenticationPhotoUrl())
-                    .isConfirmed(RequestStatus.DEFER.getValue())
-                    .region(addRegion)
-                    .name(user.getName())
-                    .phone(user.getPhone())
-                    .writer(user)
-                    .type(1)
-                    .build());
+                .authenticationPhotoUrl(userAddRegionDto.getAuthenticationPhotoUrl())
+                .isConfirmed(RequestStatus.DEFER.getValue())
+                .region(addRegion)
+                .name(user.getName())
+                .phone(user.getPhone())
+                .writer(user)
+                .type(1)
+                .build());
     }
 
     //지역 추가 (관리자 승인 X)

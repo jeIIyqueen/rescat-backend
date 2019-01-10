@@ -12,16 +12,11 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -36,7 +31,7 @@ public class CarePost extends BaseEntity {
     private static final Integer SECONDS_OF_3DAYS = 259200;
     private static final Integer MAIN_PHOTO_INDEX = 0;
 
-    @ApiModelProperty(readOnly = true, notes = "글번호")
+    @ApiModelProperty(readOnly = true, notes = "글p번호")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
