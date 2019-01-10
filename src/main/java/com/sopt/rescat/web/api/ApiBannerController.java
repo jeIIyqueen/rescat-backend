@@ -31,7 +31,7 @@ public class ApiBannerController {
             @ApiResponse(code = 200, message = "광고 배너 리스트 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @GetMapping("/advertisement-banners")
+    @GetMapping("/advertisement")
     public ResponseEntity<Iterable<BannerDto>> getAdvertisementBannerList() {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.gets());
     }
@@ -41,7 +41,7 @@ public class ApiBannerController {
             @ApiResponse(code = 200, message = "랜덤 광고 배너 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @GetMapping("/advertisement-banners/random")
+    @GetMapping("/advertisement/random")
     public ResponseEntity<BannerDto> getByRandomIdx() {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.getByRandomIdx());
     }
@@ -51,7 +51,7 @@ public class ApiBannerController {
             @ApiResponse(code = 200, message = "펀딩 후기 배너 4개 리스트 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @GetMapping("/funding-banners")
+    @GetMapping("/funding")
     public ResponseEntity<Iterable<BannerDto>> getFundingBannerList() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingBannerService.get4banners());
     }
