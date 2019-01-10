@@ -116,9 +116,9 @@ public class NotificationService {
             String response = inputstreamToString(connection.getInputStream());
             System.out.println("Message sent to Firebase for delivery, response:");
             System.out.println(response);
-            JsonObject jsonObject = new JsonObject().getAsJsonObject(response);
-            String s = jsonObject.get("notification_key").toString();
-            System.out.println(s);
+//            JsonObject jsonObject = new JsonObject().getAsJsonObject(response);
+//            String s = jsonObject.get("notification_key").toString();
+//            System.out.println();
         } else {
             System.out.println("Unable to send message to Firebase:");
             String response = inputstreamToString(connection.getErrorStream());
@@ -392,7 +392,7 @@ public class NotificationService {
     // TODO method overloading 이용해서 메소드 여러개 만들기
     public Notification createNotification(Funding funding, User receivingUser) {
 
-        if(funding.getIsConfirmed().equals(RequestStatus.CONFIRM)) {
+        if(funding.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue())) {
             return Notification.builder()
                     .targetType(RequestType.FUNDING)
                     .targetIdx(funding.getIdx())
@@ -405,10 +405,20 @@ public class NotificationService {
     }
 
     public Notification createNotification(CarePost carePost, User receivingUser) {
-        String requestType = (carePost.getType() == 0) ? "입양" : "임시보호";
-        if(carePost.getIsConfirmed().equals(RequestStatus.CONFIRM)){
+        String requestType;
+        RequestType requestTypeValue;
+        if(carePost.getType() == 0) {
+            requestType = "입양";
+            requestTypeValue = RequestType.CAREPOST;
+        }
+        else{
+            requestType = "임시보호";
+            requestTypeValue = RequestType.TEMPORALCAREPOST;
+        }
+
+        if(carePost.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue())){
             return Notification.builder()
-                    .targetType(RequestType.CAREPOST)
+                    .targetType(requestTypeValue)
                     .targetIdx(carePost.getIdx())
                     .contents(receivingUser.getNickname() + "님의 "+requestType+" 등록 신청이 승인되었습니다. 좋은 "+requestType+"자를 만날 수 있기를 응원합니다.")
                     .build();
@@ -422,7 +432,7 @@ public class NotificationService {
         //지역추가 or 케테 신청
         String requestType = (careTakerRequest.getType() == 0) ? "케어테이커" : "활동지역 추가";
 
-        if(careTakerRequest.getIsConfirmed().equals(RequestStatus.CONFIRM))
+        if(careTakerRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
                     .contents(receivingUser.getNickname() + "님의 "+requestType+" 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
                     .build();
@@ -441,7 +451,7 @@ public class NotificationService {
         else
             registerType = "고양이";
 
-        if(mapRequest.getIsConfirmed().equals(RequestStatus.CONFIRM))
+        if(mapRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
                     .contents(receivingUser.getNickname()+ "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
@@ -460,7 +470,7 @@ public class NotificationService {
 
         requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
         return Notification.builder()
-                .targetIdx(careApplication.getIdx())
+                .targetIdx(careApplication.getCarePost().getIdx())
                 .targetType(RequestType.CAREAPPLICATION)
                 .contents(receivingUser.getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
                 .build();
