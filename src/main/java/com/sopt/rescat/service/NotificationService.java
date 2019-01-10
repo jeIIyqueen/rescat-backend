@@ -362,11 +362,11 @@ public class NotificationService {
             return Notification.builder()
                     .targetType(RequestType.FUNDING)
                     .targetIdx(funding.getIdx())
-                    .contents(receivingUser.getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                    .contents(receivingUser.getNickname() + "님의 후원글 신청이 승인되었습니다.\n회원님의 목표금액 달성을 응원합니다.")
                     .build();
         }
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 후원글 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
@@ -386,11 +386,11 @@ public class NotificationService {
             return Notification.builder()
                     .targetType(requestTypeValue)
                     .targetIdx(carePost.getIdx())
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 승인되었습니다. 좋은 " + requestType + "자를 만날 수 있기를 응원합니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 승인되었습니다.\n좋은 " + requestType + "자를 만날 수 있기를 응원합니다.")
                     .build();
         }
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
@@ -400,10 +400,10 @@ public class NotificationService {
 
         if (careTakerRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다.\n앞으로 활발한 활동 부탁드립니다.")
                     .build();
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
@@ -419,7 +419,7 @@ public class NotificationService {
 
         if (mapRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
         return Notification.builder()
                 .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 승인되었습니다.")
@@ -431,7 +431,7 @@ public class NotificationService {
 
         if (careApplication.getIsAccepted())
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다. 당신의 아름다운 결정을 지지합니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다.\n당신의 아름다운 결정을 지지합니다.")
                     .build();
 
         requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
