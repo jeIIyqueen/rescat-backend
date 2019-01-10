@@ -26,7 +26,7 @@ public class ApiBannerController {
         this.fundingBannerService = fundingBannerService;
     }
 
-    @ApiOperation(value = "광고 배너 전체 리스트", notes = "광고 배너 전체 리스트를 반환합니다.")
+    @ApiOperation(value = "광고 배너 전체 리스트 조회", notes = "광고 배너 전체 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "광고 배너 리스트 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -36,7 +36,7 @@ public class ApiBannerController {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.gets());
     }
 
-    @ApiOperation(value = "랜덤 광고 배너", notes = "랜덤으로 광고 배너 하나를 반환합니다.")
+    @ApiOperation(value = "랜덤 광고 배너 조회", notes = "랜덤으로 광고 배너 하나를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "랜덤 광고 배너 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
@@ -46,12 +46,12 @@ public class ApiBannerController {
         return ResponseEntity.status(HttpStatus.OK).body(advertisementBannerService.getByRandomIdx());
     }
 
-    @ApiOperation(value = "펀딩 후기 배너 4개 리스트", notes = "펀딩 후기 배너 4개 리스트를 반환합니다.")
+    @ApiOperation(value = "펀딩 후기 배너 4개 리스트 조회", notes = "펀딩 후기 배너 4개 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "펀딩 후기 배너 4개 리스트 반환 성공", response = BannerDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @GetMapping("/funding")
+    @GetMapping("/funding-reviews")
     public ResponseEntity<Iterable<BannerDto>> getFundingBannerList() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingBannerService.get4banners());
     }
