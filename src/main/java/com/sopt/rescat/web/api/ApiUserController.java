@@ -353,7 +353,7 @@ public class ApiUserController {
     @DeleteMapping("/mypage/region")
     public ResponseEntity deleteRegion(
             @ApiParam(value = "example -> 서울특별시 종로구 사직동")
-            @RequestBody String regionFullName,
+            @RequestParam String regionFullName,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.deleteRegion(loginUser, regionFullName);

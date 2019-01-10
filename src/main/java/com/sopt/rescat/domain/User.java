@@ -22,6 +22,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -80,6 +82,7 @@ public class User extends BaseTime {
 
     @Column
     private String InstanceToken;
+
 
     @Transient
     @ApiModelProperty(notes = "지역 전체 이름", required = true)
@@ -186,12 +189,12 @@ public class User extends BaseTime {
 
     public List<RegionDto> getMyRegionDtoList() {
         List<RegionDto> regionDtos = new ArrayList<>();
-        regionDtos.add(mainRegion.toRegionDto());
+        if(mainRegion != null)
+            regionDtos.add(mainRegion.toRegionDto());
         if(subRegion1 != null)
             regionDtos.add(subRegion1.toRegionDto());
         if(subRegion2 != null)
             regionDtos.add(subRegion2.toRegionDto());
-
         return regionDtos;
 
     }
@@ -200,7 +203,8 @@ public class User extends BaseTime {
         return UserLoginResponseDto.builder()
                 .idx(idx)
                 .mileage(mileage)
-                .regions(getMyRegionDtoList())
+                .regions(getMyRegionDtoList().stream().filter(Objects::nonNull).map(RegionDto::getName).collect(Collectors.toList()))
+                .emdCodes(getMyRegionDtoList().stream().filter(Objects::nonNull).map(regionDto -> regionDto.getCode()).collect(Collectors.toList()))
                 .role(role)
                 .jwtTokenDto(tokenDto)
                 .build();

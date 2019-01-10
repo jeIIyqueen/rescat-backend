@@ -239,6 +239,8 @@ public class NotificationService {
 
     @Transactional
     public void pushNotification(User receivingUser, Notification notification){
+        if(receivingUser.getInstanceToken()==null)
+            return;
         userNotificationLogRepository.save(
                 UserNotificationLog.builder()
                         .receivingUser(receivingUser)
