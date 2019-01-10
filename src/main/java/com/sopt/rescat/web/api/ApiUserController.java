@@ -323,9 +323,21 @@ public class ApiUserController {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
 
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
+
+        if(notification.getTargetType().equals(RequestType.CAREAPPLICATION)){
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(NotificationTargetDto
+                            .builder()
+                            .targetIdx(notification.getTargetIdx())
+                            .targetType(notification.getTargetType())
+                            .careApplication(carePostService.getCareApplication(notification.getTargetIdx()))
+                            .build());
+        }
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(NotificationTargetDto
-                        .builder().targetIdx(notification.getTargetIdx())
+                        .builder()
+                        .targetIdx(notification.getTargetIdx())
                         .targetType(notification.getTargetType())
                         .build());
     }

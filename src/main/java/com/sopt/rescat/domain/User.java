@@ -81,8 +81,8 @@ public class User extends BaseTime {
     private Long mileage;
 
     @Column
-    @ApiModelProperty(readOnly = true)
-    private String deviceToken;
+    private String InstanceToken;
+
 
     @Transient
     @ApiModelProperty(notes = "지역 전체 이름", required = true)
@@ -149,8 +149,8 @@ public class User extends BaseTime {
     }
 
 
-    public void updateDeviceToken(String deviceToken) {
-        this.deviceToken=deviceToken;
+    public void updateInstanceToken(String InstanceToken) {
+        this.InstanceToken = InstanceToken;
     }
 
 

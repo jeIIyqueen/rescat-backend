@@ -28,23 +28,23 @@ public class CarePostService {
     private CarePostCommentRepository carePostCommentRepository;
     private CareApplicationRepository careApplicationRepository;
     private ApprovalLogRepository approvalLogRepository;
+    private NotificationService notificationService;
     private NotificationRepository notificationRepository;
-    private UserNotificationLogRepository userNotificationLogRepository;
     private WarningLogRepository warningLogRepository;
 
     public CarePostService(final CarePostRepository carePostRepository,
                            final CarePostCommentRepository carePostCommentRepository,
                            final CareApplicationRepository careApplicationRepository,
                            final ApprovalLogRepository approvalLogRepository,
+                           final NotificationService notificationService,
                            final NotificationRepository notificationRepository,
-                           final UserNotificationLogRepository userNotificationLogRepository,
                            WarningLogRepository warningLogRepository) {
         this.carePostRepository = carePostRepository;
         this.carePostCommentRepository = carePostCommentRepository;
         this.careApplicationRepository = careApplicationRepository;
         this.approvalLogRepository = approvalLogRepository;
+        this.notificationService = notificationService;
         this.notificationRepository = notificationRepository;
-        this.userNotificationLogRepository = userNotificationLogRepository;
         this.warningLogRepository = warningLogRepository;
     }
 
@@ -56,6 +56,7 @@ public class CarePostService {
 
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
+        log.info(carePost.getCreatedAt().toString());
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
@@ -119,7 +120,8 @@ public class CarePostService {
 
     @Transactional
     public void createCareApplication(CareApplication careApplication, User loginUser, Long carePostIdx) {
-        CarePost carePost = carePostRepository.findById(carePostIdx).orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
+        CarePost carePost = carePostRepository.findById(carePostIdx)
+                .orElseThrow(() -> new NotFoundException("idx", "관련 글을 찾을 수 없습니다."));
         if (!carePost.equalsType(careApplication.getType()))
             throw new InvalidValueException("type", "신청하고자 하는 글의 타입과 명시한 타입이 일치하지 않습니다.");
         if (carePost.getIsFinished())
@@ -129,12 +131,15 @@ public class CarePostService {
         if (carePost.isSubmitted(loginUser))
             throw new AlreadyExistsException("carePostIdx", "이미 신청한 글입니다.");
 
-        careApplicationRepository.save(
-                CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
-                        .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
-                        .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
-                        .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
-                        .writer(loginUser).type(careApplication.getType()).isAccepted(false).build());
+        CareApplication application = CareApplication.builder().address(careApplication.getAddress()).birth(careApplication.getBirth())
+                .carePost(carePost).companionExperience(careApplication.getCompanionExperience())
+                .finalWord(careApplication.getFinalWord()).houseType(careApplication.getHouseType())
+                .job(careApplication.getJob()).name(careApplication.getName()).phone(careApplication.getPhone())
+                .writer(loginUser).type(careApplication.getType()).isAccepted(false).build();
+
+        careApplicationRepository.save(application);
+
+        notificationService.send(application, carePost.getWriter());
     }
 
     @Transactional
@@ -152,6 +157,15 @@ public class CarePostService {
                 .requestStatus(RequestStatus.CONFIRM)
                 .build()
                 .setApprover(loginUser));
+
+        notificationService.send(careApplication, careApplication.getWriter());
+    }
+
+    public CareApplication getCareApplication (Long careApplicationIdx){
+        CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx)
+                .orElseThrow(() -> new NotFoundException("idx", "idx에 해당하는 신청이 존재하지 않습니다."));
+
+        return careApplication;
     }
 
     public Iterable<CarePost> getCarePostRequests() {
@@ -164,42 +178,16 @@ public class CarePostService {
     @Transactional
     public CarePostResponseDto confirmCarePost(Long idx, @Range(min = 1, max = 2) Integer status, User approver) {
         CarePost carePost = getCarePostBy(idx);
-        String category = (carePost.getType() == 0) ? "입양" : "임시보호";
 
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseCarePostRequest(carePost, approver);
 
-            Notification notification = Notification.builder()
-                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
-                    .build();
-            notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(carePost.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
-
         } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveCarePostRequest(carePost, approver);
-
-            Notification notification = Notification.builder()
-                    .contents(carePost.getWriter().getNickname() + "님의 " + category + " 등록 신청이 승인되었습니다. 좋은 " + category + "자를 만날 수 있기를 응원합니다.")
-                    .targetType(RequestType.CAREPOST)
-                    .targetIdx(carePost.getIdx())
-                    .build();
-            notificationRepository.save(notification);
-
-            userNotificationLogRepository.save(
-                    UserNotificationLog.builder()
-                            .receivingUser(carePost.getWriter())
-                            .notification(notification)
-                            .isChecked(RequestStatus.DEFER.getValue())
-                            .build());
         }
 
+        notificationService.send(carePost,carePost.getWriter());
         return carePost.toCarePostDto();
     }
 
@@ -232,12 +220,20 @@ public class CarePostService {
     }
 
     public CarePostComment createComment(Long carePostIdx, CarePostComment carePostComment, User loginUser) {
-        return carePostCommentRepository.save(carePostComment
+        CarePostComment comment = carePostCommentRepository.save(carePostComment
                 .setWriter(loginUser)
                 .setStatus(loginUser)
                 .initCarePost(getCarePostBy(carePostIdx)))
                 .setWriterNickname()
                 .setUserRole();
+
+        User writer = carePostRepository.findById(carePostIdx)
+                .orElseThrow(() -> new NotFoundException("carePostIdx", "idx에 해당되는 글이 존재하지 않습니다."))
+                .getWriter();
+
+
+        notificationService.send(carePostComment,writer);
+        return comment;
     }
 
     public void deleteComment(Long commentIdx, User loginUser) {
