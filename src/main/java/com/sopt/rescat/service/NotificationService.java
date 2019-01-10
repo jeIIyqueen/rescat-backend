@@ -4,6 +4,7 @@ package com.sopt.rescat.service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
@@ -15,10 +16,12 @@ import com.sopt.rescat.repository.UserNotificationLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.spi.RegisterableService;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +35,7 @@ public class NotificationService {
     private static final String PROJECT_ID = "rescat";
     private static final String BASE_URL = "https://fcm.googleapis.com";
     private static final String FCM_SEND_ENDPOINT = "/v1/projects/" + PROJECT_ID + "/messages:send";
+    private static final String FCM_GROUP_ENDPOINT = "/fcm/notification";
 
     private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String[] SCOPES = {MESSAGING_SCOPE };
@@ -70,9 +74,13 @@ public class NotificationService {
      * @return Base HttpURLConnection.
      * @throws IOException
      */
-    private static HttpURLConnection getConnection() throws IOException {
+    private static HttpURLConnection getConnection(Boolean sendType) throws IOException {
         // [START use_access_token]
-        URL url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
+        URL url;
+        if(!sendType)
+            url = new URL(BASE_URL + FCM_GROUP_ENDPOINT);
+        else
+            url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestProperty("Authorization", "Bearer " + getAccessToken());
         httpURLConnection.setRequestProperty("Content-Type", "application/json");
@@ -86,9 +94,13 @@ public class NotificationService {
      * @param fcmMessage Body of the HTTP request.
      * @throws IOException
      */
-    private static void sendPush(JsonObject fcmMessage) throws IOException {
+    private static void sendPush(JsonObject fcmMessage, Boolean sendType) throws IOException {
+        HttpURLConnection connection;
+        if (!sendType)
+            connection = getConnection(sendType);
 
-        HttpURLConnection connection = getConnection();
+        else
+            connection = getConnection(sendType);
         connection.setDoOutput(true);
 
         OutputStream outputStream = connection.getOutputStream();
@@ -101,6 +113,9 @@ public class NotificationService {
             String response = inputstreamToString(connection.getInputStream());
             System.out.println("Message sent to Firebase for delivery, response:");
             System.out.println(response);
+            JsonObject jsonObject = new JsonObject().getAsJsonObject(response);
+            String s = jsonObject.get("notification_key").toString();
+            System.out.println(s);
         } else {
             System.out.println("Unable to send message to Firebase:");
             String response = inputstreamToString(connection.getErrorStream());
@@ -119,7 +134,7 @@ public class NotificationService {
         JsonObject Message = buildOverrideMessage(instanceToken, body);
         System.out.println("FCM request body for override message:");
         prettyPrint(Message);
-        sendPush(Message);
+        sendPush(Message, true);
     }
 
     /**
@@ -210,7 +225,40 @@ public class NotificationService {
 
         return jFcm;
     }
-
+//
+//
+//    private void registerGroup(String instanceToken, String groupName){
+//        JsonObject jNotification = new JsonObject();
+//        JsonArray jsonArray = new JsonArray();
+//        jsonArray.add(instanceToken);
+//
+//        jNotification.addProperty("operation","create");
+//        jNotification.addProperty("notification_key_name",groupName);
+//        jNotification.add("registration_ids",jsonArray);
+//
+//        try {
+//            sendPush(jNotification, false);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void addInstance(String instanceToken, String groupName, String notificatinoKey){
+//        JsonObject jNotification = new JsonObject();
+//        JsonArray jsonArray = new JsonArray();
+//        jsonArray.add(instanceToken);
+//
+//        jNotification.addProperty("operation","add");
+//        jNotification.addProperty("notification_key_name",groupName);
+//        jNotification.addProperty("notification_key",notificatinoKey);
+//        jNotification.add("registration_ids",jsonArray);
+//
+//        try {
+//            sendPush(jNotification, false);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     /**
      * Read contents of InputStream into String.
      *
@@ -322,6 +370,7 @@ public class NotificationService {
             notification = createNotification((CareApplication)object,receivingUser);
         }
         else if(object instanceof CarePostComment){
+
             notification = createNotification((CarePostComment)object);
         }
         else if(object instanceof FundingComment){
@@ -415,7 +464,18 @@ public class NotificationService {
     }
 
     private Notification createNotification(CarePostComment carePostComment){
-
+//
+//        if(carePostComment.getWriter().equals(carePostComment.getCarePost().getWriter())) {
+//            if(carePostComment.getCarePost().getInstanceKey()==null)
+//                registerGroup(carePostComment.getWriter().getInstanceToken(),carePostComment.getCarePost().getName());
+//
+//            addInstance(carePostComment.getWriter().getInstanceToken(),carePostComment.getCarePost().getName(),carePostComment.getCarePost().getInstanceKey());
+//            return Notification.builder()
+//                    .contents(carePostComment.getWriter().getNickname() +"님이 자신의 게시글에 댓글을 남겼습니다.")
+//                    .targetType(RequestType.CAREPOST)
+//                    .targetIdx(carePostComment.getCarePost().getIdx())
+//                    .build();
+//        }
         return Notification.builder()
                 .contents(carePostComment.getWriter().getNickname() + "님이 회원님의 게시글에 댓글을 남겼습니다.")
                 .targetIdx(carePostComment.getCarePost().getIdx())
@@ -432,4 +492,5 @@ public class NotificationService {
                 .build();
 
     }
+
 }

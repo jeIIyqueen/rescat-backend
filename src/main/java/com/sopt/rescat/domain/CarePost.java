@@ -148,6 +148,9 @@ public class CarePost extends BaseEntity {
     @Transient
     private Boolean isWriter;
 
+    @Column
+    private String instanceKey;
+
     public CarePost setWriterNickname() {
         this.nickname = getWriter().getNickname();
         return this;
