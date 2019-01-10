@@ -387,23 +387,21 @@ public class ApiUserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "수정 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-//    })
-//    @CareTakerAuth
-//    @PutMapping("/mypage/region")
-//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<RegionDto> editRegions) {
-//        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        //log.info(String.valueOf(receivedRegions));
-//        //List<String> editRegions = new ArrayList<>(receivedRegions);
-//        userService.editUserRegion(user, editRegions);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
+    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PutMapping("/mypage/region")
+    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, @RequestBody List<RegionDto> editRegions) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserRegion(user, editRegions);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }

@@ -221,6 +221,7 @@ public class ApiCarePostController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "입양/임시보호 글 신고 성공"),
             @ApiResponse(code = 400, message = "글번호에 해당하는 글 없음"),
+            @ApiResponse(code = 401, message = "글 신고 권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @ApiImplicitParams({
