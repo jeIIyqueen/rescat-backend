@@ -2,7 +2,6 @@ package com.sopt.rescat.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.hibernate.validator.constraints.URL;
 
 @ToString
 @Getter

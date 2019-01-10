@@ -19,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -175,7 +174,7 @@ public class ApiFundingController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ApiOperation(value = "펀딩 글 4개 리스트", notes = "펀딩 글 4개 리스트를 반환합니다.")
+    @ApiOperation(value = "펀딩 글 4개 리스트 조회", notes = "펀딩 글 4개 리스트를 반환합니다.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "펀딩 글 4개 리스트 반환 성공", response = FundingResponseDto.class),
             @ApiResponse(code = 500, message = "서버 에러")

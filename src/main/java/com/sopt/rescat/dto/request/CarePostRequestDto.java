@@ -77,6 +77,7 @@ public class CarePostRequestDto {
                 .contents(contents)
                 .startProtectionPeriod(startProtectionPeriod)
                 .endProtectionPeriod(endProtectionPeriod)
+                .etc(etc)
                 .name(name)
                 .sex(sex)
                 .tnr(tnr)
@@ -84,6 +85,7 @@ public class CarePostRequestDto {
                 .vaccination(vaccination)
                 .isConfirmed(0)
                 .isFinished(isFinished)
+                .updatedAt(LocalDateTime.now().withNano(0))
                 .build();
     }
 
