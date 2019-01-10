@@ -37,7 +37,7 @@ $ vi src/main/resources/application.properties
 And then copy below code.
 Don`t forget you should enter your server information.  
 
-```json
+```properties
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.url=RDS_URL
 spring.datasource.username=RDS_USERNAME
