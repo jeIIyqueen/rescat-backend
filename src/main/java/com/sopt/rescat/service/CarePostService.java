@@ -68,7 +68,9 @@ public class CarePostService {
     }
 
     public CarePost findCarePostBy(Long idx, User loginUser) {
-        return findCarePostBy(idx).setStatus(loginUser);
+        CarePost carePost = findCarePostBy(idx).setStatus(loginUser);
+        log.info(carePost.getUpdatedAt().toString());
+        return carePost;
     }
 
     public Iterable<CarePost> findAll() {

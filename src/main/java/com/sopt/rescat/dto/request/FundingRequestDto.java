@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +82,7 @@ public class FundingRequestDto {
 
     @ApiModelProperty(notes = "마감 기한", required = true)
     @NonNull
-    private Date limitAt;
+    private LocalDateTime limitAt;
 
     public Funding toFunding() {
         return Funding.builder()

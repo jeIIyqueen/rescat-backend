@@ -19,6 +19,9 @@ import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
@@ -27,7 +30,6 @@ import static java.time.LocalDateTime.now;
 @Getter
 @Builder
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarePost extends BaseEntity {
@@ -128,7 +130,6 @@ public class CarePost extends BaseEntity {
     private List<CareApplication> careApplications;
 
     @ApiModelProperty(readOnly = true, notes = "작성/끌올 시간")
-    @LastModifiedDate
     @Column
     private LocalDateTime updatedAt;
 
@@ -164,7 +165,7 @@ public class CarePost extends BaseEntity {
                 .viewCount(viewCount)
                 .photo(photos.get(MAIN_PHOTO_INDEX))
                 .createdAt(getCreatedAt())
-                .updatedAt(updatedAt)
+                .updatedAt(getUpdatedAt())
                 .isFinished(isFinished)
                 .build();
     }
@@ -202,6 +203,7 @@ public class CarePost extends BaseEntity {
     }
 
     public CarePost setStatus(User loginUser) {
+        log.info(this.updatedAt.toString());
         this.isSubmitted = this.isSubmitted(loginUser);
         this.isWriter = this.equalsWriter(loginUser);
         return this;
@@ -215,7 +217,7 @@ public class CarePost extends BaseEntity {
         if (Duration.between(this.getUpdatedAt(), LocalDateTime.now()).getSeconds() < SECONDS_OF_3DAYS)
             throw new InvalidValueException("updatedAt", "끌올은 3일에 한번만 가능합니다.");
 
-        this.updatedAt = now();
+        this.updatedAt = now().withNano(0);
     }
 
     public void warningCount() {

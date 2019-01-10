@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -101,8 +102,7 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "마감 기한")
     @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date limitAt;
+    private LocalDateTime limitAt;
 
     @ApiModelProperty(notes = "관리자 승인 여부(0: 보류, 1: 승인, 2: 거절)")
     @Column

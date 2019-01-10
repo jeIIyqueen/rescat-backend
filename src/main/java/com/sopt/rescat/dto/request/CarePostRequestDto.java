@@ -84,6 +84,7 @@ public class CarePostRequestDto {
                 .vaccination(vaccination)
                 .isConfirmed(0)
                 .isFinished(isFinished)
+                .updatedAt(LocalDateTime.now().withNano(0))
                 .build();
     }
 
