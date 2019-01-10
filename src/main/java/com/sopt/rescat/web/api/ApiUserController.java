@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.dto.response.UserLoginResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.auth.Auth;
@@ -33,7 +34,7 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @Validated
 public class ApiUserController {
-    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$";
+    private final static String PHONE_REX = "^01([0|1|6|7|8|9]?)([0-9]{3,4})([0-9]{4})$";
 
     private final UserService userService;
     private final JWTService jwtService;
@@ -93,8 +94,13 @@ public class ApiUserController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenDto> login(@RequestBody UserLoginDto userLoginDto){
-        return ResponseEntity.status(HttpStatus.OK).body(JwtTokenDto.builder().token(jwtService.create(userService.login(userLoginDto).getIdx())).build());
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginDto userLoginDto){
+        User user = userService.login(userLoginDto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user.toUserLoginResponseDto(JwtTokenDto.builder()
+                        .token(jwtService.create(user.getIdx()))
+                        .build()));
     }
 
     @ApiOperation(value = "핸드폰 인증", notes = "핸드폰 번호를 받아 문자를 보내고, 해당 인증코드를 반환합니다.")
@@ -106,9 +112,9 @@ public class ApiUserController {
     })
     @PostMapping("/authentications/phone")
     public ResponseEntity<AuthenticationCodeVO> authenticatePhone(
-            @ApiParam(value = "01000000000 또는 010-0000-0000", required = true)
+            @ApiParam(value = "01012345678", required = true)
             @Valid
-            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 000-0000-0000 또는 00000000000 형식이어야 합니다.")
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
             @RequestParam String phone) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.sendSms(phone));
     }
@@ -198,7 +204,12 @@ public class ApiUserController {
     @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     @Auth
     @PutMapping("/mypage/edit/phone")
-    public ResponseEntity editUserPhone(HttpServletRequest httpServletRequest, @RequestParam String phone) {
+    public ResponseEntity editUserPhone(
+            @ApiParam(value = "01012345678", required = true)
+            @Valid
+            @Pattern(regexp = PHONE_REX, message = "핸드폰번호는 01012345678 형식이어야 합니다.")
+            @RequestParam String phone,
+            HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.editUserPhone(loginUser, phone);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -330,7 +341,7 @@ public class ApiUserController {
     @DeleteMapping("/mypage/region")
     public ResponseEntity deleteRegion(
             @ApiParam(value = "example -> 서울특별시 종로구 사직동")
-            @RequestBody String regionFullName,
+            @RequestParam String regionFullName,
             HttpServletRequest httpServletRequest) {
         User loginUser = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.deleteRegion(loginUser, regionFullName);
@@ -369,30 +380,28 @@ public class ApiUserController {
     @PostMapping("/mypage/region")
     public ResponseEntity addRegion(
             @ApiParam(value = "example -> 서울특별시 종로구 사직동")
-            @RequestBody String regionFullName,
+            @RequestParam String regionFullName,
             HttpServletRequest httpServletRequest) {
         User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.saveAddRegion(user, regionFullName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "수정 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-//    })
-//    @CareTakerAuth
-//    @PutMapping("/mypage/region")
-//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, List<RegionDto> editRegions) {
-//        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        //log.info(String.valueOf(receivedRegions));
-//        //List<String> editRegions = new ArrayList<>(receivedRegions);
-//        userService.editUserRegion(user, editRegions);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
+    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "수정 성공"),
+            @ApiResponse(code = 401, message = "권한 없음"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
+    @CareTakerAuth
+    @PutMapping("/mypage/region")
+    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, @RequestBody List<RegionDto> editRegions) {
+        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
+        userService.editUserRegion(user, editRegions);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }

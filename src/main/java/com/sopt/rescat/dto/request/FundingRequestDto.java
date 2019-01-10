@@ -7,10 +7,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class FundingRequestDto {
     @ApiModelProperty(notes = "목표금액", required = true)
-    @Range
+    @Range(min = 10000, message = "최소 목표금액은 10000원입니다.")
     @NonNull
     private Long goalAmount;
 
@@ -32,11 +36,13 @@ public class FundingRequestDto {
 
     @ApiModelProperty(notes = "증빙서류 사진 url 리스트", required = true)
     @Size(min = 1, max = 3)
+    @NotNull
     @NonNull
     private List<@URL String> certificationUrls;
 
-    @ApiModelProperty(notes = "사진 url 리스트")
+    @ApiModelProperty(notes = "사진 url 리스트", required = true)
     @Size(min = 1, max = 3)
+    @NotNull
     @NonNull
     private List<@URL String> photoUrls;
 
@@ -48,9 +54,18 @@ public class FundingRequestDto {
     @NonNull
     private String contents;
 
-    @ApiModelProperty(notes = "자기소개", required = true)
-    @NonNull
+    @ApiModelProperty(notes = "자기소개")
     private String introduction;
+
+    @ApiModelProperty(notes = "이름",  required = true)
+    @NonNull
+    @Length(max = 10)
+    private String name;
+
+    @ApiModelProperty(notes = "전화번호", required = true)
+    @NonNull
+    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4})$", message = "잘못된 전화번호 형식입니다.")
+    private String phone;
 
     @ApiModelProperty(notes = "은행명", required = true)
     @NonNull
@@ -78,6 +93,8 @@ public class FundingRequestDto {
                 .title(title)
                 .contents(contents)
                 .introduction(introduction)
+                .name(name)
+                .phone(phone)
                 .mainRegion(mainRegion)
                 .limitAt(limitAt)
                 .isConfirmed(0)

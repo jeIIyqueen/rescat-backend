@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @ToString
@@ -23,34 +24,38 @@ public class Place extends BaseEntity {
 
     @Column
     @NonNull
+    @NotNull
     // 0: 배식소, 1: 병원
     private Integer category;
 
     @Column
     @NonNull
     @Length(max = 50)
+    @NotNull
     private String name;
 
     @Column
     @NonNull
     @Range(min = 33, max = 43)
+    @NotNull
     private Double lat;
 
     @Column
     @NonNull
     @Range(min = 124, max = 132)
+    @NotNull
     private Double lng;
 
     @Column
+    @Length(max = 100)
     private String etc;
 
     @Column
-    @NonNull
     private String address;
 
     @Column
     @Length(max = 13)
-    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$")
+    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4}))$", message = "잘못된 전화번호 형식입니다..")
     private String phone;
 
     @URL
@@ -63,10 +68,11 @@ public class Place extends BaseEntity {
     private Region region;
 
     @Transient
+    @NotNull
     private String regionFullName;
 
     @Builder
-    public Place(User writer, @NonNull Integer category, @NonNull @Length(max = 50) String name, @NonNull Double lat, @NonNull Double lng, String etc, @NonNull String address, @Length(max = 13) @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$") String phone, String photoUrl, @NonNull Region region) {
+    public Place(User writer, @NonNull @NotNull Integer category, @NonNull @Length(max = 50) @NotNull String name, @NonNull @Range(min = 33, max = 43) @NotNull Double lat, @NonNull @Range(min = 124, max = 132) @NotNull Double lng, @Length(max = 100) String etc, String address, @Length(max = 13) @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4}))$", message = "잘못된 전화번호 형식입니다..") String phone, @URL String photoUrl, @NonNull Region region, String regionFullName) {
         super(writer);
         this.category = category;
         this.name = name;
@@ -77,7 +83,9 @@ public class Place extends BaseEntity {
         this.phone = phone;
         this.photoUrl = photoUrl;
         this.region = region;
+        this.regionFullName = regionFullName;
     }
+
 
     public MarkerDto toMarkerDto() {
         return MarkerDto.builder()

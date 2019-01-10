@@ -7,9 +7,11 @@ import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +46,18 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "자기소개")
     @Column
-    @NonNull
     private String introduction;
+
+    @ApiModelProperty(notes = "이름",  required = true)
+    @Column
+    @NonNull
+    private String name;
+
+    @ApiModelProperty(notes = "전화번호", required = true)
+    @Column
+    @NonNull
+    @Pattern(regexp = "^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4})$", message = "잘못된 전화번호 형식입니다..")
+    private String phone;
 
     @ApiModelProperty(notes = "목표금액", required = true)
     @Column
@@ -124,6 +136,8 @@ public class Funding extends BaseEntity {
                 .currentAmount(currentAmount)
                 .goalAmount(goalAmount)
                 .introduction(introduction)
+                .name(name)
+                .phone(phone)
                 .limitAt(limitAt)
                 .title(title)
                 .mainPhoto(photos.get(MAIN_PHOTO_INDEX))

@@ -2,8 +2,10 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
+import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.RegionDto;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.response.UserLoginResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
@@ -18,7 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -76,6 +81,7 @@ public class User extends BaseTime {
     private Long mileage;
 
     @Column
+    @ApiModelProperty(readOnly = true)
     private String deviceToken;
 
     @Transient
@@ -163,11 +169,11 @@ public class User extends BaseTime {
         this.subRegion2 = null;
     }
 
-//    public void updateRegions(List<RegionDto> editRegions) {
-//        this.mainRegion = editRegions.get(1);
-//        this.subRegion2 = editRegions.get(2);
-//        this.subRegion2 = editRegions.get(3);
-//    }
+    public void updateRegions(Region mainRegion, Region subRegion1, Region subRegion2) {
+        this.mainRegion = mainRegion;
+        this.subRegion1 = subRegion1;
+        this.subRegion2 = subRegion2;
+    }
 
     public void addMainRegion(Region mainRegion) {
         this.mainRegion = mainRegion;
@@ -179,5 +185,28 @@ public class User extends BaseTime {
 
     public void addSubRegion2(Region subRegion2) {
         this.subRegion2 = subRegion2;
+    }
+
+    public List<RegionDto> getMyRegionDtoList() {
+        List<RegionDto> regionDtos = new ArrayList<>();
+        if(mainRegion != null)
+            regionDtos.add(mainRegion.toRegionDto());
+        if(subRegion1 != null)
+            regionDtos.add(subRegion1.toRegionDto());
+        if(subRegion2 != null)
+            regionDtos.add(subRegion2.toRegionDto());
+        return regionDtos;
+
+    }
+
+    public UserLoginResponseDto toUserLoginResponseDto(JwtTokenDto tokenDto) {
+        return UserLoginResponseDto.builder()
+                .idx(idx)
+                .mileage(mileage)
+                .regions(getMyRegionDtoList().stream().filter(Objects::nonNull).map(RegionDto::getName).collect(Collectors.toList()))
+                .emdCodes(getMyRegionDtoList().stream().filter(Objects::nonNull).map(regionDto -> regionDto.getCode()).collect(Collectors.toList()))
+                .role(role)
+                .jwtTokenDto(tokenDto)
+                .build();
     }
 }

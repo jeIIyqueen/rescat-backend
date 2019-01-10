@@ -104,7 +104,10 @@ public class SecurityControllerAdvice {
     @ExceptionHandler({MultipartException.class, FileUploadBase.FileSizeLimitExceededException.class, java.lang.IllegalStateException.class})
     public ResponseEntity<ExceptionDto> sizeExceeded(MultipartException exception) {
         log.debug("FileSizeLimitExceededException is happened!");
-        return new ResponseEntity<>(ExceptionDto.toExceptionDto("photo", "업로드 가능한 이미지 최대 크기는 10MB입니다."), HttpStatus.PAYLOAD_TOO_LARGE);
+        return new ResponseEntity<>(ExceptionDto.toExceptionDto(
+                "photo",
+                "사진 업로드 중 에러가 발생했습니다. (" + exception.getMessage() + ")"),
+                HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     private ExceptionDto buildExceptionDto(String message, String field) {

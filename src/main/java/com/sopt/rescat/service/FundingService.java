@@ -7,6 +7,7 @@ import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.WarningType;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
+import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -221,7 +223,7 @@ public class FundingService {
             throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
 
         if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.FUNDING, user))
-            throw new UnAuthenticationException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
+            throw new AlreadyExistsException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(idx)
@@ -239,7 +241,7 @@ public class FundingService {
             throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
 
         if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.FUNDINGCOMMENT, user))
-            throw new UnAuthenticationException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
+            throw new AlreadyExistsException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()
                 .warningIdx(commentIdx)

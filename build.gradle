@@ -53,6 +53,8 @@ dependencies {
 
     compile('io.springfox:springfox-swagger2:+')
     compile('io.springfox:springfox-swagger-ui:+')
+
+    compile('com.navercorp.lucy:lucy-xss-servlet:2.0.0')
 }
 
 dependencyManagement {
