@@ -2,6 +2,7 @@ package com.sopt.rescat.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Bank;
+import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.NotExistException;
@@ -88,7 +89,7 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "증빙서류 사진", required = true)
     @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FundingPhoto> certifications;
+    private List<CertificationPhoto> certifications;
 
     @ApiModelProperty(notes = "펀딩글 유형(0: 치료비 모금, 1: 프로젝트 후원)", required = true)
     @Column
@@ -152,7 +153,7 @@ public class Funding extends BaseEntity {
         return this;
     }
 
-    public Funding initCertifications(List<FundingPhoto> certificationPhotos) {
+    public Funding initCertifications(List<CertificationPhoto> certificationPhotos) {
         this.certifications = certificationPhotos;
         return this;
     }
