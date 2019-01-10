@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -30,5 +30,5 @@ public class FundingResponseDto {
     @ApiModelProperty(notes = "대표 사진")
     private FundingPhoto mainPhoto;
     @ApiModelProperty(notes = "마감 기한")
-    private Date limitAt;
+    private LocalDateTime limitAt;
 }

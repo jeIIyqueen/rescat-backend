@@ -9,13 +9,8 @@ import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.repository.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -179,17 +174,17 @@ public class MapService {
     public void create(Cat cat, User admin) {
         Region region = convertFullNameToRegion(cat.getRegionFullName());
         catRepository.save(
-        Cat.builder().tnr(cat.getTnr()).sex(cat.getSex()).region(region).photoUrl(cat.getPhotoUrl())
-                .name(cat.getName()).lng(cat.getLng()).lat(cat.getLat()).etc(cat.getEtc()).age(cat.getAge())
-                .writer(admin).regionFullName(cat.getRegionFullName()).build());
+                Cat.builder().tnr(cat.getTnr()).sex(cat.getSex()).region(region).photoUrl(cat.getPhotoUrl())
+                        .name(cat.getName()).lng(cat.getLng()).lat(cat.getLat()).etc(cat.getEtc()).age(cat.getAge())
+                        .writer(admin).regionFullName(cat.getRegionFullName()).build());
     }
 
     public void create(Place place, User admin) {
         Region region = convertFullNameToRegion(place.getRegionFullName());
         placeRepository.save(
-        Place.builder().region(region).photoUrl(place.getPhotoUrl())
-                .name(place.getName()).lat(place.getLat()).etc(place.getEtc()).category(place.getCategory()).address(place.getAddress())
-                .lng(place.getLng()).phone(place.getPhone()).regionFullName(place.getRegionFullName()).writer(admin).build());
+                Place.builder().region(region).photoUrl(place.getPhotoUrl())
+                        .name(place.getName()).lat(place.getLat()).etc(place.getEtc()).category(place.getCategory()).address(place.getAddress())
+                        .lng(place.getLng()).phone(place.getPhone()).regionFullName(place.getRegionFullName()).writer(admin).build());
     }
 
     private Region convertFullNameToRegion(String regionFullName) {

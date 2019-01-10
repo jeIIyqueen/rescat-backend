@@ -14,9 +14,7 @@ import com.sopt.rescat.repository.*;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +94,7 @@ public class FundingService {
     public void payForMileage(Long idx, Long mileage, User loginUser) {
         Funding funding = getFundingBy(idx);
 
-        if(loginUser.match(funding.getWriter()))
+        if (loginUser.match(funding.getWriter()))
             throw new UnAuthenticationException("token", "본인의 펀딩글은 후원할 수 없습니다.");
 
         loginUser.updateMileage(mileage * (-1));
@@ -142,7 +140,7 @@ public class FundingService {
 
     private Notification createNotification(Integer status, Funding funding) {
         // 거절일경우,
-        if(status.equals(RequestStatus.DEFER.getValue()))
+        if (status.equals(RequestStatus.DEFER.getValue()))
             return Notification.builder()
                     .contents(funding.getWriter().getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
@@ -215,14 +213,14 @@ public class FundingService {
     }
 
     @Transactional
-    public void warningFunding(Long idx, User user){
+    public void warningFunding(Long idx, User user) {
         Funding funding = getFundingBy(idx);
         funding.warningCount();
 
-        if(funding.getWriter().getIdx().equals(user.getIdx()))
+        if (funding.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 글은 신고할 수 없습니다.");
 
-        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.FUNDING, user))
+        if (warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(idx, WarningType.FUNDING, user))
             throw new AlreadyExistsException("idx", "이미 신고한 글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()
@@ -233,14 +231,14 @@ public class FundingService {
     }
 
     @Transactional
-    public void warningFundingComment(Long commentIdx, User user){
+    public void warningFundingComment(Long commentIdx, User user) {
         FundingComment fundingComment = getCommentBy(commentIdx);
         fundingComment.warningCount();
 
-        if(fundingComment.getWriter().getIdx().equals(user.getIdx()))
+        if (fundingComment.getWriter().getIdx().equals(user.getIdx()))
             throw new UnAuthenticationException("idx", "자신이 작성한 댓글은 신고할 수 없습니다.");
 
-        if(warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.FUNDINGCOMMENT, user))
+        if (warningLogRepository.existsWarningLogByWarningIdxAndWarningTypeAndWarningUser(commentIdx, WarningType.FUNDINGCOMMENT, user))
             throw new AlreadyExistsException("idx", "이미 신고한 댓글은 다시 신고할 수 없습니다.");
 
         warningLogRepository.save(WarningLog.builder()

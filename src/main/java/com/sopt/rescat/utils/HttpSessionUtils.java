@@ -27,7 +27,7 @@ public class HttpSessionUtils {
     }
 
     private static void checkLoginUser(HttpSession session) {
-        if(!isLoginUser(session))
+        if (!isLoginUser(session))
             throw new UnAuthenticationException("user", "로그인이 필요합니다.");
     }
 
@@ -35,7 +35,7 @@ public class HttpSessionUtils {
         checkLoginUser(session);
 
         User user = getUserFromSession(session);
-        if(user.getRole() != Role.ADMIN)
+        if (user.getRole() != Role.ADMIN)
             throw new UnAuthenticationException("user", "관리자 계정이 아닙니다.");
 
         return user;
@@ -44,7 +44,7 @@ public class HttpSessionUtils {
     public static void checkAdminUser(HttpSession session) {
         checkLoginUser(session);
 
-        if(getUserFromSession(session).getRole() != Role.ADMIN)
+        if (getUserFromSession(session).getRole() != Role.ADMIN)
             throw new UnAuthenticationException("user", "관리자 계정이 아닙니다.");
     }
 

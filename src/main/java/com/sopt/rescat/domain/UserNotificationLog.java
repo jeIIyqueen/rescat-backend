@@ -35,7 +35,7 @@ public class UserNotificationLog extends BaseTime {
     // 0: 안읽음, 1: 읽음
     private Integer isChecked;
 
-    public void updateIsChecked(){
+    public void updateIsChecked() {
         this.isChecked = 1;
     }
 }
