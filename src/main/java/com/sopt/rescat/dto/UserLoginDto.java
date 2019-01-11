@@ -3,9 +3,9 @@ package com.sopt.rescat.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserLoginDto {
@@ -17,3 +17,8 @@ public class UserLoginDto {
     @ApiModelProperty(example = "InstanceToken", position = 3)
     private String instanceToken;
 }
+
+
+
+
+

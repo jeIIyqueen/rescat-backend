@@ -3,6 +3,7 @@ package com.sopt.rescat.web.api;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.response.AdminUserLoginDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
@@ -53,11 +54,12 @@ public class ApiAdminController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
+    public ResponseEntity<AdminUserLoginDto> login(
             @RequestBody UserLoginDto userLoginDto,
             HttpSession session) {
-        HttpSessionUtils.setUserInSession(session, userService.login(userLoginDto));
-        return ResponseEntity.status(HttpStatus.OK).build();
+        User loginUser = userService.loginForAdmin(userLoginDto);
+        HttpSessionUtils.setUserInSession(session, loginUser);
+        return ResponseEntity.status(HttpStatus.OK).body(loginUser.toAdminUserLoginDto());
     }
 
     @ApiOperation(value = "홈화면 요청 개수 리스트 조회", notes = "홈화면 요청 개수 리스트를 반환합니다.")

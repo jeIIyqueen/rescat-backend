@@ -4,6 +4,7 @@ package com.sopt.rescat.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.dto.RegionDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 @ToString
 @Getter
 @Entity
+@NoArgsConstructor
 public class Region {
     @Id
     private Integer emdCode;

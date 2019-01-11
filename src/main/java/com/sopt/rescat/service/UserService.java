@@ -101,6 +101,15 @@ public class UserService {
         return savedUser;
     }
 
+    @Transactional
+    public User loginForAdmin(UserLoginDto userLoginDto) {
+        User savedUser = userRepository.findById(userLoginDto.getId())
+                .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
+        savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
+
+        return savedUser;
+    }
+
     public AuthenticationCodeVO sendSms(String phone) {
         int randomCode = getRandomCode();
         String arr[] = {
