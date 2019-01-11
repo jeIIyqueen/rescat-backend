@@ -65,7 +65,7 @@ public class NotificationService {
     // [START retrieve_access_token]
     private static String getAccessToken() throws IOException {
         GoogleCredential googleCredential = GoogleCredential
-                .fromStream(new FileInputStream("src/main/resources/rescat-firebase-adminsdk-v7wju-c0635347b7.json"))
+                .fromStream(new FileInputStream("src/main/resources/rescat-firebase-adminsdk-v7wju-3d87a2b9d4.json"))
                 .createScoped(Arrays.asList(SCOPES));
         googleCredential.refreshToken();
         return googleCredential.getAccessToken();
