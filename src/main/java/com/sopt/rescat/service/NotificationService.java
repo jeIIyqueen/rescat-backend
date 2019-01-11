@@ -318,21 +318,22 @@ public class NotificationService {
     }
 
     private Notification createNotification(CareApplication careApplication, User receivingUser) {
-        String requestType = (careApplication.getCarePost().getType() == 0) ? "입양" : "임시보호";
+        String requestType;
 
-        if (careApplication.getIsAccepted())
+        if (careApplication.getIsAccepted()) {
+            requestType = (careApplication.getCarePost().getType() == 0) ? "입양" : "임시보호";
             return Notification.builder()
                     .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다.\n당신의 아름다운 결정을 지지합니다.")
                     .build();
-
-        requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
-        return Notification.builder()
-                .targetIdx(careApplication.getCarePost().getIdx())
-                .targetType(RequestType.CAREAPPLICATION)
-                .contents(careApplication.getWriter().getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
-                .build();
+        } else {
+            requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
+            return Notification.builder()
+                    .targetIdx(careApplication.getCarePost().getIdx())
+                    .targetType(RequestType.CAREAPPLICATION)
+                    .contents(careApplication.getWriter().getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
+                    .build();
+        }
     }
-
 
     private Notification createNotification(CarePostComment carePostComment) {
 
