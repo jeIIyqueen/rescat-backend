@@ -1,9 +1,6 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Notification;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
@@ -325,12 +322,14 @@ public class ApiUserController {
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
 
         if (notification.getTargetType().equals(RequestType.CAREAPPLICATION)) {
+            CareApplication careApplication = carePostService.getCareApplication(notification.getTargetIdx());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(NotificationTargetDto
                             .builder()
                             .targetIdx(notification.getTargetIdx())
                             .targetType(notification.getTargetType())
-                            .careApplication(carePostService.getCareApplication(notification.getTargetIdx()))
+                            .careApplication(careApplication)
+                            .applicationType(careApplication.getType())
                             .build());
         }
 

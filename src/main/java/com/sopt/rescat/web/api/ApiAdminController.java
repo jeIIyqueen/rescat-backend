@@ -90,6 +90,7 @@ public class ApiAdminController {
     @GetMapping("/care-taker-requests")
     public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest(HttpSession session) {
         HttpSessionUtils.checkAdminUser(session);
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCareTakerRequest());
     }
 
@@ -277,5 +278,8 @@ public class ApiAdminController {
         return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), String.class);
     }
 
+    public User getUser(String token){
+        return userService.getUserBy(jwtService.decode(token).getIdx());
+    }
 
 }
