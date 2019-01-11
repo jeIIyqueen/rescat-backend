@@ -1,10 +1,8 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.CarePost;
-import com.sopt.rescat.domain.CareTakerRequest;
-import com.sopt.rescat.domain.Notification;
-import com.sopt.rescat.domain.User;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.domain.request.CareTakerRequest;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
@@ -324,13 +322,15 @@ public class ApiUserController {
 
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
 
-        if(notification.getTargetType().equals(RequestType.CAREAPPLICATION)){
+        if (notification.getTargetType().equals(RequestType.CAREAPPLICATION)) {
+            CareApplication careApplication = carePostService.getCareApplication(notification.getTargetIdx());
             return ResponseEntity.status(HttpStatus.OK)
                     .body(NotificationTargetDto
                             .builder()
                             .targetIdx(notification.getTargetIdx())
                             .targetType(notification.getTargetType())
-                            .careApplication(carePostService.getCareApplication(notification.getTargetIdx()))
+                            .careApplication(careApplication)
+                            .applicationType(careApplication.getType())
                             .build());
         }
 
@@ -398,23 +398,6 @@ public class ApiUserController {
         userService.saveAddRegion(user, regionFullName);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-//    @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 201, message = "수정 성공"),
-//            @ApiResponse(code = 401, message = "권한 없음"),
-//            @ApiResponse(code = 500, message = "서버 에러")
-//    })
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
-//    })
-//    @CareTakerAuth
-//    @PutMapping("/mypage/region")
-//    public ResponseEntity editUserRegion(HttpServletRequest httpServletRequest, @RequestBody List<RegionDto> editRegions) {
-//        User user = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
-//        userService.editUserRegion(user, editRegions);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
 
     @ApiOperation(value = "케어테이커 유저의 지역 수정", notes = "케어테이커 유저의 지역을 수정합니다.")
     @ApiResponses(value = {

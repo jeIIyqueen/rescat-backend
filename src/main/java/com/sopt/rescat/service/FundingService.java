@@ -5,6 +5,9 @@ import com.sopt.rescat.domain.enums.Bank;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.WarningType;
+import com.sopt.rescat.domain.log.ApprovalLog;
+import com.sopt.rescat.domain.log.ProjectFundingLog;
+import com.sopt.rescat.domain.log.WarningLog;
 import com.sopt.rescat.dto.request.FundingRequestDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.AlreadyExistsException;
@@ -16,9 +19,6 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,9 @@ public class FundingService {
 
     @Transactional
     public void create(FundingRequestDto fundingRequestDto, User loginUser) {
-
+        if (fundingRepository.existsFundingByWriterAndIsConfirmed(loginUser, RequestStatus.DEFER.getValue())) {
+            throw new AlreadyExistsException("carePost", "게시 승인되지 않은 작성글이 있습니다.");
+        }
         Funding funding = fundingRepository.save(fundingRequestDto.toFunding()
                 .setWriter(loginUser));
 
@@ -122,15 +124,14 @@ public class FundingService {
 
         User writer = funding.getWriter();
 
-        if (status.equals(RequestStatus.REFUSE.getValue())){
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
-        }
-        else if (status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
         }
 
         notificationService.send(funding, funding.getWriter());
-      
+
         return funding.toFundingDto();
     }
 

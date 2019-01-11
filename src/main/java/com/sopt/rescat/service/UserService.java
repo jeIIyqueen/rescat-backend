@@ -4,6 +4,9 @@ package com.sopt.rescat.service;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.domain.log.ApprovalLog;
+import com.sopt.rescat.domain.log.ProjectFundingLog;
+import com.sopt.rescat.domain.request.CareTakerRequest;
 import com.sopt.rescat.dto.*;
 import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.*;
@@ -97,6 +100,15 @@ public class UserService {
                 .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
         savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
         savedUser.updateInstanceToken(userLoginDto.getInstanceToken());
+
+        return savedUser;
+    }
+
+    @Transactional
+    public User loginForAdmin(UserLoginDto userLoginDto) {
+        User savedUser = userRepository.findById(userLoginDto.getId())
+                .orElseThrow(() -> new UnAuthenticationException("id", "해당 ID를 가진 사용자가 존재하지 않습니다."));
+        savedUser.matchPasswordBy(userLoginDto, passwordEncoder);
 
         return savedUser;
     }
@@ -241,7 +253,7 @@ public class UserService {
         if (status.equals(RequestStatus.REFUSE.getValue()))
             refuseCareTakerRequest(careTakerRequest, approver);
 
-        // 승인일 경우
+            // 승인일 경우
         else if (status.equals(RequestStatus.CONFIRM.getValue()))
             approveCareTakerRequest(careTakerRequest, approver);
 
@@ -359,7 +371,7 @@ public class UserService {
 
         user.updateRegions(editRegion0, editRegion1, null);
 
-        if(editRegions.size() == 3) {
+        if (editRegions.size() == 3) {
             String[] fullName2 = editRegions.get(2).split(" ");
             Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
                     .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
@@ -377,7 +389,7 @@ public class UserService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseAddRegionRequest(careTakerRequest, approver);
-        }else {//승인일경우
+        } else {//승인일경우
             approveAddRegionRequest(careTakerRequest, approver);
         }
 

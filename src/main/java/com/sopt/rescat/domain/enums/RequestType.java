@@ -6,7 +6,8 @@ public enum RequestType {
     CAREPOST(2),
     FUNDING(3),
     CAREAPPLICATION(4),
-    REGION(5);
+    REGION(5),
+    TEMPORALCAREPOST(6); //알림함 임시보호 체크
 
 
     private Integer value;

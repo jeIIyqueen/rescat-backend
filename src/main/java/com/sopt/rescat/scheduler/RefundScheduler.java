@@ -1,7 +1,7 @@
 package com.sopt.rescat.scheduler;
 
 import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.ProjectFundingLog;
+import com.sopt.rescat.domain.log.ProjectFundingLog;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;
@@ -31,9 +31,9 @@ public class RefundScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    public void refundFinishedFunding(){
-        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0,0));
+    public void refundFinishedFunding() {
+        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         List<Funding> projectFundingsFinishedYesterday
                 = fundingRepository.findByLimitAtBetweenAndCategoryAndIsConfirmed(start, end, 1, RequestStatus.CONFIRM.getValue())
                 .stream().filter(Funding::isAvailableRefund).collect(Collectors.toList());

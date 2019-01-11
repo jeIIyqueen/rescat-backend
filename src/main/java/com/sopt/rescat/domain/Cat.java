@@ -1,5 +1,6 @@
 package com.sopt.rescat.domain;
 
+import com.sopt.rescat.domain.request.MapRequest;
 import com.sopt.rescat.dto.MarkerDto;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;

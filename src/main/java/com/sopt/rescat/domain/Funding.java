@@ -13,7 +13,6 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 @Getter

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sopt.rescat.domain.enums.Role;
 import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.RegionDto;
+import com.sopt.rescat.dto.UserJoinDto;
 import com.sopt.rescat.dto.UserLoginDto;
+import com.sopt.rescat.dto.response.AdminUserLoginDto;
 import com.sopt.rescat.dto.response.UserLoginResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotMatchException;
@@ -83,7 +85,6 @@ public class User extends BaseTime {
     @Column
     private String InstanceToken;
 
-
     @Transient
     @ApiModelProperty(notes = "지역 전체 이름", required = true)
     private String regionFullName;
@@ -150,7 +151,6 @@ public class User extends BaseTime {
     }
 
 
-
     public void updateInstanceToken(String InstanceToken) {
         this.InstanceToken = InstanceToken;
     }
@@ -209,6 +209,13 @@ public class User extends BaseTime {
                 .emdCodes(getMyRegionDtoList().stream().filter(Objects::nonNull).map(regionDto -> regionDto.getCode()).collect(Collectors.toList()))
                 .role(role)
                 .jwtTokenDto(tokenDto)
+                .build();
+    }
+
+    public AdminUserLoginDto toAdminUserLoginDto() {
+        return AdminUserLoginDto.builder()
+                .id(this.id)
+                .nickname(this.nickname)
                 .build();
     }
 }

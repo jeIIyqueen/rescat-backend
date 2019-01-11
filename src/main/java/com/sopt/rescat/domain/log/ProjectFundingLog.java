@@ -1,5 +1,8 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.log;
 
+import com.sopt.rescat.domain.BaseTime;
+import com.sopt.rescat.domain.Funding;
+import com.sopt.rescat.domain.User;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +37,8 @@ public class ProjectFundingLog extends BaseTime {
     // 0: 기한 전, 1: 기한 완료되었으나 모금달성 실패로 환불, 2: 계좌전송
     private Integer status;
 
-    public void refund(){
-        if(status == 0){
+    public void refund() {
+        if (status == 0) {
             this.status = 1;
             this.sponsor.updateMileage(amount);
         }

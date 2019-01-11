@@ -1,6 +1,7 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;

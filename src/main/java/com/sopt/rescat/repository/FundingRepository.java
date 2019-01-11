@@ -22,4 +22,6 @@ public interface FundingRepository extends CrudRepository<Funding, Long> {
     Integer countByIsConfirmed(Integer inConfirmed);
 
     List<Funding> findByLimitAtBetweenAndCategoryAndIsConfirmed(LocalDateTime start, LocalDateTime end, Integer category, Integer isConfirmed);
+
+    Boolean existsFundingByWriterAndIsConfirmed(User loginUser, Integer isConfirmed);
 }
