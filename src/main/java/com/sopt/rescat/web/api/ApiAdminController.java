@@ -2,7 +2,6 @@ package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.ExceptionDto;
-import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
@@ -57,11 +56,7 @@ public class ApiAdminController {
     public ResponseEntity<Void> login(
             @RequestBody UserLoginDto userLoginDto,
             HttpSession session) {
-        HttpSessionUtils.setTokenInSession(session, JwtTokenDto.builder()
-                .token(jwtService.create(userService.login(userLoginDto).getIdx()))
-                .build()
-                .getToken()
-        );
+        HttpSessionUtils.setUserInSession(session, userService.login(userLoginDto));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -73,6 +68,7 @@ public class ApiAdminController {
     })
     @GetMapping("/home/counts")
     public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpSession session) {
+
         HttpSessionUtils.checkAdminUser(session);
 
         Map<String, Integer> body = new HashMap<>();
@@ -92,6 +88,7 @@ public class ApiAdminController {
     @GetMapping("/care-taker-requests")
     public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest(HttpSession session) {
         HttpSessionUtils.checkAdminUser(session);
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCareTakerRequest());
     }
 
@@ -101,7 +98,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/care-taker-requests/{idx}")
+    @PutMapping("/care-taker-requests/{idx}")
     public ResponseEntity<Void> approveCareTaker(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
@@ -121,7 +118,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/add-region-requests/{idx}")
+    @PutMapping("/add-region-requests/{idx}")
     public ResponseEntity<Void> approveAddRegion(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
@@ -279,5 +276,8 @@ public class ApiAdminController {
         return restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(httpHeaders), String.class);
     }
 
+    public User getUser(String token){
+        return userService.getUserBy(jwtService.decode(token).getIdx());
+    }
 
 }

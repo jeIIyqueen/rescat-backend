@@ -13,7 +13,6 @@ import org.hibernate.validator.constraints.Range;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
-
 import java.util.List;
 
 @Getter
@@ -21,6 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Funding extends BaseEntity {
     @Transient
     private final static int MAIN_PHOTO_INDEX = 0;
@@ -93,6 +93,8 @@ public class Funding extends BaseEntity {
 
     @ApiModelProperty(notes = "펀딩글 유형(0: 치료비 모금, 1: 프로젝트 후원)", required = true)
     @Column
+    @NonNull
+    @Range(min = 0, max = 1)
     // 0: 치료비 모금, 1: 프로젝트 후원
     private Integer category;
 
@@ -180,4 +182,7 @@ public class Funding extends BaseEntity {
         ++this.warning;
     }
 
+    public boolean isAvailableRefund() {
+        return this.currentAmount < this.goalAmount;
+    }
 }

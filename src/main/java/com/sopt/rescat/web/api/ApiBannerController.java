@@ -55,5 +55,4 @@ public class ApiBannerController {
     public ResponseEntity<Iterable<BannerDto>> getFundingBannerList() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingBannerService.get4banners());
     }
-
 }

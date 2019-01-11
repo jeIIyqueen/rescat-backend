@@ -117,6 +117,7 @@ public class User extends BaseTime {
     }
 
     public void updateMileage(Long mileage) {
+        log.info(mileage.toString());
         checkMileageMoreThan(mileage);
         this.mileage += mileage;
     }
@@ -147,7 +148,6 @@ public class User extends BaseTime {
     public void updatePhone(String phone) {
         this.phone = phone;
     }
-
 
 
     public void updateInstanceToken(String InstanceToken) {

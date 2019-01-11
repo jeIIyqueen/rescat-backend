@@ -5,6 +5,7 @@ import com.sopt.rescat.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FundingRepository extends CrudRepository<Funding, Long> {
@@ -19,4 +20,6 @@ public interface FundingRepository extends CrudRepository<Funding, Long> {
     List<Funding> findAllByIsConfirmedOrderByCreatedAt(Integer isConfirmed);
 
     Integer countByIsConfirmed(Integer inConfirmed);
+
+    List<Funding> findByLimitAtBetweenAndCategoryAndIsConfirmed(LocalDateTime start, LocalDateTime end, Integer category, Integer isConfirmed);
 }
