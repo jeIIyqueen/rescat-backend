@@ -50,7 +50,9 @@ public class FundingService {
 
     @Transactional
     public void create(FundingRequestDto fundingRequestDto, User loginUser) {
-
+        if (fundingRepository.existsFundingByWriterAndIsConfirmed(loginUser, RequestStatus.DEFER.getValue())) {
+            throw new AlreadyExistsException("carePost", "게시 승인되지 않은 작성글이 있습니다.");
+        }
         Funding funding = fundingRepository.save(fundingRequestDto.toFunding()
                 .setWriter(loginUser));
 
