@@ -2,6 +2,7 @@ package com.sopt.rescat.dto.request;
 
 import com.sopt.rescat.domain.Funding;
 import com.sopt.rescat.domain.enums.Bank;
+import com.sopt.rescat.domain.photo.CertificationPhoto;
 import com.sopt.rescat.domain.photo.FundingPhoto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,9 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.validator.constraints.URL;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 import java.util.List;
@@ -80,6 +79,7 @@ public class FundingRequestDto {
 
     @ApiModelProperty(notes = "마감 기한", required = true)
     @NonNull
+//    @FutureOrPresent(message = "마감기한은 과거날짜일 수 없습니다. ")
     private LocalDateTime limitAt;
 
     public Funding toFunding() {
@@ -104,15 +104,14 @@ public class FundingRequestDto {
     public List<FundingPhoto> convertPhotoUrlsToPhotos(Funding funding) {
         return this.photoUrls.stream()
                 .map(FundingPhoto::new)
-                .map(fundingPhoto -> fundingPhoto.initFunding(funding))
+                .peek(fundingPhoto -> fundingPhoto.initFunding(funding))
                 .collect(Collectors.toList());
     }
 
-    public List<FundingPhoto> convertCertificationUrlsToCertifications(Funding funding) {
+    public List<CertificationPhoto> convertCertificationUrlsToCertifications(Funding funding) {
         return this.certificationUrls.stream()
-                .map(FundingPhoto::new)
-                .peek(FundingPhoto::setCertification)
-                .map(fundingPhoto -> fundingPhoto.initFunding(funding))
+                .map(CertificationPhoto::new)
+                .peek(certificationPhoto -> certificationPhoto.initFunding(funding))
                 .collect(Collectors.toList());
     }
 }

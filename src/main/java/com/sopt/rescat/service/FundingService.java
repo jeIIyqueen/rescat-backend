@@ -11,10 +11,14 @@ import com.sopt.rescat.exception.AlreadyExistsException;
 import com.sopt.rescat.exception.NotMatchException;
 import com.sopt.rescat.exception.UnAuthenticationException;
 import com.sopt.rescat.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class FundingService {
 
     private FundingRepository fundingRepository;
@@ -34,7 +39,7 @@ public class FundingService {
     public FundingService(final FundingRepository fundingRepository,
                           final NotificationService notificationService,
                           FundingCommentRepository fundingCommentRepository, final ProjectFundingLogRepository projectFundingLogRepository,
-                          final ApprovalLogRepository approvalLogRepository, final WarningLogRepository warningLogRepository) {
+                          final ApprovalLogRepository approvalLogRepository, final WarningLogRepository warningLogRepository, final UserRepository userRepository) {
         this.fundingRepository = fundingRepository;
         this.fundingCommentRepository = fundingCommentRepository;
         this.projectFundingLogRepository = projectFundingLogRepository;
@@ -99,6 +104,7 @@ public class FundingService {
                 .amount(mileage)
                 .funding(funding)
                 .sponsor(loginUser)
+                .status(0)
                 .build());
         funding.updateCurrentAmount(mileage);
     }
