@@ -36,6 +36,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('com.google.firebase:firebase-admin:6.5.0')
 
+    compile('pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0')
     compile('org.springframework.cloud:spring-cloud-starter-aws')
     compile('org.springframework.security:spring-security-core:5.0.6.RELEASE')
     compile('com.auth0:java-jwt:3.4.1')

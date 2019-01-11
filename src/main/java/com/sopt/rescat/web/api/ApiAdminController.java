@@ -17,10 +17,13 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.sopt.rescat.utils.HttpSessionUtils.getUserFromSession;
 
 @CrossOrigin(origins = "*")
 @Api(value = "ApiAdminController", description = "관리자페이지 관련 api")
@@ -61,6 +64,8 @@ public class ApiAdminController {
             HttpSession session) {
         User loginUser = userService.loginForAdmin(userLoginDto);
         HttpSessionUtils.setUserInSession(session, loginUser);
+        User user = getUserFromSession(session);
+
         return ResponseEntity.status(HttpStatus.OK).body(loginUser.toAdminUserLoginDto());
     }
 
@@ -71,9 +76,9 @@ public class ApiAdminController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @GetMapping("/home/counts")
-    public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpSession session) {
+    public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpServletRequest request) {
 
-        HttpSessionUtils.checkAdminUser(session);
+        HttpSessionUtils.checkAdminUser(request.getSession());
 
         Map<String, Integer> body = new HashMap<>();
         body.put("careTakerRequest", userService.getCareTakerRequestCount());
