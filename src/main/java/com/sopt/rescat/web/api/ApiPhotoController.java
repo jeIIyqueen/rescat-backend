@@ -37,7 +37,7 @@ public class ApiPhotoController {
     @Auth
     @PostMapping()
     public ResponseEntity<PhotoDto> uploadPhoto(@RequestParam("data") MultipartFile multipartFile) throws IOException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new PhotoDto(s3FileService.upload(multipartFile, "static")));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PhotoDto(s3FileService.upload(multipartFile, "photo")));
     }
 
     @ApiOperation(value = "사진 삭제", notes = "s3에 있는 사진을 삭제합니다.")
