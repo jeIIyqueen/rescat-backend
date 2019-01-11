@@ -2,7 +2,7 @@ package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.Notification;
 import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.UserNotificationLog;
+import com.sopt.rescat.domain.log.UserNotificationLog;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

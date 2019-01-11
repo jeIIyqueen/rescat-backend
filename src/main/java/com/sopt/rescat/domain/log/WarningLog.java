@@ -1,5 +1,7 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.log;
 
+import com.sopt.rescat.domain.BaseTime;
+import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.WarningType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.sopt.rescat.scheduler;
 
 import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.ProjectFundingLog;
+import com.sopt.rescat.domain.log.ProjectFundingLog;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.repository.FundingRepository;
 import com.sopt.rescat.repository.ProjectFundingLogRepository;

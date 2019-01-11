@@ -1,5 +1,7 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.log;
 
+import com.sopt.rescat.domain.BaseEntity;
+import com.sopt.rescat.domain.User;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import lombok.AllArgsConstructor;

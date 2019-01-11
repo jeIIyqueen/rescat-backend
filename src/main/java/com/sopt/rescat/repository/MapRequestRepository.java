@@ -1,6 +1,6 @@
 package com.sopt.rescat.repository;
 
-import com.sopt.rescat.domain.MapRequest;
+import com.sopt.rescat.domain.request.MapRequest;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
