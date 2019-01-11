@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface ProjectFundingLogRepository extends CrudRepository<ProjectFundingLog, Long> {
     List<ProjectFundingLog> findBySponsorOrderByCreatedAtDesc(User user);
+
     List<ProjectFundingLog> findByFunding(Funding funding);
 }

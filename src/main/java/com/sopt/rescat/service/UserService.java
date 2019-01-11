@@ -241,7 +241,7 @@ public class UserService {
         if (status.equals(RequestStatus.REFUSE.getValue()))
             refuseCareTakerRequest(careTakerRequest, approver);
 
-        // 승인일 경우
+            // 승인일 경우
         else if (status.equals(RequestStatus.CONFIRM.getValue()))
             approveCareTakerRequest(careTakerRequest, approver);
 
@@ -359,7 +359,7 @@ public class UserService {
 
         user.updateRegions(editRegion0, editRegion1, null);
 
-        if(editRegions.size() == 3) {
+        if (editRegions.size() == 3) {
             String[] fullName2 = editRegions.get(2).split(" ");
             Region editRegion2 = regionRepository.findBySdNameAndSggNameAndEmdName(fullName2[0], fullName2[1], fullName2[2])
                     .orElseThrow(() -> new NotFoundException("regionFullName", "지역을 찾을 수 없습니다."));
@@ -377,7 +377,7 @@ public class UserService {
         // 거절일 경우
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseAddRegionRequest(careTakerRequest, approver);
-        }else {//승인일경우
+        } else {//승인일경우
             approveAddRegionRequest(careTakerRequest, approver);
         }
 

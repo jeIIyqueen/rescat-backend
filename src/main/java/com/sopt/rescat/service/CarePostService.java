@@ -56,7 +56,6 @@ public class CarePostService {
 
         CarePost carePost = carePostRepository.save(carePostRequestDto.toCarePost(false)
                 .setWriter(loginUser));
-        log.info(carePost.getCreatedAt().toString());
         carePost.initPhotos(carePostRequestDto.convertPhotoUrlsToCarePostPhoto(carePost));
     }
 
@@ -162,7 +161,7 @@ public class CarePostService {
         notificationService.send(careApplication, careApplication.getWriter());
     }
 
-    public CareApplication getCareApplication (Long careApplicationIdx){
+    public CareApplication getCareApplication(Long careApplicationIdx) {
         CareApplication careApplication = careApplicationRepository.findById(careApplicationIdx)
                 .orElseThrow(() -> new NotFoundException("idx", "idx에 해당하는 신청이 존재하지 않습니다."));
 
@@ -188,7 +187,7 @@ public class CarePostService {
             approveCarePostRequest(carePost, approver);
         }
 
-        notificationService.send(carePost,carePost.getWriter());
+        notificationService.send(carePost, carePost.getWriter());
         return carePost.toCarePostDto();
     }
 
@@ -233,7 +232,7 @@ public class CarePostService {
                 .getWriter();
 
 
-        notificationService.send(carePostComment,writer);
+        notificationService.send(carePostComment, writer);
         return comment;
     }
 

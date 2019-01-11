@@ -31,9 +31,9 @@ public class RefundScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    public void refundFinishedFunding(){
-        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0,0,0));
-        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(0,0,0));
+    public void refundFinishedFunding() {
+        LocalDateTime start = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
         List<Funding> projectFundingsFinishedYesterday
                 = fundingRepository.findByLimitAtBetweenAndCategoryAndIsConfirmed(start, end, 1, RequestStatus.CONFIRM.getValue())
                 .stream().filter(Funding::isAvailableRefund).collect(Collectors.toList());

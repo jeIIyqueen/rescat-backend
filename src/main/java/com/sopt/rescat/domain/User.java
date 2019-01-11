@@ -150,7 +150,6 @@ public class User extends BaseTime {
     }
 
 
-
     public void updateInstanceToken(String InstanceToken) {
         this.InstanceToken = InstanceToken;
     }

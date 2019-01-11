@@ -5,7 +5,6 @@ import com.sopt.rescat.domain.enums.MarkerType;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.dto.MarkerDto;
-import com.sopt.rescat.exception.FailureException;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;
 import com.sopt.rescat.repository.*;
@@ -99,7 +98,7 @@ public class MapService {
         if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseMapRequest(mapRequest, approver);
 
-        } else if(status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveMapRequest(mapRequest, approver);
         }
 

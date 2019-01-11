@@ -324,7 +324,7 @@ public class ApiUserController {
 
         Notification notification = notificationService.updateIsChecked(idx, loginUser);
 
-        if(notification.getTargetType().equals(RequestType.CAREAPPLICATION)){
+        if (notification.getTargetType().equals(RequestType.CAREAPPLICATION)) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(NotificationTargetDto
                             .builder()

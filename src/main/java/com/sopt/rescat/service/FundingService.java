@@ -16,9 +16,6 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -122,15 +119,14 @@ public class FundingService {
 
         User writer = funding.getWriter();
 
-        if (status.equals(RequestStatus.REFUSE.getValue())){
+        if (status.equals(RequestStatus.REFUSE.getValue())) {
             refuseFundingRequest(funding, approver);
-        }
-        else if (status.equals(RequestStatus.CONFIRM.getValue())) {
+        } else if (status.equals(RequestStatus.CONFIRM.getValue())) {
             approveFundingRequest(funding, approver);
         }
 
         notificationService.send(funding, funding.getWriter());
-      
+
         return funding.toFundingDto();
     }
 

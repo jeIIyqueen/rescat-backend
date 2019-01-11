@@ -4,10 +4,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.sopt.rescat.domain.Notification;
-import com.sopt.rescat.domain.User;
-import com.sopt.rescat.domain.UserNotificationLog;
-
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
@@ -20,7 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
@@ -291,17 +290,17 @@ public class NotificationService {
         if (object instanceof Funding)
             notification = createNotification((Funding) object, receivingUser);
         else if (object instanceof CarePost)
-          notification = createNotification((CarePost) object, receivingUser);
+            notification = createNotification((CarePost) object, receivingUser);
         else if (object instanceof CareTakerRequest)
-          notification = createNotification((CareTakerRequest) object, receivingUser);
+            notification = createNotification((CareTakerRequest) object, receivingUser);
         else if (object instanceof MapRequest)
-          notification = createNotification((MapRequest) object, receivingUser);
+            notification = createNotification((MapRequest) object, receivingUser);
         else if (object instanceof CareApplication)
-          notification = createNotification((CareApplication) object, receivingUser);
+            notification = createNotification((CareApplication) object, receivingUser);
         else if (object instanceof CarePostComment)
-          notification = createNotification((CarePostComment) object);
+            notification = createNotification((CarePostComment) object);
         else if (object instanceof FundingComment)
-          notification = createNotification((FundingComment) object);
+            notification = createNotification((FundingComment) object);
         else
             throw new InvalidValueException("notification", "알림값이 잘못 되었습니다.");
 
