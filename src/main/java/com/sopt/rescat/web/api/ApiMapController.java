@@ -1,6 +1,6 @@
 package com.sopt.rescat.web.api;
 
-import com.sopt.rescat.domain.MapRequest;
+import com.sopt.rescat.domain.request.MapRequest;
 import com.sopt.rescat.domain.User;
 import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.service.MapService;

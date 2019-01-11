@@ -1,7 +1,7 @@
 package com.sopt.rescat.repository;
 
 import com.sopt.rescat.domain.Funding;
-import com.sopt.rescat.domain.ProjectFundingLog;
+import com.sopt.rescat.domain.log.ProjectFundingLog;
 import com.sopt.rescat.domain.User;
 import org.springframework.data.repository.CrudRepository;
 

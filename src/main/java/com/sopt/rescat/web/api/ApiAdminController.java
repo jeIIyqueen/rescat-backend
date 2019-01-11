@@ -1,6 +1,8 @@
 package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.*;
+import com.sopt.rescat.domain.request.CareTakerRequest;
+import com.sopt.rescat.domain.request.MapRequest;
 import com.sopt.rescat.dto.ExceptionDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.response.AdminUserLoginDto;

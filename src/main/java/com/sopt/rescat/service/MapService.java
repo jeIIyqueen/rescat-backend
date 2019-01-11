@@ -4,6 +4,8 @@ import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.MarkerType;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
+import com.sopt.rescat.domain.log.ApprovalLog;
+import com.sopt.rescat.domain.request.MapRequest;
 import com.sopt.rescat.dto.MarkerDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.exception.NotFoundException;

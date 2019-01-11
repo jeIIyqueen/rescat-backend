@@ -26,7 +26,7 @@
 2018-12-28 05:56:11.794 INFO  7657 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 05:56:12.048 INFO  7911 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 05:56:12.289 INFO  8152 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 05:56:12.852 INFO  8715 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 05:56:12.852 INFO  8715 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 05:56:14.453 INFO  10316 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 05:56:14.532 INFO  10395 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 05:56:15.315 INFO  11178 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -75,7 +75,7 @@
 2018-12-28 06:46:09.291 INFO  6942 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 06:46:09.538 INFO  7189 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 06:46:09.758 INFO  7409 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 06:46:10.410 INFO  8061 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 06:46:10.410 INFO  8061 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 06:46:12.193 INFO  9844 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 06:46:12.233 INFO  9884 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 06:46:13.013 INFO  10664 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -124,7 +124,7 @@
 2018-12-28 06:47:48.731 INFO  6199 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 06:47:48.828 INFO  6296 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 06:47:48.986 INFO  6454 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 06:47:49.367 INFO  6835 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 06:47:49.367 INFO  6835 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 06:47:50.756 INFO  8224 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 06:47:50.795 INFO  8263 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 06:47:51.400 INFO  8868 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -177,7 +177,7 @@
 2018-12-28 06:51:38.535 INFO  6132 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 06:51:38.630 INFO  6227 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 06:51:38.787 INFO  6384 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 06:51:39.169 INFO  6766 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 06:51:39.169 INFO  6766 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 06:51:40.653 INFO  8250 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 06:51:40.702 INFO  8299 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 06:51:41.379 INFO  8976 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -230,7 +230,7 @@
 2018-12-28 07:01:01.475 INFO  6010 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:01:01.574 INFO  6109 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:01:01.717 INFO  6252 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:01:02.116 INFO  6651 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:01:02.116 INFO  6651 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:01:03.873 INFO  8408 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:01:03.937 INFO  8472 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:01:04.519 INFO  9054 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -283,7 +283,7 @@
 2018-12-28 07:02:25.150 INFO  6180 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:02:25.252 INFO  6282 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:02:25.394 INFO  6424 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:02:25.774 INFO  6804 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:02:25.774 INFO  6804 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:02:27.513 INFO  8543 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:02:27.548 INFO  8578 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:02:28.204 INFO  9234 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -326,7 +326,7 @@
 	name: default
 	...]
 2018-12-28 07:15:23.363 INFO  784393 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:15:23.464 INFO  784494 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:15:23.464 INFO  784494 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:15:23.877 INFO  784907 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:15:23.902 INFO  784932 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:15:24.110 INFO  785140 --- [ restartedMain ] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
@@ -367,7 +367,7 @@
 2018-12-28 07:15:37.971 INFO  6081 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:15:38.078 INFO  6188 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:15:38.223 INFO  6333 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:15:38.611 INFO  6721 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:15:38.611 INFO  6721 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:15:40.251 INFO  8361 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:15:40.304 INFO  8414 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:15:40.889 INFO  8999 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -416,7 +416,7 @@
 2018-12-28 07:22:10.210 INFO  6080 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:22:10.310 INFO  6180 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:22:10.451 INFO  6321 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:22:10.839 INFO  6709 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:22:10.839 INFO  6709 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:22:12.327 INFO  8197 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:22:12.381 INFO  8251 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:22:12.947 INFO  8817 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -465,7 +465,7 @@
 2018-12-28 07:25:05.361 INFO  6111 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:25:05.460 INFO  6210 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:25:05.612 INFO  6362 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:25:05.999 INFO  6749 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:25:05.999 INFO  6749 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:25:07.894 INFO  8644 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:25:07.971 INFO  8721 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:25:08.541 INFO  9291 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -513,7 +513,7 @@
 2018-12-28 07:26:22.837 INFO  6192 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:26:22.933 INFO  6288 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:26:23.087 INFO  6442 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:26:23.488 INFO  6843 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:26:23.488 INFO  6843 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:26:25.066 INFO  8421 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:26:25.120 INFO  8475 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:26:25.728 INFO  9083 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -561,7 +561,7 @@
 2018-12-28 07:42:35.365 INFO  6057 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 07:42:35.463 INFO  6155 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 07:42:35.613 INFO  6305 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 07:42:35.997 INFO  6689 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 07:42:35.997 INFO  6689 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 07:42:37.448 INFO  8140 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 07:42:37.494 INFO  8186 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 07:42:38.102 INFO  8794 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -609,7 +609,7 @@
 2018-12-28 08:02:38.915 INFO  6456 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 08:02:39.032 INFO  6573 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 08:02:39.167 INFO  6708 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 08:02:39.537 INFO  7078 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 08:02:39.537 INFO  7078 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 08:02:41.028 INFO  8569 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 08:02:41.069 INFO  8610 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 08:02:41.727 INFO  9268 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -653,7 +653,7 @@
 2018-12-28 12:50:05.048 INFO  6920 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 12:50:05.301 INFO  7173 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 12:50:05.512 INFO  7384 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 12:50:06.060 INFO  7932 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 12:50:06.060 INFO  7932 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 12:50:06.415 INFO  8287 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 12:50:07.733 INFO  9605 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 12:50:07.834 INFO  9706 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -701,7 +701,7 @@
 2018-12-28 12:57:56.150 INFO  6502 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 12:57:56.247 INFO  6599 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 12:57:56.362 INFO  6714 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 12:57:56.737 INFO  7089 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 12:57:56.737 INFO  7089 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 12:57:56.986 INFO  7338 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 12:57:58.334 INFO  8686 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 12:57:58.385 INFO  8737 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -749,7 +749,7 @@
 2018-12-28 13:10:17.459 INFO  6323 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:10:17.581 INFO  6445 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:10:17.721 INFO  6585 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:10:18.086 INFO  6950 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:10:18.086 INFO  6950 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:10:18.330 INFO  7194 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:10:19.482 INFO  8346 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:10:19.529 INFO  8393 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -797,7 +797,7 @@
 2018-12-28 13:18:24.805 INFO  6009 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:18:24.909 INFO  6113 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:18:25.038 INFO  6242 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:18:25.397 INFO  6601 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:18:25.397 INFO  6601 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:18:25.635 INFO  6839 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:18:27.122 INFO  8326 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:18:27.177 INFO  8381 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -845,7 +845,7 @@
 2018-12-28 13:22:06.655 INFO  6176 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:22:06.814 INFO  6335 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:22:07.000 INFO  6521 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:22:07.392 INFO  6913 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:22:07.392 INFO  6913 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:22:07.709 INFO  7230 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:22:09.265 INFO  8786 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:22:09.315 INFO  8836 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -893,7 +893,7 @@
 2018-12-28 13:26:20.161 INFO  6194 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:26:20.260 INFO  6293 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:26:20.417 INFO  6450 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:26:20.805 INFO  6838 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:26:20.805 INFO  6838 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:26:21.040 INFO  7073 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:26:22.437 INFO  8470 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:26:22.522 INFO  8555 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -941,7 +941,7 @@
 2018-12-28 13:28:52.444 INFO  6741 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:28:52.576 INFO  6873 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:28:52.699 INFO  6996 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:28:53.042 INFO  7339 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:28:53.042 INFO  7339 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:28:53.268 INFO  7565 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:28:54.733 INFO  9030 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:28:54.772 INFO  9069 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -986,7 +986,7 @@
 2018-12-28 13:30:36.856 INFO  6596 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:30:36.955 INFO  6695 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:30:37.109 INFO  6849 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:30:37.499 INFO  7239 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:30:37.499 INFO  7239 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:30:37.709 INFO  7449 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.photo.Photo (class must be instantiated by Interceptor)
 2018-12-28 13:30:39.157 INFO  8897 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:30:39.203 INFO  8943 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
@@ -1035,7 +1035,7 @@
 2018-12-28 13:35:07.884 INFO  6068 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:35:07.979 INFO  6163 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:35:08.112 INFO  6296 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:35:08.523 INFO  6707 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:35:08.523 INFO  6707 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:35:10.077 INFO  8261 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:35:10.117 INFO  8301 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:35:11.174 INFO  9358 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1083,7 +1083,7 @@
 2018-12-28 13:36:58.549 INFO  6064 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:36:58.661 INFO  6176 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:36:58.781 INFO  6296 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:36:59.162 INFO  6677 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:36:59.162 INFO  6677 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:37:00.644 INFO  8159 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:37:00.709 INFO  8224 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:37:01.743 INFO  9258 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1131,7 +1131,7 @@
 2018-12-28 13:39:13.106 INFO  6060 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:39:13.219 INFO  6173 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:39:13.357 INFO  6311 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:39:13.730 INFO  6684 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:39:13.730 INFO  6684 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:39:15.338 INFO  8292 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:39:15.431 INFO  8385 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:39:16.761 INFO  9715 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1180,7 +1180,7 @@
 2018-12-28 13:40:59.036 INFO  5963 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 13:40:59.131 INFO  6058 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 13:40:59.274 INFO  6201 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 13:40:59.669 INFO  6596 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 13:40:59.669 INFO  6596 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 13:41:01.197 INFO  8124 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 13:41:01.257 INFO  8184 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 13:41:02.284 INFO  9211 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1234,7 +1234,7 @@
 	name: default
 	...]
 2018-12-28 14:27:32.552 INFO  2799479 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:27:32.610 INFO  2799537 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:27:32.610 INFO  2799537 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:27:33.743 INFO  2800670 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:27:33.757 INFO  2800684 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:27:33.995 INFO  2800922 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1279,7 +1279,7 @@
 2018-12-28 14:36:40.083 INFO  6538 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:36:40.241 INFO  6696 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:36:40.519 INFO  6974 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:36:40.906 INFO  7361 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:36:40.906 INFO  7361 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:36:42.368 INFO  8823 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:36:42.436 INFO  8891 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:36:43.507 INFO  9962 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1328,7 +1328,7 @@
 2018-12-28 14:38:49.994 INFO  6225 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:38:50.097 INFO  6328 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:38:50.232 INFO  6463 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:38:50.596 INFO  6827 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:38:50.596 INFO  6827 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:38:52.053 INFO  8284 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:38:52.098 INFO  8329 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:38:53.236 INFO  9467 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1375,7 +1375,7 @@
 2018-12-28 14:41:46.252 INFO  6032 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:41:46.346 INFO  6126 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:41:46.493 INFO  6273 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:41:46.869 INFO  6649 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:41:46.869 INFO  6649 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:41:48.596 INFO  8376 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:41:48.633 INFO  8413 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:41:49.822 INFO  9602 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1422,7 +1422,7 @@
 2018-12-28 14:45:49.758 INFO  6067 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:45:49.855 INFO  6164 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:45:50.019 INFO  6328 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:45:50.409 INFO  6718 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:45:50.409 INFO  6718 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:45:52.030 INFO  8339 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:45:52.068 INFO  8377 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:45:53.193 INFO  9502 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1474,7 +1474,7 @@
 2018-12-28 14:52:44.232 INFO  5940 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:52:44.339 INFO  6047 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:52:44.456 INFO  6164 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:52:44.815 INFO  6523 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:52:44.815 INFO  6523 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:52:46.184 INFO  7892 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:52:46.226 INFO  7934 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:52:47.580 INFO  9288 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1523,7 +1523,7 @@
 2018-12-28 14:56:50.390 INFO  6378 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 14:56:50.488 INFO  6476 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 14:56:50.615 INFO  6603 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:56:50.972 INFO  6960 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:56:50.972 INFO  6960 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:56:52.420 INFO  8408 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:56:52.474 INFO  8462 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:56:53.704 INFO  9692 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1566,7 +1566,7 @@
 	name: default
 	...]
 2018-12-28 14:58:23.848 INFO  99836 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 14:58:23.930 INFO  99918 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 14:58:23.930 INFO  99918 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 14:58:25.201 INFO  101189 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 14:58:25.219 INFO  101207 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 14:58:25.587 INFO  101575 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1611,7 +1611,7 @@
 2018-12-28 15:07:04.138 INFO  7694 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 15:07:04.236 INFO  7792 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 15:07:04.397 INFO  7953 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 15:07:04.850 INFO  8406 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 15:07:04.850 INFO  8406 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 15:07:06.298 INFO  9854 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 15:07:06.373 INFO  9929 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 15:07:07.813 INFO  11369 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1662,7 +1662,7 @@
 2018-12-28 16:23:26.052 INFO  7105 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:23:26.313 INFO  7366 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:23:26.542 INFO  7595 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:23:27.113 INFO  8166 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:23:27.113 INFO  8166 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:23:28.732 INFO  9785 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:23:28.788 INFO  9841 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:23:30.342 INFO  11395 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1707,7 +1707,7 @@
 2018-12-28 16:41:15.487 INFO  7271 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:41:15.770 INFO  7554 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:41:15.951 INFO  7735 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:41:16.472 INFO  8256 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:41:16.472 INFO  8256 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:41:18.565 INFO  10349 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:41:18.635 INFO  10419 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:41:20.125 INFO  11909 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1755,7 +1755,7 @@
 2018-12-28 16:44:34.321 INFO  5651 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:44:34.425 INFO  5755 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:44:34.546 INFO  5876 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:44:34.937 INFO  6267 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:44:34.937 INFO  6267 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:44:37.086 INFO  8416 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:44:37.132 INFO  8462 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:44:38.225 INFO  9555 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1803,7 +1803,7 @@
 2018-12-28 16:45:22.356 INFO  6865 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:45:22.489 INFO  6998 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:45:22.641 INFO  7150 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:45:23.112 INFO  7621 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:45:23.112 INFO  7621 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:45:25.450 INFO  9959 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:45:25.500 INFO  10009 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:45:26.995 INFO  11504 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1851,7 +1851,7 @@
 2018-12-28 16:51:49.205 INFO  7920 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:51:49.448 INFO  8163 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:51:49.675 INFO  8390 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:51:50.371 INFO  9086 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:51:50.371 INFO  9086 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:51:52.440 INFO  11155 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:51:52.480 INFO  11195 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:51:54.170 INFO  12885 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1899,7 +1899,7 @@
 2018-12-28 16:53:38.325 INFO  6876 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 16:53:38.477 INFO  7028 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 16:53:38.652 INFO  7203 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 16:53:39.195 INFO  7746 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 16:53:39.195 INFO  7746 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 16:53:41.435 INFO  9986 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 16:53:41.481 INFO  10032 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 16:53:42.900 INFO  11451 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1947,7 +1947,7 @@
 2018-12-28 17:12:58.648 INFO  6935 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:12:58.854 INFO  7141 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:12:59.089 INFO  7376 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:12:59.635 INFO  7922 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:12:59.635 INFO  7922 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:13:01.637 INFO  9924 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:13:01.690 INFO  9977 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:13:03.062 INFO  11349 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -1995,7 +1995,7 @@
 2018-12-28 17:14:05.397 INFO  6144 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:14:05.500 INFO  6247 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:14:05.637 INFO  6384 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:14:06.075 INFO  6822 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:14:06.075 INFO  6822 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:14:07.810 INFO  8557 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:14:07.855 INFO  8602 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:14:08.989 INFO  9736 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2043,7 +2043,7 @@
 2018-12-28 17:14:57.633 INFO  7751 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:14:57.768 INFO  7886 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:14:57.931 INFO  8049 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:14:58.472 INFO  8590 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:14:58.472 INFO  8590 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:15:00.627 INFO  10745 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:15:00.668 INFO  10786 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:15:02.034 INFO  12152 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2091,7 +2091,7 @@
 2018-12-28 17:17:13.475 INFO  6428 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:17:13.586 INFO  6539 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:17:13.708 INFO  6661 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:17:14.099 INFO  7052 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:17:14.099 INFO  7052 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:17:16.196 INFO  9149 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:17:16.241 INFO  9194 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:17:17.392 INFO  10345 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2139,7 +2139,7 @@
 2018-12-28 17:24:57.100 INFO  9400 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:24:57.279 INFO  9579 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:24:57.598 INFO  9898 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:24:58.284 INFO  10584 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:24:58.284 INFO  10584 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:25:00.458 INFO  12758 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:25:00.503 INFO  12803 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:25:02.245 INFO  14545 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2187,7 +2187,7 @@
 2018-12-28 17:26:50.221 INFO  7373 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:26:50.393 INFO  7545 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:26:50.564 INFO  7716 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:26:51.126 INFO  8278 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:26:51.126 INFO  8278 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:26:53.410 INFO  10562 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:26:53.463 INFO  10615 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:26:54.951 INFO  12103 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2235,7 +2235,7 @@
 2018-12-28 17:29:56.035 INFO  7768 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:29:56.136 INFO  7869 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:29:56.246 INFO  7979 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:29:56.641 INFO  8374 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:29:56.641 INFO  8374 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:29:58.517 INFO  10250 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:29:58.566 INFO  10299 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:29:59.915 INFO  11648 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2289,7 +2289,7 @@
 2018-12-28 17:54:59.881 INFO  6878 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 17:55:00.126 INFO  7123 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 17:55:00.320 INFO  7317 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 17:55:00.889 INFO  7886 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 17:55:00.889 INFO  7886 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 17:55:02.781 INFO  9778 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 17:55:02.827 INFO  9824 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 17:55:04.221 INFO  11218 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2337,7 +2337,7 @@
 2018-12-28 18:08:56.622 INFO  6341 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:08:56.722 INFO  6441 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:08:56.867 INFO  6586 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:08:57.246 INFO  6965 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:08:57.246 INFO  6965 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:08:58.970 INFO  8689 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:08:59.008 INFO  8727 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:09:00.162 INFO  9881 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2385,7 +2385,7 @@
 2018-12-28 18:24:18.980 INFO  6309 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:24:19.074 INFO  6403 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:24:19.209 INFO  6538 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:24:19.553 INFO  6882 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:24:19.553 INFO  6882 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:24:21.830 INFO  9159 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:24:21.874 INFO  9203 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:24:23.173 INFO  10502 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2433,7 +2433,7 @@
 2018-12-28 18:25:01.204 INFO  7562 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:25:01.391 INFO  7749 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:25:01.558 INFO  7916 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:25:02.094 INFO  8452 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:25:02.094 INFO  8452 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:25:04.121 INFO  10479 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:25:04.162 INFO  10520 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:25:05.602 INFO  11960 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2482,7 +2482,7 @@
 2018-12-28 18:32:58.177 INFO  6837 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:32:58.472 INFO  7132 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:32:58.670 INFO  7330 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:32:59.231 INFO  7891 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:32:59.231 INFO  7891 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:33:01.658 INFO  10318 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:33:01.695 INFO  10355 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:33:03.134 INFO  11794 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2531,7 +2531,7 @@
 2018-12-28 18:45:29.395 INFO  7475 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:45:29.570 INFO  7650 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:45:29.734 INFO  7814 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:45:30.289 INFO  8369 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:45:30.289 INFO  8369 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:45:32.128 INFO  10208 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:45:32.171 INFO  10251 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:45:33.574 INFO  11654 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2580,7 +2580,7 @@
 2018-12-28 18:46:24.398 INFO  7200 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:46:24.544 INFO  7346 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:46:24.721 INFO  7523 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:46:25.240 INFO  8042 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:46:25.240 INFO  8042 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:46:27.115 INFO  9917 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:46:27.162 INFO  9964 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:46:28.544 INFO  11346 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2629,7 +2629,7 @@
 2018-12-28 18:57:49.532 INFO  6847 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 18:57:49.716 INFO  7031 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 18:57:49.931 INFO  7246 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 18:57:50.470 INFO  7785 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 18:57:50.470 INFO  7785 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 18:57:52.478 INFO  9793 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 18:57:52.527 INFO  9842 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 18:57:53.939 INFO  11254 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2678,7 +2678,7 @@
 2018-12-28 20:46:56.710 INFO  7063 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 20:46:56.862 INFO  7215 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 20:46:57.006 INFO  7359 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 20:46:57.488 INFO  7841 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:46:57.488 INFO  7841 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 20:47:01.699 INFO  12052 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 20:47:01.734 INFO  12087 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 20:47:03.161 INFO  13514 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2724,7 +2724,7 @@
 2018-12-28 20:47:29.811 INFO  7115 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 20:47:29.919 INFO  7223 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 20:47:30.082 INFO  7386 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 20:47:30.494 INFO  7798 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:47:30.494 INFO  7798 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 20:48:41.725 INFO  79029 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 20:48:41.812 INFO  79116 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 20:48:43.463 INFO  80767 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]
@@ -2773,7 +2773,7 @@
 2018-12-28 20:49:45.181 INFO  7638 --- [ restartedMain ] org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
 2018-12-28 20:49:45.308 INFO  7765 --- [ restartedMain ] o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.0.4.Final}
 2018-12-28 20:49:45.432 INFO  7889 --- [ restartedMain ] org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
-2018-12-28 20:49:45.816 INFO  8273 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.MapRequest (class must be instantiated by Interceptor)
+2018-12-28 20:49:45.816 INFO  8273 --- [ restartedMain ] o.hibernate.tuple.PojoInstantiator - HHH000182: No default (no-argument) constructor for class: com.sopt.rescat.domain.request.MapRequest (class must be instantiated by Interceptor)
 2018-12-28 20:49:56.719 INFO  19176 --- [ restartedMain ] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
 2018-12-28 20:49:56.757 INFO  19214 --- [ restartedMain ] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
 2018-12-28 20:49:58.019 INFO  20476 --- [ restartedMain ] s.d.s.w.PropertySourcedRequestMappingHandlerMapping - Mapped URL path [/v2/api-docs] onto method [public org.springframework.http.ResponseEntity<springfox.documentation.spring.web.json.Json> springfox.documentation.swagger2.web.Swagger2Controller.getDocumentation(java.lang.String,javax.servlet.http.HttpServletRequest)]

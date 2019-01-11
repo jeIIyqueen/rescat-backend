@@ -1,6 +1,6 @@
 package com.sopt.rescat.repository;
 
-import com.sopt.rescat.domain.CareTakerRequest;
+import com.sopt.rescat.domain.request.CareTakerRequest;
 import com.sopt.rescat.domain.User;
 import org.springframework.data.repository.CrudRepository;
 

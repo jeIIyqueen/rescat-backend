@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class FundingRequestDto {
+    private static final Integer CATEGORY_PROJECT = 1;
+
     @ApiModelProperty(notes = "목표금액", required = true)
     @Range(min = 10000, message = "최소 목표금액은 10000원입니다.")
     @NonNull
@@ -34,9 +36,6 @@ public class FundingRequestDto {
     private Integer category;
 
     @ApiModelProperty(notes = "증빙서류 사진 url 리스트", required = true)
-    @Size(min = 1, max = 3)
-    @NotNull
-    @NonNull
     private List<@URL String> certificationUrls;
 
     @ApiModelProperty(notes = "사진 url 리스트", required = true)
@@ -110,6 +109,8 @@ public class FundingRequestDto {
     }
 
     public List<CertificationPhoto> convertCertificationUrlsToCertifications(Funding funding) {
+        if(funding.getCategory().equals(CATEGORY_PROJECT)) return null;
+
         return this.certificationUrls.stream()
                 .map(CertificationPhoto::new)
                 .peek(certificationPhoto -> certificationPhoto.initFunding(funding))

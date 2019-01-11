@@ -1,6 +1,9 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.log;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sopt.rescat.domain.BaseTime;
+import com.sopt.rescat.domain.Notification;
+import com.sopt.rescat.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

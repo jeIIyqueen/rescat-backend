@@ -5,6 +5,8 @@ import com.sopt.rescat.domain.enums.Breed;
 import com.sopt.rescat.domain.enums.RequestStatus;
 import com.sopt.rescat.domain.enums.RequestType;
 import com.sopt.rescat.domain.enums.WarningType;
+import com.sopt.rescat.domain.log.ApprovalLog;
+import com.sopt.rescat.domain.log.WarningLog;
 import com.sopt.rescat.dto.request.CarePostRequestDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.exception.*;

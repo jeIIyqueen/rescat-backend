@@ -1,5 +1,8 @@
-package com.sopt.rescat.domain;
+package com.sopt.rescat.domain.log;
 
+import com.sopt.rescat.domain.BaseTime;
+import com.sopt.rescat.domain.Funding;
+import com.sopt.rescat.domain.User;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
