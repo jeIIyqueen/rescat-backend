@@ -97,7 +97,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/care-taker-requests/{idx}")
+    @PutMapping("/care-taker-requests/{idx}")
     public ResponseEntity<Void> approveCareTaker(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
@@ -117,7 +117,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
-    @PostMapping("/add-region-requests/{idx}")
+    @PutMapping("/add-region-requests/{idx}")
     public ResponseEntity<Void> approveAddRegion(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
