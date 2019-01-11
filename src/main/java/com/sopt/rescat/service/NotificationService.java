@@ -3,6 +3,7 @@ package com.sopt.rescat.service;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.domain.enums.RequestStatus;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.spi.RegisterableService;
 import javax.transaction.Transactional;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -35,6 +38,7 @@ public class NotificationService {
     private static final String PROJECT_ID = "rescat";
     private static final String BASE_URL = "https://fcm.googleapis.com";
     private static final String FCM_SEND_ENDPOINT = "/v1/projects/" + PROJECT_ID + "/messages:send";
+    private static final String FCM_GROUP_ENDPOINT = "/fcm/notification";
 
     private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String[] SCOPES = {MESSAGING_SCOPE};
@@ -73,9 +77,13 @@ public class NotificationService {
      * @return Base HttpURLConnection.
      * @throws IOException
      */
-    private static HttpURLConnection getConnection() throws IOException {
+    private static HttpURLConnection getConnection(Boolean sendType) throws IOException {
         // [START use_access_token]
-        URL url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
+        URL url;
+        if(!sendType)
+            url = new URL(BASE_URL + FCM_GROUP_ENDPOINT);
+        else
+            url = new URL(BASE_URL + FCM_SEND_ENDPOINT);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         httpURLConnection.setRequestProperty("Authorization", "Bearer " + getAccessToken());
         httpURLConnection.setRequestProperty("Content-Type", "application/json");
@@ -89,9 +97,13 @@ public class NotificationService {
      * @param fcmMessage Body of the HTTP request.
      * @throws IOException
      */
-    private static void sendPush(JsonObject fcmMessage) throws IOException {
+    private static void sendPush(JsonObject fcmMessage, Boolean sendType) throws IOException {
+        HttpURLConnection connection;
+        if (!sendType)
+            connection = getConnection(sendType);
 
-        HttpURLConnection connection = getConnection();
+        else
+            connection = getConnection(sendType);
         connection.setDoOutput(true);
 
         OutputStream outputStream = connection.getOutputStream();
@@ -104,6 +116,9 @@ public class NotificationService {
             String response = inputstreamToString(connection.getInputStream());
             System.out.println("Message sent to Firebase for delivery, response:");
             System.out.println(response);
+//            JsonObject jsonObject = new JsonObject().getAsJsonObject(response);
+//            String s = jsonObject.get("notification_key").toString();
+//            System.out.println();
         } else {
             System.out.println("Unable to send message to Firebase:");
             String response = inputstreamToString(connection.getErrorStream());
@@ -122,7 +137,7 @@ public class NotificationService {
         JsonObject Message = buildOverrideMessage(instanceToken, body);
         System.out.println("FCM request body for override message:");
         prettyPrint(Message);
-        sendPush(Message);
+        sendPush(Message, true);
     }
 
     /**
@@ -213,7 +228,40 @@ public class NotificationService {
 
         return jFcm;
     }
-
+//
+//
+//    private void registerGroup(String instanceToken, String groupName){
+//        JsonObject jNotification = new JsonObject();
+//        JsonArray jsonArray = new JsonArray();
+//        jsonArray.add(instanceToken);
+//
+//        jNotification.addProperty("operation","create");
+//        jNotification.addProperty("notification_key_name",groupName);
+//        jNotification.add("registration_ids",jsonArray);
+//
+//        try {
+//            sendPush(jNotification, false);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private void addInstance(String instanceToken, String groupName, String notificatinoKey){
+//        JsonObject jNotification = new JsonObject();
+//        JsonArray jsonArray = new JsonArray();
+//        jsonArray.add(instanceToken);
+//
+//        jNotification.addProperty("operation","add");
+//        jNotification.addProperty("notification_key_name",groupName);
+//        jNotification.addProperty("notification_key",notificatinoKey);
+//        jNotification.add("registration_ids",jsonArray);
+//
+//        try {
+//            sendPush(jNotification, false);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     /**
      * Read contents of InputStream into String.
      *
@@ -309,30 +357,39 @@ public class NotificationService {
     }
 
     private Notification createNotification(Funding funding, User receivingUser) {
-
         if (funding.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue())) {
             return Notification.builder()
                     .targetType(RequestType.FUNDING)
                     .targetIdx(funding.getIdx())
-                    .contents(receivingUser.getNickname() + "님의 후원글 신청이 승인되었습니다. 회원님의 목표금액 달성을 응원합니다.")
+                    .contents(receivingUser.getNickname() + "님의 후원글 신청이 승인되었습니다.\n회원님의 목표금액 달성을 응원합니다.")
                     .build();
         }
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 후원글 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 후원글 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
-    private Notification createNotification(CarePost carePost, User receivingUser) {
-        String requestType = (carePost.getType() == 0) ? "입양" : "임시보호";
-        if (carePost.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue())) {
+    public Notification createNotification(CarePost carePost, User receivingUser) {
+        String requestType;
+        RequestType requestTypeValue;
+        if(carePost.getType() == 0) {
+            requestType = "입양";
+            requestTypeValue = RequestType.CAREPOST;
+        }
+        else{
+            requestType = "임시보호";
+            requestTypeValue = RequestType.TEMPORALCAREPOST;
+        }
+
+        if(carePost.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue())){
             return Notification.builder()
-                    .targetType(RequestType.CAREPOST)
+                    .targetType(requestTypeValue)
                     .targetIdx(carePost.getIdx())
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 승인되었습니다. 좋은 " + requestType + "자를 만날 수 있기를 응원합니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 승인되었습니다.\n좋은 " + requestType + "자를 만날 수 있기를 응원합니다.")
                     .build();
         }
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 " + requestType + " 등록 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
@@ -342,10 +399,10 @@ public class NotificationService {
 
         if (careTakerRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다. 앞으로 활발한 활동 부탁드립니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다.\n앞으로 활발한 활동 부탁드립니다.")
                     .build();
         return Notification.builder()
-                .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                 .build();
     }
 
@@ -361,7 +418,7 @@ public class NotificationService {
 
         if (mapRequest.getIsConfirmed().equals(RequestStatus.CONFIRM.getValue()))
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다. 별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 거절되었습니다.\n별도의 문의사항은 마이페이지 > 문의하기 탭을 이용해주시기 바랍니다.")
                     .build();
         return Notification.builder()
                 .contents(receivingUser.getNickname() + "님의 " + registerType + requestType + " 요청이 승인되었습니다.")
@@ -373,16 +430,17 @@ public class NotificationService {
 
         if (careApplication.getIsAccepted())
             return Notification.builder()
-                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다. 당신의 아름다운 결정을 지지합니다.")
+                    .contents(receivingUser.getNickname() + "님의 " + requestType + " 신청이 승인되었습니다.\n당신의 아름다운 결정을 지지합니다.")
                     .build();
 
         requestType = (careApplication.getCarePost().getType() == 0) ? "입양을" : "임시보호를";
         return Notification.builder()
-                .targetIdx(careApplication.getIdx())
+                .targetIdx(careApplication.getCarePost().getIdx())
                 .targetType(RequestType.CAREAPPLICATION)
-                .contents(receivingUser.getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
+                .contents(careApplication.getWriter().getNickname() + "님께서 " + careApplication.getCarePost().getName() + "(이)의 " + requestType + " 신청하셨습니다.")
                 .build();
     }
+
 
     private Notification createNotification(CarePostComment carePostComment) {
 
@@ -402,4 +460,5 @@ public class NotificationService {
                 .build();
 
     }
+
 }
