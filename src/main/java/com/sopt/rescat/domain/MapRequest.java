@@ -76,7 +76,7 @@ public class MapRequest extends BaseEntity {
     private String address;
 
     @Column
-    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4})$", message = "잘못된 전화번호 형식입니다.")
+    @Pattern(regexp = "^(null|(01[016789]{1}|02|0[3-9]{1}[0-9]{1})([0-9]{3,4})([0-9]{4}))$", message = "잘못된 전화번호 형식입니다.")
     @ApiModelProperty(notes = "(only병원)전화번호", position = 7)
     private String phone;
 

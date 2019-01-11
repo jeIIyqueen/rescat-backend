@@ -2,7 +2,6 @@ package com.sopt.rescat.web.api;
 
 import com.sopt.rescat.domain.*;
 import com.sopt.rescat.dto.ExceptionDto;
-import com.sopt.rescat.dto.JwtTokenDto;
 import com.sopt.rescat.dto.UserLoginDto;
 import com.sopt.rescat.dto.response.CarePostResponseDto;
 import com.sopt.rescat.dto.response.FundingResponseDto;
@@ -57,11 +56,7 @@ public class ApiAdminController {
     public ResponseEntity<Void> login(
             @RequestBody UserLoginDto userLoginDto,
             HttpSession session) {
-        HttpSessionUtils.setTokenInSession(session, JwtTokenDto.builder()
-                .token(jwtService.create(userService.login(userLoginDto).getIdx()))
-                .build()
-                .getToken()
-        );
+        HttpSessionUtils.setUserInSession(session, userService.login(userLoginDto));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -73,6 +68,7 @@ public class ApiAdminController {
     })
     @GetMapping("/home/counts")
     public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpSession session) {
+
         HttpSessionUtils.checkAdminUser(session);
 
         Map<String, Integer> body = new HashMap<>();
