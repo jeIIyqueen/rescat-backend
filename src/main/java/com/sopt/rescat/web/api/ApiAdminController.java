@@ -11,6 +11,8 @@ import com.sopt.rescat.dto.response.FundingResponseDto;
 import com.sopt.rescat.exception.InvalidValueException;
 import com.sopt.rescat.service.*;
 import com.sopt.rescat.utils.HttpSessionUtils;
+import com.sopt.rescat.utils.auth.AdminAuth;
+import com.sopt.rescat.utils.auth.AuthAspect;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -59,14 +61,9 @@ public class ApiAdminController {
             @ApiResponse(code = 500, message = "서버 에러")
     })
     @PostMapping("/login")
-    public ResponseEntity<AdminUserLoginDto> login(
-            @RequestBody UserLoginDto userLoginDto,
-            HttpSession session) {
-        User loginUser = userService.loginForAdmin(userLoginDto);
-        HttpSessionUtils.setUserInSession(session, loginUser);
-        User user = getUserFromSession(session);
-
-        return ResponseEntity.status(HttpStatus.OK).body(loginUser.toAdminUserLoginDto());
+    public ResponseEntity<String> login(
+            @RequestBody UserLoginDto userLoginDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(jwtService.create(userService.loginForAdmin(userLoginDto).getIdx()));
     }
 
     @ApiOperation(value = "홈화면 요청 개수 리스트 조회", notes = "홈화면 요청 개수 리스트를 반환합니다.")
@@ -75,11 +72,9 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @GetMapping("/home/counts")
-    public ResponseEntity<Map<String, Integer>> getRequestCounts(HttpServletRequest request) {
-
-        HttpSessionUtils.checkAdminUser(request.getSession());
-
+    public ResponseEntity<Map<String, Integer>> getRequestCounts() {
         Map<String, Integer> body = new HashMap<>();
         body.put("careTakerRequest", userService.getCareTakerRequestCount());
         body.put("carePostRequest", carePostService.getCarePostRequestCount());
@@ -94,10 +89,9 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @GetMapping("/care-taker-requests")
-    public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest(HttpSession session) {
-        HttpSessionUtils.checkAdminUser(session);
-
+    public ResponseEntity<Iterable<CareTakerRequest>> showCareTakerRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getCareTakerRequest());
     }
 
@@ -107,16 +101,16 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PutMapping("/care-taker-requests/{idx}")
     public ResponseEntity<Void> approveCareTaker(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpSession httpSession) {
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
-
-        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.approveCareTaker(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -127,16 +121,17 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PutMapping("/add-region-requests/{idx}")
     public ResponseEntity<Void> approveAddRegion(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpSession httpSession) {
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         userService.confirmedAddRegion(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -148,6 +143,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @GetMapping("/funding-requests")
     public ResponseEntity showFundingRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(fundingService.getFundingRequests());
@@ -160,16 +156,17 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PutMapping("/funding-requests/{idx}")
     public ResponseEntity<FundingResponseDto> confirmFundingPost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpSession httpSession) {
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(fundingService.confirmFunding(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -181,6 +178,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @GetMapping("/care-post-requests")
     public ResponseEntity<Iterable<CarePost>> showCarePostRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(carePostService.getCarePostRequests());
@@ -193,16 +191,17 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 미보유"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PutMapping("/care-post-requests/{idx}")
     public ResponseEntity<CarePostResponseDto> confirmCarePost(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpSession httpSession) {
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(carePostService.confirmCarePost(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -214,6 +213,7 @@ public class ApiAdminController {
             @ApiResponse(code = 401, message = "권한 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @GetMapping("/map-requests")
     public ResponseEntity<Iterable<MapRequest>> showMapRequest() {
         return ResponseEntity.status(HttpStatus.OK).body(mapService.getMapRequest());
@@ -227,16 +227,17 @@ public class ApiAdminController {
             @ApiResponse(code = 404, message = "요청 없음"),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PutMapping("/map-requests/{idx}")
     public ResponseEntity<MapRequest> approveMapRequest(
             @PathVariable Long idx,
             @ApiParam(value = "1: 승인, 2: 거절/ example -> {\"status\": 1}")
             @RequestBody Map<String, Object> body,
-            HttpSession httpSession) {
+            HttpServletRequest httpServletRequest) {
         if (!body.containsKey("status"))
             throw new InvalidValueException("status", "body 의 status 값이 존재하지 않습니다.");
 
-        User approver = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+        User approver = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mapService.approveMap(idx, Integer.parseInt(String.valueOf(body.get("status"))), approver));
     }
@@ -247,11 +248,12 @@ public class ApiAdminController {
             @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PostMapping("/map-markers/cats")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Cat cat,
-            HttpSession httpSession) {
-        User admin = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+            HttpServletRequest httpServletRequest) {
+        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         mapService.create(cat, admin);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -262,11 +264,12 @@ public class ApiAdminController {
             @ApiResponse(code = 400, message = "유효성 검사 에러", response = ExceptionDto.class),
             @ApiResponse(code = 500, message = "서버 에러")
     })
+    @AdminAuth
     @PostMapping("/map-markers/places")
     public ResponseEntity<Void> create(
             @Valid @RequestBody Place place,
-            HttpSession httpSession) {
-        User admin = HttpSessionUtils.getAdminUserIfPresent(httpSession);
+            HttpServletRequest httpServletRequest) {
+        User admin = (User) httpServletRequest.getAttribute(AuthAspect.USER_KEY);
         mapService.create(place, admin);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
