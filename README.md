@@ -23,9 +23,11 @@ E-mail : iamrescat@gmail.com
 * ##### Spring AOP
 * ##### String DATA JPA
 * ##### use AWS EC2, RDS, S3
+* ##### push alarm with FCM
 * ##### encode password using BCryptPasswordEncoder
 * ##### apply XSS-filter
 * ##### apply SWAGGER2
+* ##### create admin page (See [this repository](https://github.com/kwonhyeona/rescat-adminweb). you should request the permission)
 
 ## HOW TO START
 ```
