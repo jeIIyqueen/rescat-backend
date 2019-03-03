@@ -1,13 +1,3 @@
-~~~
-██████╗   ███████╗  ███████╗     █████╗    ████╗    ████████╗
-██╔══██╗  ██╔════╝  ██╔════╝    ██╔═══╝   ██══██╗   ╚══██╔══╝
-██████╔╝  █████╗    ███████    ██╗       ████████╗     ██║
-██╔══██╗  ██╔══╝    ╚════██║   ╚██╗      ██╔═══██╗     ██║
-██║  ██║  ███████╗  ███████║    ╚█████╗  ██║   ██║     ██║
-╚═╝  ╚═╝  ╚══════╝  ╚══════╝     ╚════╝  ╚═╝   ╚═╝     ╚═╝
-~~~
-
-
 ## INTRODUCTION
 Social information service, 'Rescat' aims at diffision of care-taker's proper caring culture and coexistence between human being and stray cats.  
 You can also be with us :) Contact us!
