@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.sopt.rescat"))
+                .apis(RequestHandlerSelectors.basePackage("jellyqueen.rescat"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build();
     }
